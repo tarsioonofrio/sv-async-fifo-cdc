@@ -1,4 +1,4 @@
-module sync_fifo
+module async_fifo
   #(
     parameter DATA_WIDTH=32, // Width of each FIFO entry.
     parameter DEPTH=16,      // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
