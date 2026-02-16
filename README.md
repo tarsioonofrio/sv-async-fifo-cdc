@@ -34,33 +34,37 @@ This avoids sampling multi-bit binary counters asynchronously, which can break d
 ## Interface
 
 ### Write Domain (wr_clk)
-| Signal | Dir | Description |
-|---|---:|---|
-| `wr_clk` | in | Write clock |
-| `wr_rst_n` | in | Active-low write reset (async or sync — see notes) |
-| `wr_en` | in | Write request (one entry per cycle when accepted) |
-| `wr_data[DATA_WIDTH-1:0]` | in | Data to write |
-| `wr_full` | out | FIFO full flag (do not write when 1) |
-| `wr_almost_full` | out | (Optional) Programmable threshold |
-| `wr_level` | out | (Optional) Approximate fill level (write domain view) |
+
+| Signal                    | Dir | Description                                           |
+| ------------------------- | --: | ----------------------------------------------------- |
+| `wr_clk`                  |  in | Write clock                                           |
+| `wr_rst_n`                |  in | Active-low write reset (async or sync — see notes)    |
+| `wr_en`                   |  in | Write request (one entry per cycle when accepted)     |
+| `wr_data[DATA_WIDTH-1:0]` |  in | Data to write                                         |
+| `wr_full`                 | out | FIFO full flag (do not write when 1)                  |
+| `wr_almost_full`          | out | (Optional) Programmable threshold                     |
+| `wr_level`                | out | (Optional) Approximate fill level (write domain view) |
 
 **Write acceptance rule**  
 A write is accepted on a rising edge of `wr_clk` when:
+
 - `wr_en == 1` and `wr_full == 0`
 
 ### Read Domain (rd_clk)
-| Signal | Dir | Description |
-|---|---:|---|
-| `rd_clk` | in | Read clock |
-| `rd_rst_n` | in | Active-low read reset |
-| `rd_en` | in | Read request (one entry per cycle when accepted) |
-| `rd_data[DATA_WIDTH-1:0]` | out | Data read |
-| `rd_empty` | out | FIFO empty flag (do not read when 1) |
-| `rd_almost_empty` | out | (Optional) Programmable threshold |
-| `rd_level` | out | (Optional) Approximate fill level (read domain view) |
+
+| Signal                    | Dir | Description                                          |
+| ------------------------- | --: | ---------------------------------------------------- |
+| `rd_clk`                  |  in | Read clock                                           |
+| `rd_rst_n`                |  in | Active-low read reset                                |
+| `rd_en`                   |  in | Read request (one entry per cycle when accepted)     |
+| `rd_data[DATA_WIDTH-1:0]` | out | Data read                                            |
+| `rd_empty`                | out | FIFO empty flag (do not read when 1)                 |
+| `rd_almost_empty`         | out | (Optional) Programmable threshold                    |
+| `rd_level`                | out | (Optional) Approximate fill level (read domain view) |
 
 **Read acceptance rule**  
 A read is accepted on a rising edge of `rd_clk` when:
+
 - `rd_en == 1` and `rd_empty == 0`
 
 ---
@@ -75,6 +79,7 @@ A read is accepted on a rising edge of `rd_clk` when:
   `$clog2(DEPTH)`; pointer width often uses `ADDR_WIDTH+1` to detect wrap.
 
 Optional:
+
 - `ALMOST_FULL_TH` / `ALMOST_EMPTY_TH`
 - `SYNC_STAGES` (default 2)
 
@@ -110,7 +115,7 @@ Optional:
 │   ├── sync_2ff.sv
 │   └── gray_pkg.sv
 ├── tb/
-│   ├── test_async_fifo.py        # cocotb tests
+│   ├── test_async_fifo.sv        # cocotb tests
 │   └── assertions.sv             # optional SVA bind file
 ├── sim/
 │   ├── Makefile
@@ -124,6 +129,7 @@ Optional:
 ## Verification
 
 ### What is tested
+
 - Basic push/pop ordering (FIFO correctness)
 - Randomized traffic with backpressure
 - Many clock ratios:
@@ -134,6 +140,7 @@ Optional:
 - Corner cases at wrap boundaries
 
 ### Suggested SVA (examples)
+
 - No write when full: `wr_full |-> !accept_write`
 - No read when empty: `rd_empty |-> !accept_read`
 - Data stability under backpressure (if applicable)
@@ -144,14 +151,18 @@ Optional:
 ## How to Run Simulation
 
 ### Using ModelSim/Questa (recommended)
+
 From `sim/`:
+
 ```bash
 make SIM=questa
 make waves
 ```
 
 ### Using open-source simulators (optional)
+
 If supported:
+
 ```bash
 make SIM=iverilog
 ```
@@ -167,6 +178,7 @@ make SIM=iverilog
 ---
 
 ## Roadmap (if you want to grow the IP)
+
 - [ ] Add formal properties (optional)
 - [ ] Add programmable thresholds (`almost_full/empty`)
 - [ ] Add dual-port RAM inference templates for FPGA/ASIC
@@ -175,4 +187,5 @@ make SIM=iverilog
 ---
 
 ## License
+
 MIT (or your preferred license).
