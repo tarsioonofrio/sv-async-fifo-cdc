@@ -41,18 +41,16 @@ always_ff @(posedge wr_clk) begin
   if (!rd_rst_n) begin
     // rd_fifo <= '{default: '0};
     rd_ptr <= 0;
-  end else if (rd_en && !logic_wr_full) begin
+  end else if (rd_en && !logic_rd_empty) begin
     rd_data <= wr_fifo[rd_ptr];
     rd_ptr <= rd_ptr + 1;
   end
 end
 
-always_comb begin
-  logic_rd_empty = rd_ptr && wr_ptr;
-  rd_empty = logic_rd_empty;
+assign logic_rd_empty = rd_ptr == wr_ptr;
+assign rd_empty = logic_rd_empty;
 
-  logic_wr_full = rd_ptr == DEPTH;
-  wr_full = logic_wr_full;
-end
+assign logic_wr_full = wr_ptr == (DEPTH-1);
+assign wr_full = logic_wr_full;
 
 endmodule
