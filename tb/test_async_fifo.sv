@@ -3,23 +3,23 @@ module tb;
   timeprecision 1ps;
 
   localparam BITS=32; // Width of each FIFO entry.
-  localparam SIZE=16;      // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
+  localparam SIZE=16; // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
 
   // Write Domain (wr_clk)
-  logic wr_clk;                  // Write clock
-  logic wr_rst_n;                // Active-low write reset (async or sync — see notes)
-  logic wr_en;                   // Write request (one entry per cycle when accepted)
+  logic wr_clk;             // Write clock
+  logic wr_rst_n;           // Active-low write reset (async or sync — see notes)
+  logic wr_en;              // Write request (one entry per cycle when accepted)
   logic [BITS-1:0] wr_data; // Data to write
-  logic wr_full;                 // FIFO full flag (do not write when 1)
+  logic wr_full;            // FIFO full flag (do not write when 1)
   // logic wr_almost_full;          // (Optional) Programmable threshold
   // logic wr_level;                // (Optional) Approximate fill level (write domain view)
 
   // Read Domain
-  logic rd_clk;                  // Read clock
-  logic rd_rst_n;                // Active-low read reset
-  logic rd_en;                   // Read request (one entry per cycle when accepted)
+  logic rd_clk;             // Read clock
+  logic rd_rst_n;           // Active-low read reset
+  logic rd_en;              // Read request (one entry per cycle when accepted)
   logic [BITS-1:0] rd_data; // Data read
-  logic rd_empty;                // FIFO empty flag (do not read when 1)
+  logic rd_empty;           // FIFO empty flag (do not read when 1)
   // logic rd_almost_empty;         // (Optional) Programmable threshold
   // logic rd_level;                // (Optional) Approximate fill level (read domain view)
 
