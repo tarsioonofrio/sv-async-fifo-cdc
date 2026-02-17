@@ -30,6 +30,7 @@ logic logic_rd_empty;
 always_ff @(posedge wr_clk) begin
   if (!wr_rst_n) begin
     wr_fifo <= '{default: '0};
+    wr_ptr <= 0;
   end else if (wr_en && !wr_full) begin
     wr_fifo[wr_ptr] <= wr_data;
     wr_ptr <= wr_ptr + 1;
@@ -39,6 +40,7 @@ end
 always_ff @(posedge wr_clk) begin
   if (!rd_rst_n) begin
     // rd_fifo <= '{default: '0};
+    rd_ptr <= 0;
   end else if (rd_en && !logic_wr_full) begin
     rd_data <= wr_fifo[rd_ptr];
     rd_ptr <= rd_ptr + 1;
