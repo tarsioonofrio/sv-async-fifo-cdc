@@ -61,18 +61,18 @@ module tb;
     // Start processamento
     $display("=== Start processing ===");
 
-    wr_en <= 1;
 
     for (int i = 0; i < DATA_WIDTH; i++) begin
       @(posedge clk);
+      wr_en <= 1;
       wr_data <= i;
     end
 
     wr_en <= 0;
-    rd_en <= 1;
 
     for (int i = 0; i < DATA_WIDTH; i++) begin
       @(posedge clk);
+      rd_en <= 1;
       $display("Time %0t | Index = %0d | Output = %0d", $time, i, rd_data);
     end
     wr_en <= 1;
