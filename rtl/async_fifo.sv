@@ -1,10 +1,10 @@
-module async_fifo
+module AsyncFifo
   #(
     parameter DATA_WIDTH=32, // Width of each FIFO entry.
     parameter DEPTH=16,      // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
   )
   (
-    // Write Domain (wr_clk)
+    // Write Domain
     input  logic wr_clk,                  // Write clock
     input  logic wr_rst_n,                // Active-low write reset (async or sync — see notes)
     input  logic wr_en,                   // Write request (one entry per cycle when accepted)
@@ -12,6 +12,7 @@ module async_fifo
     output logic wr_full,                 // FIFO full flag (do not write when 1)
     // output logic wr_almost_full,          // (Optional) Programmable threshold
     // output logic wr_level,                // (Optional) Approximate fill level (write domain view)
+    // Read Domain
     input  logic rd_clk,                  // Read clock
     input  logic rd_rst_n,                // Active-low read reset
     input  logic rd_en,                   // Read request (one entry per cycle when accepted)
