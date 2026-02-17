@@ -22,17 +22,17 @@ module AsyncFifo
     // output logic rd_level,                // (Optional) Approximate fill level (read domain view)
     );
 
-logic [BITS-1:0][$clog2(SIZE+1):0] wr_fifo;
+logic [BITS-1:0][$clog2(SIZE+1):0] fifo;
 logic [$clog2(SIZE+1):0] wr_ptr, rd_ptr;
 logic logic_wr_full;
 logic logic_rd_empty;
 
 always_ff @(posedge wr_clk) begin
   if (!wr_rst_n) begin
-    wr_fifo <= '{default: '0};
+    fifo <= '{default: '0};
     wr_ptr <= 0;
   end else if (wr_en && !wr_full) begin
-    wr_fifo[wr_ptr] <= wr_data;
+    fifo[wr_ptr] <= wr_data;
     wr_ptr <= wr_ptr + 1;
   end
 end
@@ -42,7 +42,7 @@ always_ff @(posedge wr_clk) begin
     // rd_fifo <= '{default: '0};
     rd_ptr <= 0;
   end else if (rd_en && !logic_rd_empty) begin
-    rd_data <= wr_fifo[rd_ptr];
+    rd_data <= fifo[rd_ptr];
     rd_ptr <= rd_ptr + 1;
   end
 end
