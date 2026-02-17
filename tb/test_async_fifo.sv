@@ -9,7 +9,7 @@ module tb;
   logic wr_clk;                  // Write clock
   logic wr_rst_n;                // Active-low write reset (async or sync — see notes)
   logic wr_en;                   // Write request (one entry per cycle when accepted)
-  logic wr_data[DATA_WIDTH-1:0]; // Data to write
+  logic [DATA_WIDTH-1:0] wr_data; // Data to write
   logic wr_full;                 // FIFO full flag (do not write when 1)
   // logic wr_almost_full;          // (Optional) Programmable threshold
   // logic wr_level;                // (Optional) Approximate fill level (write domain view)
@@ -18,7 +18,7 @@ module tb;
   logic rd_clk;                  // Read clock
   logic rd_rst_n;                // Active-low read reset
   logic rd_en;                   // Read request (one entry per cycle when accepted)
-  logic rd_data[DATA_WIDTH-1:0]; // Data read
+  logic [DATA_WIDTH-1:0] rd_data; // Data read
   logic rd_empty;                // FIFO empty flag (do not read when 1)
   // logic rd_almost_empty;         // (Optional) Programmable threshold
   // logic rd_level;                // (Optional) Approximate fill level (read domain view)
@@ -26,12 +26,11 @@ module tb;
   logic clk, rstn;
 
 
-  AsyncFifo fifo
+  AsyncFifo
     #(
       .DATA_WIDTH(DATA_WIDTH),
       .DEPTH(DEPTH)
-    )
-    (
+    ) dut (
       .wr_clk(clk),
       .wr_rst_n(rstn),
       .wr_en(wr_en),
@@ -41,7 +40,7 @@ module tb;
       .rd_rst_n(rstn),
       .rd_en(rd_en),
       .rd_data(rd_data),
-      .rd_empt(rd_empty)
+      .rd_empty(rd_empty)
     );
 
 
@@ -53,7 +52,6 @@ module tb;
     $dumpvars(0, tb);
 
     rstn = 0;
-    w_start = 0;
     @(posedge clk);
     rstn = 1;
     rd_en <= 0;
@@ -63,7 +61,7 @@ module tb;
     // Start processamento
     $display("=== Start processing ===");
 
-    wr_en <= '1';
+    wr_en <= 1;
 
     for (int i = 0; i < DATA_WIDTH; i++) begin
       @(posedge clk);

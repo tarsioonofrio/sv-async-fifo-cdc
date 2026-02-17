@@ -8,7 +8,7 @@ module AsyncFifo
     input  logic wr_clk,                  // Write clock
     input  logic wr_rst_n,                // Active-low write reset (async or sync — see notes)
     input  logic wr_en,                   // Write request (one entry per cycle when accepted)
-    input  logic wr_data[DATA_WIDTH-1:0], // Data to write
+    input  logic [DATA_WIDTH-1:0] wr_data, // Data to write
     output logic wr_full,                 // FIFO full flag (do not write when 1)
     // output logic wr_almost_full,          // (Optional) Programmable threshold
     // output logic wr_level,                // (Optional) Approximate fill level (write domain view)
@@ -16,13 +16,13 @@ module AsyncFifo
     input  logic rd_clk,                  // Read clock
     input  logic rd_rst_n,                // Active-low read reset
     input  logic rd_en,                   // Read request (one entry per cycle when accepted)
-    output logic rd_data[DATA_WIDTH-1:0], // Data read
+    output logic [DATA_WIDTH-1:0] rd_data, // Data read
     output logic rd_empty                 // FIFO empty flag (do not read when 1)
     // output logic rd_almost_empty,         // (Optional) Programmable threshold
     // output logic rd_level,                // (Optional) Approximate fill level (read domain view)
     );
 
-logic [DATA_WIDTH-1:0] wr_fifo[$clog2(DEPTH+1):0];
+logic [DATA_WIDTH-1:0][$clog2(DEPTH+1):0] wr_fifo;
 logic [$clog2(DEPTH+1):0] wr_ptr, rd_ptr;
 logic logic_wr_full;
 logic logic_rd_empty;
