@@ -3,8 +3,8 @@ vlib work
 vmap work work
 
 
-vlog -work work -svinputport=relaxed ./control.sv
-vlog -work work -svinputport=relaxed ./testbench.sv
+vlog -work work -svinputport=relaxed ../rtl/async_fifo.sv
+vlog -work work -svinputport=relaxed ../tb/test_async_fifo.sv
 # to show FSM
 # vsim -voptargs=+acc -t ps -fsmdebug -coverage -debugDB work.tb
 vsim -voptargs=+acc -t ps work.tb
