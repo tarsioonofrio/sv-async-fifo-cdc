@@ -10,7 +10,7 @@ This repository targets an "industry-style" IP deliverable: clean RTL, clear int
 
 - **True async FIFO** for CDC: independent `wr_clk` and `rd_clk`
 - **Gray-coded pointers** with **2FF synchronizers** (classic, silicon-proven approach)
-- Parameterized **DATA_WIDTH** and **DEPTH** (power-of-two depth recommended)
+- Parameterized **BITS** and **SIZE** (power-of-two SIZE recommended)
 - Clean flags: `full`, `empty`, optional `almost_full/empty` and fill levels
 - Verification-ready: self-checking tests + stress tests across clock ratios/jitter
 - Optional **SystemVerilog Assertions (SVA)** to lock down protocol and invariants
@@ -35,15 +35,15 @@ This avoids sampling multi-bit binary counters asynchronously, which can break d
 
 ### Write Domain (wr_clk)
 
-| Signal                    | Dir | Description                                           |
-| ------------------------- | --: | ----------------------------------------------------- |
-| `wr_clk`                  |  in | Write clock                                           |
-| `wr_rst_n`                |  in | Active-low write reset (async or sync — see notes)    |
-| `wr_en`                   |  in | Write request (one entry per cycle when accepted)     |
-| `wr_data[DATA_WIDTH-1:0]` |  in | Data to write                                         |
-| `wr_full`                 | out | FIFO full flag (do not write when 1)                  |
-| `wr_almost_full`          | out | (Optional) Programmable threshold                     |
-| `wr_level`                | out | (Optional) Approximate fill level (write domain view) |
+| Signal              | Dir | Description                                           |
+| ------------------- | --: | ----------------------------------------------------- |
+| `wr_clk`            |  in | Write clock                                           |
+| `wr_rst_n`          |  in | Active-low write reset (async or sync — see notes)    |
+| `wr_en`             |  in | Write request (one entry per cycle when accepted)     |
+| `wr_data[BITS-1:0]` |  in | Data to write                                         |
+| `wr_full`           | out | FIFO full flag (do not write when 1)                  |
+| `wr_almost_full`    | out | (Optional) Programmable threshold                     |
+| `wr_level`          | out | (Optional) Approximate fill level (write domain view) |
 
 **Write acceptance rule**  
 A write is accepted on a rising edge of `wr_clk` when:
@@ -52,15 +52,15 @@ A write is accepted on a rising edge of `wr_clk` when:
 
 ### Read Domain (rd_clk)
 
-| Signal                    | Dir | Description                                          |
-| ------------------------- | --: | ---------------------------------------------------- |
-| `rd_clk`                  |  in | Read clock                                           |
-| `rd_rst_n`                |  in | Active-low read reset                                |
-| `rd_en`                   |  in | Read request (one entry per cycle when accepted)     |
-| `rd_data[DATA_WIDTH-1:0]` | out | Data read                                            |
-| `rd_empty`                | out | FIFO empty flag (do not read when 1)                 |
-| `rd_almost_empty`         | out | (Optional) Programmable threshold                    |
-| `rd_level`                | out | (Optional) Approximate fill level (read domain view) |
+| Signal              | Dir | Description                                          |
+| ------------------- | --: | ---------------------------------------------------- |
+| `rd_clk`            |  in | Read clock                                           |
+| `rd_rst_n`          |  in | Active-low read reset                                |
+| `rd_en`             |  in | Read request (one entry per cycle when accepted)     |
+| `rd_data[BITS-1:0]` | out | Data read                                            |
+| `rd_empty`          | out | FIFO empty flag (do not read when 1)                 |
+| `rd_almost_empty`   | out | (Optional) Programmable threshold                    |
+| `rd_level`          | out | (Optional) Approximate fill level (read domain view) |
 
 **Read acceptance rule**  
 A read is accepted on a rising edge of `rd_clk` when:
@@ -71,12 +71,12 @@ A read is accepted on a rising edge of `rd_clk` when:
 
 ## Parameters
 
-- `DATA_WIDTH` (default: 32)  
+- `BITS` (default: 32)  
   Width of each FIFO entry.
-- `DEPTH` (default: 16)  
+- `SIZE` (default: 16)  
   Number of entries. **Recommended: power-of-two** for simpler pointer logic.
 - `ADDR_WIDTH` (optional derived)  
-  `$clog2(DEPTH)`; pointer width often uses `ADDR_WIDTH+1` to detect wrap.
+  `$clog2(SIZE)`; pointer width often uses `ADDR_WIDTH+1` to detect wrap.
 
 Optional:
 
@@ -101,8 +101,8 @@ Optional:
 - **Max throughput:** 1 write per `wr_clk` cycle + 1 read per `rd_clk` cycle (when not full/empty)
 - Latency depends on the chosen memory style (reg array vs inferred RAM).  
   For ASIC/FPGA inference, the FIFO can be adapted to:
-  - Distributed regs (small depths)
-  - SRAM/BRAM (larger depths)
+  - Distributed regs (small SIZEs)
+  - SRAM/BRAM (larger SIZEs)
 
 ---
 
