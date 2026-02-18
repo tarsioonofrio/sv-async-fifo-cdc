@@ -4,3 +4,4 @@ transcript
 dump.vcd
 *.wlf*
 wlf*
+.zed/settings.json
