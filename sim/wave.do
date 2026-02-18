@@ -2,6 +2,10 @@ onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate /tb/clk
 add wave -noupdate /tb/rstn
+add wave -noupdate /tb/wr_clk
+add wave -noupdate /tb/wr_rst_n
+add wave -noupdate /tb/rd_clk
+add wave -noupdate /tb/rd_rst_n
 add wave -noupdate /tb/wr_en
 add wave -noupdate -radix unsigned /tb/wr_data
 add wave -noupdate /tb/wr_full
@@ -48,4 +52,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {26157 ps}
+WaveRestoreZoom {0 ps} {105 ns}
