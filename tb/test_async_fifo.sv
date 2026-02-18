@@ -67,7 +67,6 @@ module tb;
       wr_en <= 1;
       wr_data <= i;
     end
-
     wr_en <= 0;
 
     for (int i = 0; i < SIZE*2-1; i++) begin
