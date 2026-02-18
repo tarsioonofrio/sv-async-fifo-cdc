@@ -26,8 +26,8 @@ module AsyncFifo
 localparam SIZE_LOG2 = $clog2(SIZE);
 
 logic [SIZE-1:0][BITS-1:0] fifo;
-logic [SIZE_LOG2:0] wr_ptr_bin, wr_ptr_gray;
-logic [SIZE_LOG2:0] rd_ptr_bin, rd_ptr_gray;
+logic [SIZE_LOG2:0] wr_ptr_bin, wr_ptr_gray, wr_ptr_bin_sync, wr_ptr_gray_sync1, wr_ptr_gray_sync2;
+logic [SIZE_LOG2:0] rd_ptr_bin, rd_ptr_gray, rd_ptr_bin_sync, rd_ptr_gray_sync1, rd_ptr_gray_sync2;
 
 logic logic_wr_full;
 logic logic_rd_empty;
@@ -35,9 +35,13 @@ logic logic_rd_empty;
 always_ff @(posedge wr_clk) begin
   if (!wr_rst_n) begin
     wr_ptr_bin <= 0;
+    wr_ptr_gray_sync1 <= 0;
+    wr_ptr_gray_sync2 <= 0;
   end else if (wr_en && !wr_full) begin
     fifo[wr_ptr_bin[SIZE_LOG2-1:0]] <= wr_data;
     wr_ptr_bin <= wr_ptr_bin + 1;
+    wr_ptr_gray_sync1 <= wr_ptr_gray;
+    wr_ptr_gray_sync1 <= wr_ptr_bin;
   end
 end
 
@@ -50,10 +54,42 @@ always_ff @(posedge wr_clk) begin
   end
 end
 
-assign logic_rd_empty = wr_ptr_bin[SIZE_LOG2:0] == rd_ptr_bin[SIZE_LOG2:0];
+assign wr_ptr_gray = (wr_ptr_bin >> 1) ^ wr_ptr_bin;
+assign rd_ptr_gray = (rd_ptr_bin >> 1) ^ rd_ptr_bin;
+
+
+always_ff @(posedge wr_clk) begin
+  if (!wr_rst_n) begin
+    rd_ptr_gray_sync1 <= 0;
+    rd_ptr_gray_sync2 <= 0;
+  end else if (wr_en && !wr_full) begin
+    rd_ptr_gray_sync1 <= rd_ptr_gray;
+    rd_ptr_gray_sync2 <= rd_ptr_gray_sync1;
+  end
+end
+
+always_ff @(posedge rd_clk) begin
+  if (!rd_rst_n) begin
+    wr_ptr_gray_sync1 <= 0;
+    wr_ptr_gray_sync2 <= 0;
+  end else if (wr_en && !wr_full) begin
+    wr_ptr_gray_sync1 <= wr_ptr_gray;
+    wr_ptr_gray_sync2 <= wr_ptr_gray_sync1;
+  end
+end
+
+
+for (int i = 0; i < SIZE_LOG2; i++)
+  assign wr_ptr_bin_sync[i] = ^(wr_ptr_gray_sync2 >> i);
+
+for (int i = 0; i < SIZE_LOG2; i++)
+  assign rd_ptr_bin_sync[i] = ^(rd_ptr_gray_sync2 >> i);
+
+
+assign logic_rd_empty = wr_ptr_bin_sync[SIZE_LOG2:0] == rd_ptr_bin[SIZE_LOG2:0];
 assign rd_empty = logic_rd_empty;
 
-assign logic_wr_full = (wr_ptr_bin[SIZE_LOG2] != rd_ptr_bin[SIZE_LOG2]) && (wr_ptr_bin[SIZE_LOG2-1:0] == rd_ptr_bin[SIZE_LOG2-1:0]);
+assign logic_wr_full = (wr_ptr_bin[SIZE_LOG2] != rd_ptr_bin_sync[SIZE_LOG2]) && (wr_ptr_bin[SIZE_LOG2-1:0] == rd_ptr_bin_sync[SIZE_LOG2-1:0]);
 assign wr_full = logic_wr_full;
 
 endmodule
