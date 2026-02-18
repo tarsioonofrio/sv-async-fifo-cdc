@@ -35,13 +35,9 @@ logic logic_rd_empty;
 always_ff @(posedge wr_clk) begin
   if (!wr_rst_n) begin
     wr_ptr_bin <= 0;
-    wr_ptr_gray_sync1 <= 0;
-    wr_ptr_gray_sync2 <= 0;
   end else if (wr_en && !wr_full) begin
     fifo[wr_ptr_bin[SIZE_LOG2-1:0]] <= wr_data;
     wr_ptr_bin <= wr_ptr_bin + 1;
-    wr_ptr_gray_sync1 <= wr_ptr_gray;
-    wr_ptr_gray_sync1 <= wr_ptr_bin;
   end
 end
 
@@ -78,13 +74,13 @@ always_ff @(posedge rd_clk) begin
   end
 end
 
+generate
+  for (genvar i = 0; i < SIZE_LOG2; i++)
+    assign wr_ptr_bin_sync[i] = ^(wr_ptr_gray_sync2 >> i);
 
-for (genvar i = 0; i < SIZE_LOG2; i++)
-  assign wr_ptr_bin_sync[i] = ^(wr_ptr_gray_sync2 >> i);
-
-for (genvar i = 0; i < SIZE_LOG2; i++)
-  assign rd_ptr_bin_sync[i] = ^(rd_ptr_gray_sync2 >> i);
-
+  for (genvar i = 0; i < SIZE_LOG2; i++)
+    assign rd_ptr_bin_sync[i] = ^(rd_ptr_gray_sync2 >> i);
+endgenerate
 
 assign logic_rd_empty = wr_ptr_bin_sync[SIZE_LOG2:0] == rd_ptr_bin[SIZE_LOG2:0];
 assign rd_empty = logic_rd_empty;
