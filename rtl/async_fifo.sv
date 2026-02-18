@@ -75,10 +75,10 @@ always_ff @(posedge rd_clk) begin
 end
 
 generate
-  for (genvar i = 0; i < SIZE_LOG2; i++)
+  for (genvar i = 0; i < SIZE_LOG2+1; i++)
     assign wr_ptr_bin_sync[i] = ^(wr_ptr_gray_sync2 >> i);
 
-  for (genvar i = 0; i < SIZE_LOG2; i++)
+  for (genvar i = 0; i < SIZE_LOG2+1; i++)
     assign rd_ptr_bin_sync[i] = ^(rd_ptr_gray_sync2 >> i);
 endgenerate
 
