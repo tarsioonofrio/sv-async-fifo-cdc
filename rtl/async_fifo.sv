@@ -22,8 +22,11 @@ module AsyncFifo
     // output logic rd_level,                // (Optional) Approximate fill level (read domain view)
     );
 
-logic [BITS-1:0][$clog2(SIZE+1):0] fifo;
-logic [$clog2(SIZE+1):0] wr_ptr, rd_ptr;
+
+localparam SIZE_LOG2 = $clog2(SIZE);
+
+logic [SIZE-1:0][BITS-1:0] fifo;
+logic [SIZE_LOG2+1:0] wr_ptr, rd_ptr;
 logic logic_wr_full;
 logic logic_rd_empty;
 
@@ -47,10 +50,10 @@ always_ff @(posedge wr_clk) begin
   end
 end
 
-assign logic_rd_empty = rd_ptr == wr_ptr;
+assign logic_rd_empty = wr_ptr[SIZE_LOG2+1:0] == rd_ptr[SIZE_LOG2+1:0];
 assign rd_empty = logic_rd_empty;
 
-assign logic_wr_full = wr_ptr == (SIZE-1);
+assign logic_wr_full = (wr_ptr[SIZE_LOG2+1] != rd_ptr[SIZE_LOG2+1]) && (wr_ptr[SIZE_LOG2:0] == rd_ptr[SIZE_LOG2:0]);
 assign wr_full = logic_wr_full;
 
 endmodule
