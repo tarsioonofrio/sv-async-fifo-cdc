@@ -26,32 +26,34 @@ module AsyncFifo
 localparam SIZE_LOG2 = $clog2(SIZE);
 
 logic [SIZE-1:0][BITS-1:0] fifo;
-logic [SIZE_LOG2:0] wr_ptr, rd_ptr;
+logic [SIZE_LOG2:0] wr_ptr_bin, wr_ptr_gray;
+logic [SIZE_LOG2:0] rd_ptr_bin, rd_ptr_gray;
+
 logic logic_wr_full;
 logic logic_rd_empty;
 
 always_ff @(posedge wr_clk) begin
   if (!wr_rst_n) begin
-    wr_ptr <= 0;
+    wr_ptr_bin <= 0;
   end else if (wr_en && !wr_full) begin
-    fifo[wr_ptr[SIZE_LOG2-1:0]] <= wr_data;
-    wr_ptr <= wr_ptr + 1;
+    fifo[wr_ptr_bin[SIZE_LOG2-1:0]] <= wr_data;
+    wr_ptr_bin <= wr_ptr_bin + 1;
   end
 end
 
 always_ff @(posedge wr_clk) begin
   if (!rd_rst_n) begin
-    rd_ptr <= 0;
+    rd_ptr_bin <= 0;
   end else if (rd_en && !logic_rd_empty) begin
-    rd_data <= fifo[rd_ptr[SIZE_LOG2-1:0]];
-    rd_ptr <= rd_ptr + 1;
+    rd_data <= fifo[rd_ptr_bin[SIZE_LOG2-1:0]];
+    rd_ptr_bin <= rd_ptr_bin + 1;
   end
 end
 
-assign logic_rd_empty = wr_ptr[SIZE_LOG2:0] == rd_ptr[SIZE_LOG2:0];
+assign logic_rd_empty = wr_ptr_bin[SIZE_LOG2:0] == rd_ptr_bin[SIZE_LOG2:0];
 assign rd_empty = logic_rd_empty;
 
-assign logic_wr_full = (wr_ptr[SIZE_LOG2] != rd_ptr[SIZE_LOG2]) && (wr_ptr[SIZE_LOG2-1:0] == rd_ptr[SIZE_LOG2-1:0]);
+assign logic_wr_full = (wr_ptr_bin[SIZE_LOG2] != rd_ptr_bin[SIZE_LOG2]) && (wr_ptr_bin[SIZE_LOG2-1:0] == rd_ptr_bin[SIZE_LOG2-1:0]);
 assign wr_full = logic_wr_full;
 
 endmodule
