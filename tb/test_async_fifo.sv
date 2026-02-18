@@ -31,13 +31,13 @@ module tb;
       .BITS(BITS),
       .SIZE(SIZE)
     ) dut (
-      .wr_clk(clk),
-      .wr_rst_n(rstn),
+      .wr_clk(wr_clk),
+      .wr_rst_n(wr_rst_n),
       .wr_en(wr_en),
       .wr_data(wr_data),
       .wr_full(wr_full),
-      .rd_clk(clk),
-      .rd_rst_n(rstn),
+      .rd_clk(rd_clk),
+      .rd_rst_n(rd_rst_n),
       .rd_en(rd_en),
       .rd_data(rd_data),
       .rd_empty(rd_empty)
@@ -47,13 +47,21 @@ module tb;
   initial clk = 0;
   always #0.5 clk = ~clk;
 
+  initial wr_clk = 0;
+  always #0.314159265359 wr_clk = ~wr_clk;
+  initial rd_clk = 0;
+  always #0.2718281828 rd_clk = ~rd_clk;
+
+
   initial begin
     $dumpfile("dump.vcd");
     $dumpvars(0, tb);
 
-    rstn = 0;
+    wr_rst_n = 0;
+    rd_rst_n = 0;
     @(posedge clk);
-    rstn = 1;
+    wr_rst_n = 1;
+    rd_rst_n = 1;
     rd_en <= 0;
     wr_en <= 0;
     @(posedge clk);
@@ -63,14 +71,14 @@ module tb;
 
 
     for (int i = 0; i < SIZE*2-1; i++) begin
-      @(posedge clk);
+      @(posedge wr_clk);
       wr_en <= 1;
       wr_data <= i;
     end
     wr_en <= 0;
 
     for (int i = 0; i < SIZE*2-1; i++) begin
-      @(posedge clk);
+      @(posedge rd_clk);
       rd_en <= 1;
       $display("Time %0t | Index = %0d | Output = %0d", $time, i, rd_data);
     end
