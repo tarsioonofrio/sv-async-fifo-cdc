@@ -75,7 +75,7 @@ module tb;
       rd_en <= 1;
       $display("Time %0t | Index = %0d | Output = %0d", $time, i, rd_data);
     end
-    wr_en <= 1;
+    rd_en <= 0;
 
     $display("\n*** TIME %0f ***\n", $realtime);
     $display("=== No errors - End simulation ===");
