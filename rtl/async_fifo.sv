@@ -41,7 +41,7 @@ always_ff @(posedge wr_clk) begin
   end
 end
 
-always_ff @(posedge wr_clk) begin
+always_ff @(posedge rd_clk) begin
   if (!rd_rst_n) begin
     rd_ptr_bin <= 0;
   end else if (rd_en && !logic_rd_empty) begin
@@ -58,7 +58,7 @@ always_ff @(posedge wr_clk) begin
   if (!wr_rst_n) begin
     rd_ptr_gray_sync1 <= 0;
     rd_ptr_gray_sync2 <= 0;
-  end else if (wr_en && !wr_full) begin
+  end else begin
     rd_ptr_gray_sync1 <= rd_ptr_gray;
     rd_ptr_gray_sync2 <= rd_ptr_gray_sync1;
   end
@@ -68,7 +68,7 @@ always_ff @(posedge rd_clk) begin
   if (!rd_rst_n) begin
     wr_ptr_gray_sync1 <= 0;
     wr_ptr_gray_sync2 <= 0;
-  end else if (wr_en && !wr_full) begin
+  end else begin
     wr_ptr_gray_sync1 <= wr_ptr_gray;
     wr_ptr_gray_sync2 <= wr_ptr_gray_sync1;
   end
