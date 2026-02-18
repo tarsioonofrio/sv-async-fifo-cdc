@@ -62,7 +62,7 @@ module tb;
     $display("=== Start processing ===");
 
 
-    for (int i = 0; i < SIZE; i++) begin
+    for (int i = 0; i < SIZE*2-1; i++) begin
       @(posedge clk);
       wr_en <= 1;
       wr_data <= i;
@@ -70,7 +70,7 @@ module tb;
 
     wr_en <= 0;
 
-    for (int i = 0; i < SIZE; i++) begin
+    for (int i = 0; i < SIZE*2-1; i++) begin
       @(posedge clk);
       rd_en <= 1;
       $display("Time %0t | Index = %0d | Output = %0d", $time, i, rd_data);
