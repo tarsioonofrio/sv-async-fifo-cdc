@@ -9,6 +9,7 @@ This repository targets an "industry-style" IP deliverable: clean RTL, clear int
 ## Highlights
 
 - **True async FIFO** for CDC: independent `write_clk` and `read_clk`
+- **Single RTL file**: implementation concentrated in `rtl/async_fifo.sv`
 - **Gray-coded pointers** with **2FF synchronizers** (classic, silicon-proven approach)
 - Parameterized **BITS** and **SIZE** (power-of-two SIZE recommended)
 - Clean flags: `full`, `empty`, optional `almost_full/empty` and fill levels
@@ -46,8 +47,8 @@ This implementation is based on the design approach presented in the paper _Simu
 
 ### Write Domain (write_clk)
 
-| Signal                | Dir | Description                                           |
-| --------------------- | --: | ----------------------------------------------------- |
+| Signal                   | Dir | Description                                           |
+| ------------------------ | --: | ----------------------------------------------------- |
 | `write_clk`              |  in | Write clock                                           |
 | `write_rst_n`            |  in | Active-low write reset (async or sync — see notes)    |
 | `p_write_en`             |  in | Write request (one entry per cycle when accepted)     |
@@ -63,8 +64,8 @@ A write is accepted on a rising edge of `write_clk` when:
 
 ### Read Domain (read_clk)
 
-| Signal                | Dir | Description                                          |
-| --------------------- | --: | ---------------------------------------------------- |
+| Signal                  | Dir | Description                                          |
+| ----------------------- | --: | ---------------------------------------------------- |
 | `read_clk`              |  in | Read clock                                           |
 | `read_rst_n`            |  in | Active-low read reset                                |
 | `p_read_en`             |  in | Read request (one entry per cycle when accepted)     |
@@ -122,9 +123,7 @@ Optional:
 ```
 .
 ├── rtl/
-│   ├── async_fifo.sv
-│   ├── sync_2ff.sv
-│   └── gray_pkg.sv
+│   └── async_fifo.sv
 ├── tb/
 │   ├── test_async_fifo.sv        # cocotb tests
 │   └── assertions.sv             # optional SVA bind file
