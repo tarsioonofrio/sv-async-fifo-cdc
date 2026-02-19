@@ -20,8 +20,15 @@ module async_fifo
     output logic p_read_empty            // FIFO empty flag (do not read when 1)
     // output logic p_read_almost_empty,         // (Optional) Programmable threshold
     // output logic p_read_level,                // (Optional) Approximate fill level (read domain view)
-    );
+  );
 
+  localparam bit SIZE_IS_POW2 = (SIZE > 1) && ((SIZE & (SIZE - 1)) == 0);
+
+  generate
+    if (!SIZE_IS_POW2) begin : gen_bad_size
+      initial $fatal(1, "SIZE (%0d) must be a power of two and > 1", SIZE);
+    end
+  endgenerate
 
   localparam SIZE_LOG2 = $clog2(SIZE);
 
