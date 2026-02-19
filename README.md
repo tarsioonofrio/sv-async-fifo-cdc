@@ -17,6 +17,15 @@ This repository targets an "industry-style" IP deliverable: clean RTL, clear int
 
 ---
 
+## Signal Naming Convention
+
+- `p_`: module ports (inputs/outputs), except clock/reset.
+- `r_`: registered signals (`always_ff` state).
+- `w_`: combinational/internal wires.
+- Clock/reset exception: use plain names without prefix, e.g. `wr_clk`, `wr_rst_n`, `rd_clk`, `rd_rst_n`.
+
+---
+
 ## Why this FIFO is CDC-safe
 
 Async FIFO correctness hinges on avoiding metastability propagation across domains. This implementation follows the standard approach:
@@ -29,7 +38,7 @@ Async FIFO correctness hinges on avoiding metastability propagation across domai
 
 This avoids sampling multi-bit binary counters asynchronously, which can break due to metastability and intermediate transitions.
 
-This implementation is based on the design approach presented in the paper *Simulation and Synthesis Techniques for Asynchronous FIFO Design*.
+This implementation is based on the design approach presented in the paper _Simulation and Synthesis Techniques for Asynchronous FIFO Design_.
 
 ---
 
@@ -37,37 +46,37 @@ This implementation is based on the design approach presented in the paper *Simu
 
 ### Write Domain (wr_clk)
 
-| Signal              | Dir | Description                                           |
-| ------------------- | --: | ----------------------------------------------------- |
-| `wr_clk`            |  in | Write clock                                           |
-| `wr_rst_n`          |  in | Active-low write reset (async or sync — see notes)    |
-| `wr_en`             |  in | Write request (one entry per cycle when accepted)     |
-| `wr_data[BITS-1:0]` |  in | Data to write                                         |
-| `wr_full`           | out | FIFO full flag (do not write when 1)                  |
-| `wr_almost_full`    | out | (Optional) Programmable threshold                     |
-| `wr_level`          | out | (Optional) Approximate fill level (write domain view) |
+| Signal                | Dir | Description                                           |
+| --------------------- | --: | ----------------------------------------------------- |
+| `wr_clk`              |  in | Write clock                                           |
+| `wr_rst_n`            |  in | Active-low write reset (async or sync — see notes)    |
+| `p_wr_en`             |  in | Write request (one entry per cycle when accepted)     |
+| `p_wr_data[BITS-1:0]` |  in | Data to write                                         |
+| `p_wr_full`           | out | FIFO full flag (do not write when 1)                  |
+| `p_wr_almost_full`    | out | (Optional) Programmable threshold                     |
+| `p_wr_level`          | out | (Optional) Approximate fill level (write domain view) |
 
 **Write acceptance rule**  
 A write is accepted on a rising edge of `wr_clk` when:
 
-- `wr_en == 1` and `wr_full == 0`
+- `p_wr_en == 1` and `p_wr_full == 0`
 
 ### Read Domain (rd_clk)
 
-| Signal              | Dir | Description                                          |
-| ------------------- | --: | ---------------------------------------------------- |
-| `rd_clk`            |  in | Read clock                                           |
-| `rd_rst_n`          |  in | Active-low read reset                                |
-| `rd_en`             |  in | Read request (one entry per cycle when accepted)     |
-| `rd_data[BITS-1:0]` | out | Data read                                            |
-| `rd_empty`          | out | FIFO empty flag (do not read when 1)                 |
-| `rd_almost_empty`   | out | (Optional) Programmable threshold                    |
-| `rd_level`          | out | (Optional) Approximate fill level (read domain view) |
+| Signal                | Dir | Description                                          |
+| --------------------- | --: | ---------------------------------------------------- |
+| `rd_clk`              |  in | Read clock                                           |
+| `rd_rst_n`            |  in | Active-low read reset                                |
+| `p_rd_en`             |  in | Read request (one entry per cycle when accepted)     |
+| `p_rd_data[BITS-1:0]` | out | Data read                                            |
+| `p_rd_empty`          | out | FIFO empty flag (do not read when 1)                 |
+| `p_rd_almost_empty`   | out | (Optional) Programmable threshold                    |
+| `p_rd_level`          | out | (Optional) Approximate fill level (read domain view) |
 
 **Read acceptance rule**  
 A read is accepted on a rising edge of `rd_clk` when:
 
-- `rd_en == 1` and `rd_empty == 0`
+- `p_rd_en == 1` and `p_rd_empty == 0`
 
 ---
 
@@ -143,8 +152,8 @@ Optional:
 
 ### Suggested SVA (examples)
 
-- No write when full: `wr_full |-> !accept_write`
-- No read when empty: `rd_empty |-> !accept_read`
+- No write when full: `p_wr_full |-> !accept_write`
+- No read when empty: `p_rd_empty |-> !accept_read`
 - Data stability under backpressure (if applicable)
 - Pointer monotonicity within each domain
 
@@ -173,8 +182,8 @@ make SIM=iverilog
 
 ## Integration Notes (practical)
 
-- Connect `wr_full` to your upstream backpressure logic
-- Connect `rd_empty` to your downstream request logic
+- Connect `p_wr_full` to your upstream backpressure logic
+- Connect `p_rd_empty` to your downstream request logic
 - Avoid combinational paths between clock domains
 
 ---
@@ -190,7 +199,7 @@ make SIM=iverilog
 
 ## References
 
-1. Clifford E. Cummings and Peter Alfke, *Simulation and Synthesis Techniques for Asynchronous FIFO Design*, SNUG San Jose 2002. Official technical library listing: https://www.sunburst-design.com/papers/ . Public PDF access: https://www.researchgate.net/publication/252160343_Simulation_and_Synthesis_Techniques_for_Asynchronous_FIFO_Design
+1. Clifford E. Cummings and Peter Alfke, _Simulation and Synthesis Techniques for Asynchronous FIFO Design_, SNUG San Jose 2002. Official technical library listing: https://www.sunburst-design.com/papers/ . Public PDF access: https://www.researchgate.net/publication/252160343_Simulation_and_Synthesis_Techniques_for_Asynchronous_FIFO_Design
 
 ---
 
