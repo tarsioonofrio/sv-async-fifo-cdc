@@ -8,7 +8,7 @@ This repository targets an "industry-style" IP deliverable: clean RTL, clear int
 
 ## Highlights
 
-- **True async FIFO** for CDC: independent `wr_clk` and `rd_clk`
+- **True async FIFO** for CDC: independent `write_clk` and `read_clk`
 - **Gray-coded pointers** with **2FF synchronizers** (classic, silicon-proven approach)
 - Parameterized **BITS** and **SIZE** (power-of-two SIZE recommended)
 - Clean flags: `full`, `empty`, optional `almost_full/empty` and fill levels
@@ -22,7 +22,7 @@ This repository targets an "industry-style" IP deliverable: clean RTL, clear int
 - `p_`: module ports (inputs/outputs), except clock/reset.
 - `r_`: registered signals (`always_ff` state).
 - `w_`: combinational/internal wires.
-- Clock/reset exception: use plain names without prefix, e.g. `wr_clk`, `wr_rst_n`, `rd_clk`, `rd_rst_n`.
+- Clock/reset exception: use plain names without prefix, e.g. `write_clk`, `write_rst_n`, `read_clk`, `read_rst_n`.
 
 ---
 
@@ -44,39 +44,39 @@ This implementation is based on the design approach presented in the paper _Simu
 
 ## Interface
 
-### Write Domain (wr_clk)
+### Write Domain (write_clk)
 
 | Signal                | Dir | Description                                           |
 | --------------------- | --: | ----------------------------------------------------- |
-| `wr_clk`              |  in | Write clock                                           |
-| `wr_rst_n`            |  in | Active-low write reset (async or sync — see notes)    |
-| `p_wr_en`             |  in | Write request (one entry per cycle when accepted)     |
-| `p_wr_data[BITS-1:0]` |  in | Data to write                                         |
-| `p_wr_full`           | out | FIFO full flag (do not write when 1)                  |
-| `p_wr_almost_full`    | out | (Optional) Programmable threshold                     |
-| `p_wr_level`          | out | (Optional) Approximate fill level (write domain view) |
+| `write_clk`              |  in | Write clock                                           |
+| `write_rst_n`            |  in | Active-low write reset (async or sync — see notes)    |
+| `p_write_en`             |  in | Write request (one entry per cycle when accepted)     |
+| `p_write_data[BITS-1:0]` |  in | Data to write                                         |
+| `p_write_full`           | out | FIFO full flag (do not write when 1)                  |
+| `p_write_almost_full`    | out | (Optional) Programmable threshold                     |
+| `p_write_level`          | out | (Optional) Approximate fill level (write domain view) |
 
 **Write acceptance rule**  
-A write is accepted on a rising edge of `wr_clk` when:
+A write is accepted on a rising edge of `write_clk` when:
 
-- `p_wr_en == 1` and `p_wr_full == 0`
+- `p_write_en == 1` and `p_write_full == 0`
 
-### Read Domain (rd_clk)
+### Read Domain (read_clk)
 
 | Signal                | Dir | Description                                          |
 | --------------------- | --: | ---------------------------------------------------- |
-| `rd_clk`              |  in | Read clock                                           |
-| `rd_rst_n`            |  in | Active-low read reset                                |
-| `p_rd_en`             |  in | Read request (one entry per cycle when accepted)     |
-| `p_rd_data[BITS-1:0]` | out | Data read                                            |
-| `p_rd_empty`          | out | FIFO empty flag (do not read when 1)                 |
-| `p_rd_almost_empty`   | out | (Optional) Programmable threshold                    |
-| `p_rd_level`          | out | (Optional) Approximate fill level (read domain view) |
+| `read_clk`              |  in | Read clock                                           |
+| `read_rst_n`            |  in | Active-low read reset                                |
+| `p_read_en`             |  in | Read request (one entry per cycle when accepted)     |
+| `p_read_data[BITS-1:0]` | out | Data read                                            |
+| `p_read_empty`          | out | FIFO empty flag (do not read when 1)                 |
+| `p_read_almost_empty`   | out | (Optional) Programmable threshold                    |
+| `p_read_level`          | out | (Optional) Approximate fill level (read domain view) |
 
 **Read acceptance rule**  
-A read is accepted on a rising edge of `rd_clk` when:
+A read is accepted on a rising edge of `read_clk` when:
 
-- `p_rd_en == 1` and `p_rd_empty == 0`
+- `p_read_en == 1` and `p_read_empty == 0`
 
 ---
 
@@ -98,7 +98,7 @@ Optional:
 
 ## Reset & Initialization Notes
 
-- The FIFO uses **per-domain resets** (`wr_rst_n`, `rd_rst_n`).
+- The FIFO uses **per-domain resets** (`write_rst_n`, `read_rst_n`).
 - On reset, pointers go to zero; flags initialize to:
   - `empty = 1`
   - `full = 0`
@@ -109,7 +109,7 @@ Optional:
 
 ## Timing / Throughput
 
-- **Max throughput:** 1 write per `wr_clk` cycle + 1 read per `rd_clk` cycle (when not full/empty)
+- **Max throughput:** 1 write per `write_clk` cycle + 1 read per `read_clk` cycle (when not full/empty)
 - Latency depends on the chosen memory style (reg array vs inferred RAM).  
   For ASIC/FPGA inference, the FIFO can be adapted to:
   - Distributed regs (small SIZEs)
@@ -144,16 +144,16 @@ Optional:
 - Basic push/pop ordering (FIFO correctness)
 - Randomized traffic with backpressure
 - Many clock ratios:
-  - `wr_clk` faster than `rd_clk`
-  - `rd_clk` faster than `wr_clk`
+  - `write_clk` faster than `read_clk`
+  - `read_clk` faster than `write_clk`
   - close frequencies + phase drift
 - Reset behavior (including mid-traffic resets, if enabled)
 - Corner cases at wrap boundaries
 
 ### Suggested SVA (examples)
 
-- No write when full: `p_wr_full |-> !accept_write`
-- No read when empty: `p_rd_empty |-> !accept_read`
+- No write when full: `p_write_full |-> !accept_write`
+- No read when empty: `p_read_empty |-> !accept_read`
 - Data stability under backpressure (if applicable)
 - Pointer monotonicity within each domain
 
@@ -182,8 +182,8 @@ make SIM=iverilog
 
 ## Integration Notes (practical)
 
-- Connect `p_wr_full` to your upstream backpressure logic
-- Connect `p_rd_empty` to your downstream request logic
+- Connect `p_write_full` to your upstream backpressure logic
+- Connect `p_read_empty` to your downstream request logic
 - Avoid combinational paths between clock domains
 
 ---
