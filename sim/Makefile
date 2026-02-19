@@ -2,7 +2,7 @@ MODELSIM_BIN ?= /opt/intelFPGA/20.1/modelsim_ase/bin
 PATH := $(MODELSIM_BIN):$(PATH)
 export PATH
 
-RTL := ../rtl/async_fifo.sv
+RTL := ../rtl/sync_2ff.sv ../rtl/async_fifo.sv
 TB  := ../tb/test_async_fifo.sv
 TOP := work.tb
 

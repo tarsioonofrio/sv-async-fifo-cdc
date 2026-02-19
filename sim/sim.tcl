@@ -3,6 +3,7 @@ vlib work
 vmap work work
 
 
+vlog -work work -svinputport=relaxed ../rtl/sync_2ff.sv
 vlog -work work -svinputport=relaxed ../rtl/async_fifo.sv
 vlog -work work -svinputport=relaxed ../tb/test_async_fifo.sv
 # to show FSM

@@ -6,7 +6,7 @@ module async_fifo
   (
     // Write Domain
     input  logic write_clk,               // Write clock
-    input  logic write_rst_n,             // Active-low write reset (async or sync — see notes)
+    input  logic write_rst_n,             // Active-low asynchronous write reset
     input  logic p_write_en,              // Write request (one entry per cycle when accepted)
     input  logic [BITS-1:0] p_write_data, // Data to write
     output logic p_write_full,            // FIFO full flag (do not write when 1)
@@ -14,7 +14,7 @@ module async_fifo
     // output logic p_write_level,                // (Optional) Approximate fill level (write domain view)
     // Read Domain
     input  logic read_clk,               // Read clock
-    input  logic read_rst_n,             // Active-low read reset
+    input  logic read_rst_n,             // Active-low asynchronous read reset
     input  logic p_read_en,              // Read request (one entry per cycle when accepted)
     output logic [BITS-1:0] p_read_data, // Data read
     output logic p_read_empty            // FIFO empty flag (do not read when 1)
@@ -39,7 +39,6 @@ module async_fifo
   logic [SIZE_LOG2:0] r_write_ptr_gray;
   logic [SIZE_LOG2:0] w_write_ptr_gray_next;
   logic [SIZE_LOG2:0] w_write_ptr_bin_sync;
-  logic [SIZE_LOG2:0] r_write_ptr_gray_sync1;
   logic [SIZE_LOG2:0] r_write_ptr_gray_sync2;
 
   logic [SIZE_LOG2:0] r_read_ptr_bin;
@@ -47,7 +46,6 @@ module async_fifo
   logic [SIZE_LOG2:0] r_read_ptr_gray;
   logic [SIZE_LOG2:0] w_read_ptr_gray_next;
   logic [SIZE_LOG2:0] w_read_ptr_bin_sync;
-  logic [SIZE_LOG2:0] r_read_ptr_gray_sync1;
   logic [SIZE_LOG2:0] r_read_ptr_gray_sync2;
 
   logic w_write_full;
@@ -88,25 +86,19 @@ module async_fifo
   assign w_read_ptr_gray_next = (w_read_ptr_bin_next >> 1) ^ w_read_ptr_bin_next;
 
 
-  always_ff @(posedge write_clk or negedge write_rst_n) begin
-    if (!write_rst_n) begin
-      r_read_ptr_gray_sync1 <= 0;
-      r_read_ptr_gray_sync2 <= 0;
-    end else begin
-      r_read_ptr_gray_sync1 <= r_read_ptr_gray;
-      r_read_ptr_gray_sync2 <= r_read_ptr_gray_sync1;
-    end
-  end
+  sync_2ff #(.WIDTH(SIZE_LOG2+1)) sync_read_to_write (
+    .clk(write_clk),
+    .rst_n(write_rst_n),
+    .p_d(r_read_ptr_gray),
+    .p_q(r_read_ptr_gray_sync2)
+  );
 
-  always_ff @(posedge read_clk or negedge read_rst_n) begin
-    if (!read_rst_n) begin
-      r_write_ptr_gray_sync1 <= 0;
-      r_write_ptr_gray_sync2 <= 0;
-    end else begin
-      r_write_ptr_gray_sync1 <= r_write_ptr_gray;
-      r_write_ptr_gray_sync2 <= r_write_ptr_gray_sync1;
-    end
-  end
+  sync_2ff #(.WIDTH(SIZE_LOG2+1)) sync_write_to_read (
+    .clk(read_clk),
+    .rst_n(read_rst_n),
+    .p_d(r_write_ptr_gray),
+    .p_q(r_write_ptr_gray_sync2)
+  );
 
   generate
     for (genvar i = 0; i < SIZE_LOG2+1; i++) begin: gen_write_ptr_bin_sync

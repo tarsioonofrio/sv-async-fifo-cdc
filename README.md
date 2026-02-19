@@ -2,14 +2,14 @@
 
 A **CDC-safe asynchronous FIFO** written in **SystemVerilog**, designed for robust clock-domain crossing (CDC) between independent write and read clocks.
 
-This repository targets an "industry-style" IP deliverable: clean RTL, clear interface contract, repeatable simulation, and verification artifacts (cocotb + assertions).
+This repository targets an "industry-style" IP deliverable: clean RTL, clear interface contract, repeatable simulation, and verification artifacts (SystemVerilog testbench + optional assertions).
 
 ---
 
 ## Highlights
 
 - **True async FIFO** for CDC: independent `write_clk` and `read_clk`
-- **Single RTL file**: implementation concentrated in `rtl/async_fifo.sv`
+- **Modular RTL**: `rtl/async_fifo.sv` + dedicated `rtl/sync_2ff.sv`
 - **Gray-coded pointers** with **2FF synchronizers** (classic, silicon-proven approach)
 - Parameterized **BITS** and **SIZE** (power-of-two SIZE recommended)
 - Clean flags: `full`, `empty`, optional `almost_full/empty` and fill levels
@@ -123,10 +123,10 @@ Optional:
 ```
 .
 ├── rtl/
-│   └── async_fifo.sv
+│   ├── async_fifo.sv
+│   └── sync_2ff.sv
 ├── tb/
-│   ├── test_async_fifo.sv        # SystemVerilog testbench
-│   └── assertions.sv             # optional SVA bind file
+│   └── test_async_fifo.sv        # SystemVerilog testbench
 ├── sim/
 │   ├── Makefile
 │   └── waves/                    # generated
