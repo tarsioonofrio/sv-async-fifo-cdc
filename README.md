@@ -163,7 +163,7 @@ Optional:
 
 ### Using ModelSim/Questa (recommended)
 
-From `sim/` (uses `sim/Makefile`):
+From project root (uses `Makefile`):
 
 ```bash
 make build
@@ -173,7 +173,7 @@ make waves
 make clean
 ```
 
-`sim/Makefile` prepends the ModelSim path via:
+`Makefile` prepends the ModelSim path via:
 
 ```make
 MODELSIM_BIN ?= /opt/intelFPGA/20.1/modelsim_ase/bin
@@ -182,7 +182,6 @@ MODELSIM_BIN ?= /opt/intelFPGA/20.1/modelsim_ase/bin
 If your installation is in another location:
 
 ```bash
-cd sim
 make MODELSIM_BIN=/path/to/modelsim/bin build
 make MODELSIM_BIN=/path/to/modelsim/bin run
 ```
