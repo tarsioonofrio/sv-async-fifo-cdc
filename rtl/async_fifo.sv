@@ -35,24 +35,26 @@ logic logic_rd_empty;
 always_ff @(posedge wr_clk) begin
   if (!wr_rst_n) begin
     wr_ptr_bin <= 0;
+    wr_ptr_bin_next <= 0;
   end else if (wr_en && !wr_full) begin
     fifo[wr_ptr_bin[SIZE_LOG2-1:0]] <= wr_data;
     wr_ptr_bin <= wr_ptr_bin + 1;
+    wr_ptr_bin_next <= wr_ptr_bin + 1;
   end
 end
 
 always_ff @(posedge rd_clk) begin
   if (!rd_rst_n) begin
     rd_ptr_bin <= 0;
+    rd_ptr_bin_next <= 0;
   end else if (rd_en && !logic_rd_empty) begin
     rd_data <= fifo[rd_ptr_bin[SIZE_LOG2-1:0]];
     rd_ptr_bin <= rd_ptr_bin + 1;
+    rd_ptr_bin_next <= rd_ptr_bin + 1;
   end
 end
 
-assign wr_ptr_bin_next = wr_ptr_bin + (wr_en && !wr_full);
 assign wr_ptr_gray = (wr_ptr_bin_next >> 1) ^ wr_ptr_bin_next;
-assign rd_ptr_bin_next = rd_ptr_bin + (rd_en && !rd_empty);
 assign rd_ptr_gray = (rd_ptr_bin_next >> 1) ^ rd_ptr_bin_next;
 
 
