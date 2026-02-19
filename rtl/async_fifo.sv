@@ -49,11 +49,13 @@ always_ff @(posedge write_clk) begin
   if (!write_rst_n) begin
     r_write_ptr_bin <= 0;
     r_write_ptr_gray <= 0;
-  end else if (p_write_en && !w_write_full) begin
-    r_fifo[r_write_ptr_bin[SIZE_LOG2-1:0]] <= p_write_data;
-    r_write_ptr_bin <= r_write_ptr_bin + 1;
+  end else begin
+    if (p_write_en && !w_write_full) begin
+      r_fifo[r_write_ptr_bin[SIZE_LOG2-1:0]] <= p_write_data;
+      r_write_ptr_bin <= r_write_ptr_bin + 1;
+    end
+    r_write_ptr_gray <= (w_write_ptr_bin_next >> 1) ^ w_write_ptr_bin_next;
   end
-  r_write_ptr_gray <= (w_write_ptr_bin_next >> 1) ^ w_write_ptr_bin_next;
 end
 assign w_write_ptr_bin_next = r_write_ptr_bin + (SIZE_LOG2+1)'(p_write_en && !w_write_full);
 
@@ -61,11 +63,13 @@ always_ff @(posedge read_clk) begin
   if (!read_rst_n) begin
     r_read_ptr_bin <= 0;
     r_read_ptr_gray <= 0;
-  end else if (p_read_en && !w_read_empty) begin
-    p_read_data <= r_fifo[r_read_ptr_bin[SIZE_LOG2-1:0]];
-    r_read_ptr_bin <= r_read_ptr_bin + 1;
+  end else begin
+    if (p_read_en && !w_read_empty) begin
+      p_read_data <= r_fifo[r_read_ptr_bin[SIZE_LOG2-1:0]];
+      r_read_ptr_bin <= r_read_ptr_bin + 1;
+    end
+    r_read_ptr_gray <= (w_read_ptr_bin_next >> 1) ^ w_read_ptr_bin_next;
   end
-  r_read_ptr_gray <= (w_read_ptr_bin_next >> 1) ^ w_read_ptr_bin_next;
 end
 assign w_read_ptr_bin_next = r_read_ptr_bin + (SIZE_LOG2+1)'(p_read_en && !w_read_empty);
 
