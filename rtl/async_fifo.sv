@@ -1,7 +1,7 @@
 module AsyncFifo
   #(
     parameter BITS=32, // Width of each FIFO entry.
-    parameter SIZE=16       // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
+    parameter SIZE=16  // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
   )
   (
     // Write Domain
@@ -50,9 +50,9 @@ always_ff @(posedge rd_clk) begin
   end
 end
 
-assign wr_ptr_bin_next = wr_ptr_bin + 1;
+assign wr_ptr_bin_next = wr_ptr_bin + (wr_en && !wr_full);
 assign wr_ptr_gray = (wr_ptr_bin_next >> 1) ^ wr_ptr_bin_next;
-assign rd_ptr_bin_next = rd_ptr_bin + 1;
+assign rd_ptr_bin_next = rd_ptr_bin + (rd_en && !rd_empty);
 assign rd_ptr_gray = (rd_ptr_bin_next >> 1) ^ rd_ptr_bin_next;
 
 
