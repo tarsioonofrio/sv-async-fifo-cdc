@@ -34,7 +34,7 @@ add wave -noupdate -radix unsigned /tb/dut/rd_ptr_gray_sync2
 add wave -noupdate -radix unsigned /tb/dut/rd_ptr_bin_sync
 add wave -noupdate /tb/dut/logic_wr_full
 add wave -noupdate /tb/dut/logic_rd_empty
-add wave -noupdate -radix unsigned /tb/dut/fifo
+add wave -noupdate -radix unsigned -childformat {{{/tb/dut/fifo[15]} -radix unsigned} {{/tb/dut/fifo[14]} -radix unsigned} {{/tb/dut/fifo[13]} -radix unsigned} {{/tb/dut/fifo[12]} -radix unsigned} {{/tb/dut/fifo[11]} -radix unsigned} {{/tb/dut/fifo[10]} -radix unsigned} {{/tb/dut/fifo[9]} -radix unsigned} {{/tb/dut/fifo[8]} -radix unsigned} {{/tb/dut/fifo[7]} -radix unsigned} {{/tb/dut/fifo[6]} -radix unsigned} {{/tb/dut/fifo[5]} -radix unsigned} {{/tb/dut/fifo[4]} -radix unsigned} {{/tb/dut/fifo[3]} -radix unsigned} {{/tb/dut/fifo[2]} -radix unsigned} {{/tb/dut/fifo[1]} -radix unsigned} {{/tb/dut/fifo[0]} -radix unsigned}} -expand -subitemconfig {{/tb/dut/fifo[15]} {-radix unsigned} {/tb/dut/fifo[14]} {-radix unsigned} {/tb/dut/fifo[13]} {-radix unsigned} {/tb/dut/fifo[12]} {-radix unsigned} {/tb/dut/fifo[11]} {-radix unsigned} {/tb/dut/fifo[10]} {-radix unsigned} {/tb/dut/fifo[9]} {-radix unsigned} {/tb/dut/fifo[8]} {-radix unsigned} {/tb/dut/fifo[7]} {-radix unsigned} {/tb/dut/fifo[6]} {-radix unsigned} {/tb/dut/fifo[5]} {-radix unsigned} {/tb/dut/fifo[4]} {-radix unsigned} {/tb/dut/fifo[3]} {-radix unsigned} {/tb/dut/fifo[2]} {-radix unsigned} {/tb/dut/fifo[1]} {-radix unsigned} {/tb/dut/fifo[0]} {-radix unsigned}} /tb/dut/fifo
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {0 ps} 0}
 quietly wave cursor active 0
