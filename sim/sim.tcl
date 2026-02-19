@@ -6,6 +6,7 @@ vmap work work
 vlog -work work -svinputport=relaxed ../rtl/sync_2ff.sv
 vlog -work work -svinputport=relaxed ../rtl/async_fifo.sv
 vlog -work work -svinputport=relaxed ../tb/test_async_fifo.sv
+vlog -work work -svinputport=relaxed ../tb/assertions.sv
 # to show FSM
 # vsim -voptargs=+acc -t ps -fsmdebug -coverage -debugDB work.tb
 vsim -voptargs=+acc -t ps work.tb

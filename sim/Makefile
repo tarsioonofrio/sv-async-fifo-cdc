@@ -3,7 +3,7 @@ PATH := $(MODELSIM_BIN):$(PATH)
 export PATH
 
 RTL := ../rtl/sync_2ff.sv ../rtl/async_fifo.sv
-TB  := ../tb/test_async_fifo.sv
+TB  := ../tb/test_async_fifo.sv ../tb/assertions.sv
 TOP := work.tb
 
 .PHONY: build run test waves clean
