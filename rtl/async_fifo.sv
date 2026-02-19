@@ -42,7 +42,7 @@ always_ff @(posedge wr_clk) begin
   end
   wr_ptr_gray <= (wr_ptr_bin_next >> 1) ^ wr_ptr_bin_next;
 end
-assign wr_ptr_bin_next = wr_ptr_bin + (wr_en && !logic_wr_full);
+assign wr_ptr_bin_next = wr_ptr_bin + (SIZE_LOG2+1)'(wr_en && !logic_wr_full);
 
 always_ff @(posedge rd_clk) begin
   if (!rd_rst_n) begin
@@ -54,7 +54,7 @@ always_ff @(posedge rd_clk) begin
   end
   rd_ptr_gray <= (rd_ptr_bin_next >> 1) ^ rd_ptr_bin_next;
 end
-assign rd_ptr_bin_next = rd_ptr_bin + (rd_en && !logic_rd_empty);
+assign rd_ptr_bin_next = rd_ptr_bin + (SIZE_LOG2+1)'(rd_en && !logic_rd_empty);
 
 
 always_ff @(posedge wr_clk) begin
