@@ -69,23 +69,31 @@ assert property (@(posedge write_clk) disable iff (!write_rst_n)
 // 7. No read pointer advance when EMPTY
 //    If `rd_empty` is asserted, then a read request must not advance
 //    the read pointer. The read Gray pointer must also remain stable.
-
+assert property (@(posedge read_clk) disable iff (!read_rst_n)
+  (p_read_empty && p_read_en) |-> ($stable(r_read_ptr_bin) && $stable(r_read_ptr_gray))
+);
 
 // 8. Read pointer increments by exactly one on an accepted read
 //    When `rd_en` is high and `rd_empty` is low (read accepted), the
 //    read binary pointer must increase by exactly 1 on the next cycle.
-
+assert property (@(posedge read_clk) disable iff (!read_rst_n)
+  (p_read_empty && p_read_en) |-> (r_read_ptr_bin == ($past(r_read_ptr_bin + 1)))
+);
 
 // 9. Gray pointer must match binary pointer encoding
 //    At all times (outside reset), the read Gray pointer must equal the
 //    Gray encoding of the read binary pointer.
-
+assert property (@(posedge read_clk) disable iff (!read_rst_n)
+  (p_read_empty && p_read_en) |-> (bin2gray(r_read_ptr_bin) == r_read_ptr_gray)
+);
 
 // 10. Gray pointer changes by at most one bit per cycle
 //     Between consecutive `rd_clk` cycles, the read Gray pointer must
 //     change by zero bits (no increment) or exactly one bit (one
 //     increment).
-
+assert property (@(posedge read_clk) disable iff (!read_rst_n)
+  (p_read_empty && p_read_en) |-> ($onehot($past(r_read_ptr_gray) ^ r_read_ptr_gray))
+);
 
 // 11. EMPTY flag must match the standard empty condition
 //     The registered/empty output must equal the “empty_next” condition
