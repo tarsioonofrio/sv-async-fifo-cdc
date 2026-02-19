@@ -26,8 +26,8 @@ module AsyncFifo
 localparam SIZE_LOG2 = $clog2(SIZE);
 
 logic [SIZE-1:0][BITS-1:0] fifo;
-logic [SIZE_LOG2:0] wr_ptr_bin, wr_ptr_gray, wr_ptr_bin_sync, wr_ptr_gray_sync1, wr_ptr_gray_sync2;
-logic [SIZE_LOG2:0] rd_ptr_bin, rd_ptr_gray, rd_ptr_bin_sync, rd_ptr_gray_sync1, rd_ptr_gray_sync2;
+logic [SIZE_LOG2:0] wr_ptr_bin, wr_ptr_bin_next, wr_ptr_gray, wr_ptr_bin_sync, wr_ptr_gray_sync1, wr_ptr_gray_sync2;
+logic [SIZE_LOG2:0] rd_ptr_bin, rd_ptr_bin_next, rd_ptr_gray, rd_ptr_bin_sync, rd_ptr_gray_sync1, rd_ptr_gray_sync2;
 
 logic logic_wr_full;
 logic logic_rd_empty;
@@ -50,8 +50,10 @@ always_ff @(posedge rd_clk) begin
   end
 end
 
-assign wr_ptr_gray = (wr_ptr_bin >> 1) ^ wr_ptr_bin;
-assign rd_ptr_gray = (rd_ptr_bin >> 1) ^ rd_ptr_bin;
+assign wr_ptr_bin_next = wr_ptr_bin + 1;
+assign wr_ptr_gray = (wr_ptr_bin_next >> 1) ^ wr_ptr_bin_next;
+assign rd_ptr_bin_next = rd_ptr_bin + 1;
+assign rd_ptr_gray = (rd_ptr_bin_next >> 1) ^ rd_ptr_bin_next;
 
 
 always_ff @(posedge wr_clk) begin
