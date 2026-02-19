@@ -67,6 +67,7 @@ always_ff @(posedge read_clk or negedge read_rst_n) begin
   if (!read_rst_n) begin
     r_read_ptr_bin <= 0;
     r_read_ptr_gray <= 0;
+    p_read_data <= 0;
   end else begin
     if (p_read_en && !w_read_empty) begin
       p_read_data <= r_fifo[r_read_ptr_bin[SIZE_LOG2-1:0]];
