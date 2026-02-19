@@ -126,7 +126,8 @@ Optional:
 │   ├── async_fifo.sv
 │   └── sync_2ff.sv
 ├── tb/
-│   └── test_async_fifo.sv        # SystemVerilog testbench
+│   ├── test_async_fifo.sv        # SystemVerilog testbench
+│   └── assertions.sv             # SVA placeholder (currently empty)
 ├── sim/
 │   ├── Makefile
 │   └── waves/                    # generated
