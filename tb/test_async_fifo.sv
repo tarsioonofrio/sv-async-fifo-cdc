@@ -26,7 +26,7 @@ module tb;
   logic clk, rstn;
 
 
-  AsyncFifo
+  async_fifo
     #(
       .BITS(BITS),
       .SIZE(SIZE)
