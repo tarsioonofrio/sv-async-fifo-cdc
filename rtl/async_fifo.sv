@@ -1,4 +1,4 @@
-module AsyncFifo
+module async_fifo
   #(
     parameter BITS=32, // Width of each FIFO entry.
     parameter SIZE=16  // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
@@ -78,11 +78,13 @@ always_ff @(posedge rd_clk) begin
 end
 
 generate
-  for (genvar i = 0; i < SIZE_LOG2+1; i++)
+  for (genvar i = 0; i < SIZE_LOG2+1; i++) begin: gen_wr_ptr_bin_sync
     assign wr_ptr_bin_sync[i] = ^(wr_ptr_gray_sync2 >> i);
+  end
 
-  for (genvar i = 0; i < SIZE_LOG2+1; i++)
+  for (genvar i = 0; i < SIZE_LOG2+1; i++) begin: gen_rd_ptr_bin_sync
     assign rd_ptr_bin_sync[i] = ^(rd_ptr_gray_sync2 >> i);
+  end
 endgenerate
 
 assign logic_rd_empty = wr_ptr_bin_sync[SIZE_LOG2:0] == rd_ptr_bin[SIZE_LOG2:0];
