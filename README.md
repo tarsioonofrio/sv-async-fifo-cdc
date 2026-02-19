@@ -50,7 +50,7 @@ This implementation is based on the design approach presented in the paper _Simu
 | Signal                   | Dir | Description                                           |
 | ------------------------ | --: | ----------------------------------------------------- |
 | `write_clk`              |  in | Write clock                                           |
-| `write_rst_n`            |  in | Active-low write reset (async or sync — see notes)    |
+| `write_rst_n`            |  in | Active-low asynchronous write reset                   |
 | `p_write_en`             |  in | Write request (one entry per cycle when accepted)     |
 | `p_write_data[BITS-1:0]` |  in | Data to write                                         |
 | `p_write_full`           | out | FIFO full flag (do not write when 1)                  |
@@ -67,7 +67,7 @@ A write is accepted on a rising edge of `write_clk` when:
 | Signal                  | Dir | Description                                          |
 | ----------------------- | --: | ---------------------------------------------------- |
 | `read_clk`              |  in | Read clock                                           |
-| `read_rst_n`            |  in | Active-low read reset                                |
+| `read_rst_n`            |  in | Active-low asynchronous read reset                   |
 | `p_read_en`             |  in | Read request (one entry per cycle when accepted)     |
 | `p_read_data[BITS-1:0]` | out | Data read                                            |
 | `p_read_empty`          | out | FIFO empty flag (do not read when 1)                 |
@@ -99,12 +99,12 @@ Optional:
 
 ## Reset & Initialization Notes
 
-- The FIFO uses **per-domain resets** (`write_rst_n`, `read_rst_n`).
+- The FIFO uses **per-domain active-low asynchronous resets** (`write_rst_n`, `read_rst_n`).
 - On reset, pointers go to zero; flags initialize to:
   - `empty = 1`
   - `full = 0`
 
-**CDC recommendation**: ensure resets are applied such that both domains start from a consistent state. If resets are asynchronous, consider synchronizing reset deassertion per domain.
+**CDC recommendation**: ensure both domains are reset to a consistent state, and synchronize reset deassertion per clock domain when required by your integration guidelines.
 
 ---
 

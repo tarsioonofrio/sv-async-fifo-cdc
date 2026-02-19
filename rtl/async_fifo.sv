@@ -47,7 +47,7 @@ logic w_write_full;
 logic w_read_empty;
 
 
-always_ff @(posedge write_clk) begin
+always_ff @(posedge write_clk or negedge write_rst_n) begin
   if (!write_rst_n) begin
     r_write_ptr_bin <= 0;
     r_write_ptr_gray <= 0;
@@ -63,7 +63,7 @@ end
 assign w_write_ptr_bin_next = (p_write_en && !w_write_full) ? r_write_ptr_bin + 1: r_write_ptr_bin;
 assign w_write_ptr_gray_next = (w_write_ptr_bin_next >> 1) ^ w_write_ptr_bin_next;
 
-always_ff @(posedge read_clk) begin
+always_ff @(posedge read_clk or negedge read_rst_n) begin
   if (!read_rst_n) begin
     r_read_ptr_bin <= 0;
     r_read_ptr_gray <= 0;
@@ -80,7 +80,7 @@ assign w_read_ptr_bin_next = (p_read_en && !w_read_empty) ? r_read_ptr_bin + 1: 
 assign w_read_ptr_gray_next = (w_read_ptr_bin_next >> 1) ^ w_read_ptr_bin_next;
 
 
-always_ff @(posedge write_clk) begin
+always_ff @(posedge write_clk or negedge write_rst_n) begin
   if (!write_rst_n) begin
     r_read_ptr_gray_sync1 <= 0;
     r_read_ptr_gray_sync2 <= 0;
@@ -90,7 +90,7 @@ always_ff @(posedge write_clk) begin
   end
 end
 
-always_ff @(posedge read_clk) begin
+always_ff @(posedge read_clk or negedge read_rst_n) begin
   if (!read_rst_n) begin
     r_write_ptr_gray_sync1 <= 0;
     r_write_ptr_gray_sync2 <= 0;
