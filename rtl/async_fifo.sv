@@ -30,6 +30,7 @@ logic [SIZE-1:0][BITS-1:0] r_fifo;
 logic [SIZE_LOG2:0] r_write_ptr_bin;
 logic [SIZE_LOG2:0] w_write_ptr_bin_next;
 logic [SIZE_LOG2:0] r_write_ptr_gray;
+logic [SIZE_LOG2:0] w_write_ptr_gray_next;
 logic [SIZE_LOG2:0] w_write_ptr_bin_sync;
 logic [SIZE_LOG2:0] r_write_ptr_gray_sync1;
 logic [SIZE_LOG2:0] r_write_ptr_gray_sync2;
@@ -37,6 +38,7 @@ logic [SIZE_LOG2:0] r_write_ptr_gray_sync2;
 logic [SIZE_LOG2:0] r_read_ptr_bin;
 logic [SIZE_LOG2:0] w_read_ptr_bin_next;
 logic [SIZE_LOG2:0] r_read_ptr_gray;
+logic [SIZE_LOG2:0] w_read_ptr_gray_next;
 logic [SIZE_LOG2:0] w_read_ptr_bin_sync;
 logic [SIZE_LOG2:0] r_read_ptr_gray_sync1;
 logic [SIZE_LOG2:0] r_read_ptr_gray_sync2;
@@ -52,12 +54,14 @@ always_ff @(posedge write_clk) begin
   end else begin
     if (p_write_en && !w_write_full) begin
       r_fifo[r_write_ptr_bin[SIZE_LOG2-1:0]] <= p_write_data;
-      r_write_ptr_bin <= r_write_ptr_bin + 1;
     end
-    r_write_ptr_gray <= (w_write_ptr_bin_next >> 1) ^ w_write_ptr_bin_next;
+    r_write_ptr_bin <= w_write_ptr_bin_next;
+    r_write_ptr_gray <= w_write_ptr_gray_next;
   end
 end
+
 assign w_write_ptr_bin_next = r_write_ptr_bin + (SIZE_LOG2+1)'(p_write_en && !w_write_full);
+assign w_write_ptr_gray_next = (w_write_ptr_bin_next >> 1) ^ w_write_ptr_bin_next;
 
 always_ff @(posedge read_clk) begin
   if (!read_rst_n) begin
@@ -66,12 +70,14 @@ always_ff @(posedge read_clk) begin
   end else begin
     if (p_read_en && !w_read_empty) begin
       p_read_data <= r_fifo[r_read_ptr_bin[SIZE_LOG2-1:0]];
-      r_read_ptr_bin <= r_read_ptr_bin + 1;
     end
-    r_read_ptr_gray <= (w_read_ptr_bin_next >> 1) ^ w_read_ptr_bin_next;
+    r_read_ptr_bin <= w_read_ptr_bin_next;
+    r_read_ptr_gray <= w_read_ptr_gray_next;
   end
 end
+
 assign w_read_ptr_bin_next = r_read_ptr_bin + (SIZE_LOG2+1)'(p_read_en && !w_read_empty);
+assign w_read_ptr_gray_next = (w_read_ptr_bin_next >> 1) ^ w_read_ptr_bin_next;
 
 
 always_ff @(posedge write_clk) begin
