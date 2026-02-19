@@ -29,6 +29,8 @@ Async FIFO correctness hinges on avoiding metastability propagation across domai
 
 This avoids sampling multi-bit binary counters asynchronously, which can break due to metastability and intermediate transitions.
 
+This implementation is based on the design approach presented in the paper *Simulation and Synthesis Techniques for Asynchronous FIFO Design*.
+
 ---
 
 ## Interface
@@ -183,6 +185,12 @@ make SIM=iverilog
 - [ ] Add programmable thresholds (`almost_full/empty`)
 - [ ] Add dual-port RAM inference templates for FPGA/ASIC
 - [ ] Add optional fall-through (FWFT) read mode
+
+---
+
+## References
+
+1. Clifford E. Cummings and Peter Alfke, *Simulation and Synthesis Techniques for Asynchronous FIFO Design*, SNUG San Jose 2002. Official technical library listing: https://www.sunburst-design.com/papers/ . Public PDF access: https://www.researchgate.net/publication/252160343_Simulation_and_Synthesis_Techniques_for_Asynchronous_FIFO_Design
 
 ---
 
