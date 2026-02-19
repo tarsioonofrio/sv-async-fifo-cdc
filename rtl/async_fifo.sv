@@ -60,7 +60,7 @@ always_ff @(posedge write_clk) begin
   end
 end
 
-assign w_write_ptr_bin_next = r_write_ptr_bin + (SIZE_LOG2+1)'(p_write_en && !w_write_full);
+assign w_write_ptr_bin_next = (p_write_en && !w_write_full) ? r_write_ptr_bin + 1: r_write_ptr_bin;
 assign w_write_ptr_gray_next = (w_write_ptr_bin_next >> 1) ^ w_write_ptr_bin_next;
 
 always_ff @(posedge read_clk) begin
@@ -76,7 +76,7 @@ always_ff @(posedge read_clk) begin
   end
 end
 
-assign w_read_ptr_bin_next = r_read_ptr_bin + (SIZE_LOG2+1)'(p_read_en && !w_read_empty);
+assign w_read_ptr_bin_next = (p_read_en && !w_read_empty) ? r_read_ptr_bin + 1: r_read_ptr_bin;
 assign w_read_ptr_gray_next = (w_read_ptr_bin_next >> 1) ^ w_read_ptr_bin_next;
 
 
