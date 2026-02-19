@@ -23,98 +23,98 @@ module async_fifo
     );
 
 
-localparam SIZE_LOG2 = $clog2(SIZE);
+  localparam SIZE_LOG2 = $clog2(SIZE);
 
-logic [SIZE-1:0][BITS-1:0] r_fifo;
+  logic [SIZE-1:0][BITS-1:0] r_fifo;
 
-logic [SIZE_LOG2:0] r_write_ptr_bin;
-logic [SIZE_LOG2:0] w_write_ptr_bin_next;
-logic [SIZE_LOG2:0] r_write_ptr_gray;
-logic [SIZE_LOG2:0] w_write_ptr_gray_next;
-logic [SIZE_LOG2:0] w_write_ptr_bin_sync;
-logic [SIZE_LOG2:0] r_write_ptr_gray_sync1;
-logic [SIZE_LOG2:0] r_write_ptr_gray_sync2;
+  logic [SIZE_LOG2:0] r_write_ptr_bin;
+  logic [SIZE_LOG2:0] w_write_ptr_bin_next;
+  logic [SIZE_LOG2:0] r_write_ptr_gray;
+  logic [SIZE_LOG2:0] w_write_ptr_gray_next;
+  logic [SIZE_LOG2:0] w_write_ptr_bin_sync;
+  logic [SIZE_LOG2:0] r_write_ptr_gray_sync1;
+  logic [SIZE_LOG2:0] r_write_ptr_gray_sync2;
 
-logic [SIZE_LOG2:0] r_read_ptr_bin;
-logic [SIZE_LOG2:0] w_read_ptr_bin_next;
-logic [SIZE_LOG2:0] r_read_ptr_gray;
-logic [SIZE_LOG2:0] w_read_ptr_gray_next;
-logic [SIZE_LOG2:0] w_read_ptr_bin_sync;
-logic [SIZE_LOG2:0] r_read_ptr_gray_sync1;
-logic [SIZE_LOG2:0] r_read_ptr_gray_sync2;
+  logic [SIZE_LOG2:0] r_read_ptr_bin;
+  logic [SIZE_LOG2:0] w_read_ptr_bin_next;
+  logic [SIZE_LOG2:0] r_read_ptr_gray;
+  logic [SIZE_LOG2:0] w_read_ptr_gray_next;
+  logic [SIZE_LOG2:0] w_read_ptr_bin_sync;
+  logic [SIZE_LOG2:0] r_read_ptr_gray_sync1;
+  logic [SIZE_LOG2:0] r_read_ptr_gray_sync2;
 
-logic w_write_full;
-logic w_read_empty;
+  logic w_write_full;
+  logic w_read_empty;
 
 
-always_ff @(posedge write_clk or negedge write_rst_n) begin
-  if (!write_rst_n) begin
-    r_write_ptr_bin <= 0;
-    r_write_ptr_gray <= 0;
-  end else begin
-    if (p_write_en && !w_write_full) begin
-      r_fifo[r_write_ptr_bin[SIZE_LOG2-1:0]] <= p_write_data;
+  always_ff @(posedge write_clk or negedge write_rst_n) begin
+    if (!write_rst_n) begin
+      r_write_ptr_bin <= 0;
+      r_write_ptr_gray <= 0;
+    end else begin
+      if (p_write_en && !w_write_full) begin
+        r_fifo[r_write_ptr_bin[SIZE_LOG2-1:0]] <= p_write_data;
+      end
+      r_write_ptr_bin <= w_write_ptr_bin_next;
+      r_write_ptr_gray <= w_write_ptr_gray_next;
     end
-    r_write_ptr_bin <= w_write_ptr_bin_next;
-    r_write_ptr_gray <= w_write_ptr_gray_next;
   end
-end
 
-assign w_write_ptr_bin_next = (p_write_en && !w_write_full) ? r_write_ptr_bin + 1: r_write_ptr_bin;
-assign w_write_ptr_gray_next = (w_write_ptr_bin_next >> 1) ^ w_write_ptr_bin_next;
+  assign w_write_ptr_bin_next = (p_write_en && !w_write_full) ? r_write_ptr_bin + 1: r_write_ptr_bin;
+  assign w_write_ptr_gray_next = (w_write_ptr_bin_next >> 1) ^ w_write_ptr_bin_next;
 
-always_ff @(posedge read_clk or negedge read_rst_n) begin
-  if (!read_rst_n) begin
-    r_read_ptr_bin <= 0;
-    r_read_ptr_gray <= 0;
-    p_read_data <= 0;
-  end else begin
-    if (p_read_en && !w_read_empty) begin
-      p_read_data <= r_fifo[r_read_ptr_bin[SIZE_LOG2-1:0]];
+  always_ff @(posedge read_clk or negedge read_rst_n) begin
+    if (!read_rst_n) begin
+      r_read_ptr_bin <= 0;
+      r_read_ptr_gray <= 0;
+      p_read_data <= 0;
+    end else begin
+      if (p_read_en && !w_read_empty) begin
+        p_read_data <= r_fifo[r_read_ptr_bin[SIZE_LOG2-1:0]];
+      end
+      r_read_ptr_bin <= w_read_ptr_bin_next;
+      r_read_ptr_gray <= w_read_ptr_gray_next;
     end
-    r_read_ptr_bin <= w_read_ptr_bin_next;
-    r_read_ptr_gray <= w_read_ptr_gray_next;
-  end
-end
-
-assign w_read_ptr_bin_next = (p_read_en && !w_read_empty) ? r_read_ptr_bin + 1: r_read_ptr_bin;
-assign w_read_ptr_gray_next = (w_read_ptr_bin_next >> 1) ^ w_read_ptr_bin_next;
-
-
-always_ff @(posedge write_clk or negedge write_rst_n) begin
-  if (!write_rst_n) begin
-    r_read_ptr_gray_sync1 <= 0;
-    r_read_ptr_gray_sync2 <= 0;
-  end else begin
-    r_read_ptr_gray_sync1 <= r_read_ptr_gray;
-    r_read_ptr_gray_sync2 <= r_read_ptr_gray_sync1;
-  end
-end
-
-always_ff @(posedge read_clk or negedge read_rst_n) begin
-  if (!read_rst_n) begin
-    r_write_ptr_gray_sync1 <= 0;
-    r_write_ptr_gray_sync2 <= 0;
-  end else begin
-    r_write_ptr_gray_sync1 <= r_write_ptr_gray;
-    r_write_ptr_gray_sync2 <= r_write_ptr_gray_sync1;
-  end
-end
-
-generate
-  for (genvar i = 0; i < SIZE_LOG2+1; i++) begin: gen_write_ptr_bin_sync
-    assign w_write_ptr_bin_sync[i] = ^(r_write_ptr_gray_sync2 >> i);
   end
 
-  for (genvar i = 0; i < SIZE_LOG2+1; i++) begin: gen_read_ptr_bin_sync
-    assign w_read_ptr_bin_sync[i] = ^(r_read_ptr_gray_sync2 >> i);
+  assign w_read_ptr_bin_next = (p_read_en && !w_read_empty) ? r_read_ptr_bin + 1: r_read_ptr_bin;
+  assign w_read_ptr_gray_next = (w_read_ptr_bin_next >> 1) ^ w_read_ptr_bin_next;
+
+
+  always_ff @(posedge write_clk or negedge write_rst_n) begin
+    if (!write_rst_n) begin
+      r_read_ptr_gray_sync1 <= 0;
+      r_read_ptr_gray_sync2 <= 0;
+    end else begin
+      r_read_ptr_gray_sync1 <= r_read_ptr_gray;
+      r_read_ptr_gray_sync2 <= r_read_ptr_gray_sync1;
+    end
   end
-endgenerate
 
-assign w_read_empty = w_write_ptr_bin_sync[SIZE_LOG2:0] == r_read_ptr_bin[SIZE_LOG2:0];
-assign p_read_empty = w_read_empty;
+  always_ff @(posedge read_clk or negedge read_rst_n) begin
+    if (!read_rst_n) begin
+      r_write_ptr_gray_sync1 <= 0;
+      r_write_ptr_gray_sync2 <= 0;
+    end else begin
+      r_write_ptr_gray_sync1 <= r_write_ptr_gray;
+      r_write_ptr_gray_sync2 <= r_write_ptr_gray_sync1;
+    end
+  end
 
-assign w_write_full = (r_write_ptr_bin[SIZE_LOG2] != w_read_ptr_bin_sync[SIZE_LOG2]) && (r_write_ptr_bin[SIZE_LOG2-1:0] == w_read_ptr_bin_sync[SIZE_LOG2-1:0]);
-assign p_write_full = w_write_full;
+  generate
+    for (genvar i = 0; i < SIZE_LOG2+1; i++) begin: gen_write_ptr_bin_sync
+      assign w_write_ptr_bin_sync[i] = ^(r_write_ptr_gray_sync2 >> i);
+    end
+
+    for (genvar i = 0; i < SIZE_LOG2+1; i++) begin: gen_read_ptr_bin_sync
+      assign w_read_ptr_bin_sync[i] = ^(r_read_ptr_gray_sync2 >> i);
+    end
+  endgenerate
+
+  assign w_read_empty = w_write_ptr_bin_sync[SIZE_LOG2:0] == r_read_ptr_bin[SIZE_LOG2:0];
+  assign p_read_empty = w_read_empty;
+
+  assign w_write_full = (r_write_ptr_bin[SIZE_LOG2] != w_read_ptr_bin_sync[SIZE_LOG2]) && (r_write_ptr_bin[SIZE_LOG2-1:0] == w_read_ptr_bin_sync[SIZE_LOG2-1:0]);
+  assign p_write_full = w_write_full;
 
 endmodule
