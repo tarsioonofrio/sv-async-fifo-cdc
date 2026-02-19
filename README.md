@@ -209,6 +209,7 @@ make MODELSIM_BIN=/path/to/modelsim/bin run
 ## References
 
 1. Clifford E. Cummings and Peter Alfke, _Simulation and Synthesis Techniques for Asynchronous FIFO Design_, SNUG San Jose 2002. Official technical library listing: https://www.sunburst-design.com/papers/ . Public PDF access: https://www.researchgate.net/publication/252160343_Simulation_and_Synthesis_Techniques_for_Asynchronous_FIFO_Design
+2. Jason Yu, _Dual-Clock Asynchronous FIFO in SystemVerilog_, VerilogPro: https://www.verilogpro.com/asynchronous-fifo-design/
 
 ---
 
