@@ -125,7 +125,7 @@ Optional:
 ├── rtl/
 │   └── async_fifo.sv
 ├── tb/
-│   ├── test_async_fifo.sv        # cocotb tests
+│   ├── test_async_fifo.sv        # SystemVerilog testbench
 │   └── assertions.sv             # optional SVA bind file
 ├── sim/
 │   ├── Makefile
@@ -162,19 +162,28 @@ Optional:
 
 ### Using ModelSim/Questa (recommended)
 
-From `sim/`:
+From `sim/` (uses `sim/Makefile`):
 
 ```bash
-make SIM=questa
+make build
+make run
+make test
 make waves
+make clean
 ```
 
-### Using open-source simulators (optional)
+`sim/Makefile` prepends the ModelSim path via:
 
-If supported:
+```make
+MODELSIM_BIN ?= /opt/intelFPGA/20.1/modelsim_ase/bin
+```
+
+If your installation is in another location:
 
 ```bash
-make SIM=iverilog
+cd sim
+make MODELSIM_BIN=/path/to/modelsim/bin build
+make MODELSIM_BIN=/path/to/modelsim/bin run
 ```
 
 ---
