@@ -26,14 +26,14 @@ endfunction
 //    If `p_write_full` is asserted, then a write request must not advance the
 //    write pointer. The write Gray pointer must also remain stable.
 assert property (@(posedge write_clk) disable iff (!write_rst_n)
-  (p_write_full && p_write_en) |-> ($stable(r_write_ptr_bin) && $stable(r_write_ptr_gray))
+  (p_write_full && p_write_en) |=> ($stable(r_write_ptr_bin) && $stable(r_write_ptr_gray))
 );
 
 // 2. Write pointer increments by exactly one on an accepted write
 //    When `p_write_en` is high and `p_write_full` is low (write accepted), the
 //    write binary pointer must increase by exactly 1 on the next cycle.
 assert property (@(posedge write_clk) disable iff (!write_rst_n)
-  (!p_write_full && p_write_en) |-> (r_write_ptr_bin == ($past(r_write_ptr_bin + 1)))
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == $past(r_write_ptr_bin) + 1)
 );
 
 // 3. Gray pointer must match binary pointer encoding
@@ -70,14 +70,14 @@ assert property (@(posedge write_clk) disable iff (!write_rst_n)
 //    If `p_read_empty` is asserted, then a read request must not advance
 //    the read pointer. The read Gray pointer must also remain stable.
 assert property (@(posedge read_clk) disable iff (!read_rst_n)
-  (p_read_empty && p_read_en) |-> ($stable(r_read_ptr_bin) && $stable(r_read_ptr_gray))
+  (p_read_empty && p_read_en) |=> ($stable(r_read_ptr_bin) && $stable(r_read_ptr_gray))
 );
 
 // 8. Read pointer increments by exactly one on an accepted read
 //    When `p_read_en` is high and `p_read_empty` is low (read accepted), the
 //    read binary pointer must increase by exactly 1 on the next cycle.
 assert property (@(posedge read_clk) disable iff (!read_rst_n)
-  (!p_read_empty && p_read_en) |-> (r_read_ptr_bin == ($past(r_read_ptr_bin + 1)))
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == $past(r_read_ptr_bin) + 1)
 );
 
 // 9. Gray pointer must match binary pointer encoding
