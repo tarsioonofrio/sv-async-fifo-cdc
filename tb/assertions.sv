@@ -83,6 +83,9 @@ assert property (@(posedge write_clk) disable iff (!write_rst_n)
 // 6. No unknowns after reset
 //    After reset is deasserted, `p_write_full` and the write pointers must
 //    never be X/Z.
+assert property (@(posedge write_clk)
+  write_rst_n |-> !$isunknown(p_write_full) && !$isunknown(r_write_ptr_bin) && !$isunknown(r_write_ptr_gray)
+);
 
 
 
