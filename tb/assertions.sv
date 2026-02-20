@@ -20,35 +20,35 @@ function automatic logic [SIZE_LOG2:0] bin2gray(input logic [SIZE_LOG2:0] b);
 endfunction
 
 
-// ## A) Write clock domain (`wr_clk`)
+// ## A) Write clock domain (`write_clk`)
 
 // 1. No write pointer advance when FULL
-//    If `wr_full` is asserted, then a write request must not advance the
+//    If `p_write_full` is asserted, then a write request must not advance the
 //    write pointer. The write Gray pointer must also remain stable.
 assert property (@(posedge write_clk) disable iff (!write_rst_n)
   (p_write_full && p_write_en) |-> ($stable(r_write_ptr_bin) && $stable(r_write_ptr_gray))
 );
 
 // 2. Write pointer increments by exactly one on an accepted write
-//    When `wr_en` is high and `wr_full` is low (write accepted), the
+//    When `p_write_en` is high and `p_write_full` is low (write accepted), the
 //    write binary pointer must increase by exactly 1 on the next cycle.
 assert property (@(posedge write_clk) disable iff (!write_rst_n)
-  (p_write_full && p_write_en) |-> (r_write_ptr_bin == ($past(r_write_ptr_bin + 1)))
+  (!p_write_full && p_write_en) |-> (r_write_ptr_bin == ($past(r_write_ptr_bin + 1)))
 );
 
 // 3. Gray pointer must match binary pointer encoding
 //    At all times (outside reset), the write Gray pointer must equal
 //    the Gray encoding of the write binary pointer.
 assert property (@(posedge write_clk) disable iff (!write_rst_n)
-  (p_write_full && p_write_en) |-> (bin2gray(r_write_ptr_bin) == r_write_ptr_gray)
+  bin2gray(r_write_ptr_bin) == r_write_ptr_gray
 );
 
 // 4. Gray pointer changes by at most one bit per cycle
-//    Between consecutive `wr_clk` cycles, the write Gray pointer must
+//    Between consecutive `write_clk` cycles, the write Gray pointer must
 //    change by zero bits (no increment) or exactly one bit (one
 //    increment). Any multi-bit Gray change indicates a bug.
 assert property (@(posedge write_clk) disable iff (!write_rst_n)
-  (p_write_full && p_write_en) |-> ($onehot($past(r_write_ptr_gray) ^ r_write_ptr_gray))
+  $countones($past(r_write_ptr_gray) ^ r_write_ptr_gray) <= 1
 );
 
 // 5. FULL flag must match the standard full condition
@@ -59,40 +59,40 @@ assert property (@(posedge write_clk) disable iff (!write_rst_n)
 
 
 // 6. No unknowns after reset
-//    After reset is deasserted, `wr_full` and the write pointers must
+//    After reset is deasserted, `p_write_full` and the write pointers must
 //    never be X/Z.
 
 
 
-// ## B) Read clock domain (`rd_clk`)
+// ## B) Read clock domain (`read_clk`)
 
 // 7. No read pointer advance when EMPTY
-//    If `rd_empty` is asserted, then a read request must not advance
+//    If `p_read_empty` is asserted, then a read request must not advance
 //    the read pointer. The read Gray pointer must also remain stable.
 assert property (@(posedge read_clk) disable iff (!read_rst_n)
   (p_read_empty && p_read_en) |-> ($stable(r_read_ptr_bin) && $stable(r_read_ptr_gray))
 );
 
 // 8. Read pointer increments by exactly one on an accepted read
-//    When `rd_en` is high and `rd_empty` is low (read accepted), the
+//    When `p_read_en` is high and `p_read_empty` is low (read accepted), the
 //    read binary pointer must increase by exactly 1 on the next cycle.
 assert property (@(posedge read_clk) disable iff (!read_rst_n)
-  (p_read_empty && p_read_en) |-> (r_read_ptr_bin == ($past(r_read_ptr_bin + 1)))
+  (!p_read_empty && p_read_en) |-> (r_read_ptr_bin == ($past(r_read_ptr_bin + 1)))
 );
 
 // 9. Gray pointer must match binary pointer encoding
 //    At all times (outside reset), the read Gray pointer must equal the
 //    Gray encoding of the read binary pointer.
 assert property (@(posedge read_clk) disable iff (!read_rst_n)
-  (p_read_empty && p_read_en) |-> (bin2gray(r_read_ptr_bin) == r_read_ptr_gray)
+  bin2gray(r_read_ptr_bin) == r_read_ptr_gray
 );
 
 // 10. Gray pointer changes by at most one bit per cycle
-//     Between consecutive `rd_clk` cycles, the read Gray pointer must
+//     Between consecutive `read_clk` cycles, the read Gray pointer must
 //     change by zero bits (no increment) or exactly one bit (one
 //     increment).
 assert property (@(posedge read_clk) disable iff (!read_rst_n)
-  (p_read_empty && p_read_en) |-> ($onehot($past(r_read_ptr_gray) ^ r_read_ptr_gray))
+  $countones($past(r_read_ptr_gray) ^ r_read_ptr_gray) <= 1
 );
 
 // 11. EMPTY flag must match the standard empty condition
@@ -102,7 +102,7 @@ assert property (@(posedge read_clk) disable iff (!read_rst_n)
 
 
 // 12. No unknowns after reset
-//     After reset is deasserted, `rd_empty` and the read pointers must
+//     After reset is deasserted, `p_read_empty` and the read pointers must
 //     never be X/Z.
 
 
@@ -115,8 +115,9 @@ assert property (@(posedge read_clk) disable iff (!read_rst_n)
 
 
 // 14. Flags only change on clock edges (no combinational glitching)
-//     Ensure `wr_full` only updates on `wr_clk` edges and `rd_empty` only
-//     updates on `rd_clk` edges (i.e., they are registered outputs and
+//     Ensure `p_write_full` only updates on `write_clk` edges and
+//     `p_read_empty` only updates on `read_clk` edges (i.e., they are
+//     registered outputs and
 //     stable between edges).
 
 
