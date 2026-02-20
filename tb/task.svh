@@ -1,86 +1,86 @@
-// task 01: Reset + Empty/Full inicial
-// - Após reset: p_read_empty=1 e p_write_full=0.
-// - Ponteiros iniciam consistentes.
-// - Sem X em flags/saídas.
+// task 01: Reset + initial Empty/Full
+// - After reset: p_read_empty=1 and p_write_full=0.
+// - Pointers start in a consistent state.
+// - No X on flags/outputs.
 
 // task 02: Smoke write N then read N
-// - Escrever sequência conhecida (0,1,2,...).
-// - Ler tudo depois.
-// - Validar ordem e integridade (sem perda/duplicação).
+// - Write a known sequence (0,1,2,...).
+// - Read everything afterward.
+// - Validate ordering and integrity (no loss/duplication).
 
 // task 03: Interleaved (ping-pong)
-// - Escrever 1, ler 1, repetidamente.
-// - Clocks diferentes (ex.: write 100 MHz, read 60 MHz).
-// - Garantir funcionamento sem depender de encher FIFO.
+// - Write 1, read 1, repeatedly.
+// - Different clocks (e.g., write 100 MHz, read 60 MHz).
+// - Ensure operation does not depend on filling the FIFO.
 
-// task 04: Write clock muito mais rápido que read
-// - Ex.: razão 4:1 (write >> read).
-// - Atingir full várias vezes.
-// - Não aceitar write quando full e sem corrupção.
+// task 04: Write clock much faster than read
+// - Example ratio 4:1 (write >> read).
+// - Hit full multiple times.
+// - No accepted write when full and no corruption.
 
-// task 05: Read clock muito mais rápido que write
-// - Ex.: razão 1:4 (read >> write).
-// - Atingir empty várias vezes.
-// - Não aceitar read quando empty e sem dado inválido.
+// task 05: Read clock much faster than write
+// - Example ratio 1:4 (read >> write).
+// - Hit empty multiple times.
+// - No accepted read when empty and no invalid data.
 
-// task 06: Clocks quase iguais
-// - Ex.: 100 MHz vs 99/101 MHz.
-// - Cobrir phase drift e casos raros de sincronização.
+// task 06: Near-equal clocks
+// - Example 100 MHz vs 99/101 MHz.
+// - Cover phase drift and rare sync corner cases.
 
 // task 07: Jitter / phase randomness
-// - Variação leve no período (ex.: ±1% a ±5%).
-// - Expor casos de alinhamento de borda.
+// - Apply small period variation (e.g., +/-1% to +/-5%).
+// - Expose edge-alignment corner cases.
 
-// task 08: Random bursts de tráfego
-// - wr_en/rd_en aleatórios.
-// - Bursts longos com gaps longos.
-// - Scoreboard valida todos os dados.
+// task 08: Random burst traffic
+// - Random wr_en/rd_en patterns.
+// - Long bursts with long gaps.
+// - Scoreboard validates all data.
 
 // task 09: Burst fill/drain
-// - Encher até full (ou quase), drenar até empty.
-// - Repetir múltiplas vezes.
-// - Checar transições de flags sem instabilidade.
+// - Fill to full (or near full), drain to empty.
+// - Repeat multiple cycles.
+// - Check flag transitions are stable.
 
 // task 10: Sustained throughput
-// - Manter write/read ativos quando possível.
-// - Clocks diferentes.
-// - Verificar 1 transação/ciclo quando aplicável.
+// - Keep write/read active whenever possible.
+// - Different clocks.
+// - Verify 1 transaction/cycle when applicable.
 
 // task 11: Overflow attempt (write while full)
-// - Forçar p_write_en=1 com p_write_full=1 por vários ciclos.
-// - Verificar: ponteiro write não avança.
-// - Verificar: memória/dados não corrompem.
-// - Verificar: recuperação normal ao sair de full.
+// - Force p_write_en=1 while p_write_full=1 for many cycles.
+// - Verify write pointer does not advance.
+// - Verify memory/data is not corrupted.
+// - Verify normal recovery after leaving full.
 
 // task 12: Underflow attempt (read while empty)
-// - Forçar p_read_en=1 com p_read_empty=1.
-// - Verificar: ponteiro read não avança.
-// - Verificar: não há salto de dados.
-// - Verificar: leitura correta quando novos dados chegam.
+// - Force p_read_en=1 while p_read_empty=1.
+// - Verify read pointer does not advance.
+// - Verify no data skipping.
+// - Verify correct reads when new data arrives.
 
-// task 13: Wrap-around (múltiplas voltas)
-// - Rodar 10x DEPTH (ou mais).
-// - Cobrir múltiplos wraps de ponteiro.
-// - Detectar bugs de MSB e full/empty.
+// task 13: Wrap-around (multiple turns)
+// - Run at least 10x DEPTH transactions.
+// - Cover multiple pointer wrap events.
+// - Catch MSB/full/empty comparison bugs.
 
 // task 14: Depth variants
-// - Regressão em DEPTH pequeno (4 ou 8), médio (16), e opcional maior (64).
-// - Capturar bugs de $clog2 e indexação.
+// - Regress on small DEPTH (4 or 8), medium (16), optional larger (64).
+// - Catch $clog2 and indexing bugs.
 
 // task 15: Width variants
-// - Regressão em BITS=8 e BITS=32.
-// - Capturar bugs de packing e memória.
+// - Regress with BITS=8 and BITS=32.
+// - Catch packing and memory-width bugs.
 
-// task 16: Reset simultâneo nos dois domínios
-// - Reset de write/read juntos (fluxo nominal).
-// - Checar retorno limpo ao estado inicial.
+// task 16: Simultaneous reset in both domains
+// - Reset write/read together (nominal flow).
+// - Check clean return to initial state.
 
-// task 17: Reset assimétrico (um domínio resetado, outro rodando)
-// - Ex.: reset write enquanto read continua.
-// - Comportamento deve ser suportado ou explicitamente restrito.
-// - Mesmo sem suporte, não gerar X/glitch grosseiro.
+// task 17: Asymmetric reset (one domain reset, other running)
+// - Example: reset write while read keeps running.
+// - Behavior must be supported or explicitly restricted.
+// - Even if unsupported, avoid severe X/glitch behavior.
 
 // task 18: Reset during traffic
-// - Aplicar reset no meio de writes/reads.
-// - Caracterizar comportamento suportado vs restrito.
-// - Verificar retorno controlado após reset.
+// - Apply reset in the middle of writes/reads.
+// - Characterize supported vs restricted behavior.
+// - Verify controlled recovery after reset.
