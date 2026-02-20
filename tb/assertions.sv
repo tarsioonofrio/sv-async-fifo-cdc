@@ -56,6 +56,22 @@ assert property (@(posedge write_clk) disable iff (!write_rst_n)
 //    computed from the next write Gray pointer compared against the
 //    synchronized read Gray pointer, using the classic two-MSB inversion
 //    rule (Gray-domain full detection).
+//    Explanation:
+//    - FULL is predicted using w_write_ptr_gray_next (next write position).
+//    - FULL is true only when:
+//      1) w_write_ptr_gray_next[MSB] matches ~r_read_ptr_gray_sync2[MSB], and
+//      2) w_write_ptr_gray_next[LSB] matches  r_read_ptr_gray_sync2[LSB].
+//
+//    Table example (3-bit Gray):
+//    +----------------------+----------------------+----------------------+--------------------------+----------------------+-------------------+-----------------------+
+//    | r_read_ptr_gray_sync2| w_write_ptr_gray_next| w_write_ptr_gray_next| ~r_read_ptr_gray_sync2   | w_write_ptr_gray_next| r_read_ptr_gray_  | p_write_full expected |
+//    |                      |                      | [MSB]                | [MSB]                    | [LSB]                | sync2[LSB]        |                       |
+//    +----------------------+----------------------+----------------------+--------------------------+----------------------+-------------------+-----------------------+
+//    | 000                  | 110                  | 11                   | 11                       | 0                    | 0                 | 1                     |
+//    | 000                  | 010                  | 01                   | 11                       | 0                    | 0                 | 0                     |
+//    | 001                  | 111                  | 11                   | 11                       | 1                    | 1                 | 1                     |
+//    | 001                  | 011                  | 01                   | 11                       | 1                    | 1                 | 0                     |
+//    +----------------------+----------------------+----------------------+--------------------------+----------------------+-------------------+-----------------------+
 assert property (@(posedge write_clk) disable iff (!write_rst_n)
   p_write_full == (
     (w_write_ptr_gray_next[SIZE_LOG2:SIZE_LOG2-1] == ~r_read_ptr_gray_sync2[SIZE_LOG2:SIZE_LOG2-1])
@@ -63,8 +79,6 @@ assert property (@(posedge write_clk) disable iff (!write_rst_n)
     (w_write_ptr_gray_next[SIZE_LOG2-2:0] == r_read_ptr_gray_sync2[SIZE_LOG2-2:0])
   )
 );
-
-
 
 // 6. No unknowns after reset
 //    After reset is deasserted, `p_write_full` and the write pointers must
