@@ -56,6 +56,14 @@ assert property (@(posedge write_clk) disable iff (!write_rst_n)
 //    computed from the next write Gray pointer compared against the
 //    synchronized read Gray pointer, using the classic two-MSB inversion
 //    rule (Gray-domain full detection).
+assert property (@(posedge write_clk) disable iff (!write_rst_n)
+  p_write_full == (
+    (w_write_ptr_gray_next[SIZE_LOG2:SIZE_LOG2-1] == ~r_read_ptr_gray_sync2[SIZE_LOG2:SIZE_LOG2-1])
+    &&
+    (w_write_ptr_gray_next[SIZE_LOG2-2:0] == r_read_ptr_gray_sync2[SIZE_LOG2-2:0])
+  )
+);
+
 
 
 // 6. No unknowns after reset
