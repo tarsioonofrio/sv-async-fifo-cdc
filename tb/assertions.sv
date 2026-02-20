@@ -124,11 +124,16 @@ assert property (@(posedge read_clk) disable iff (!read_rst_n)
 //     The registered/empty output must equal the “empty_next” condition
 //     computed from the next read Gray pointer compared against the
 //     synchronized write Gray pointer (Gray-domain empty detection).
-
+assert property (@(posedge read_clk) disable iff (!read_rst_n)
+  p_read_empty == (w_read_ptr_gray_next == r_write_ptr_gray_sync2)
+);
 
 // 12. No unknowns after reset
 //     After reset is deasserted, `p_read_empty` and the read pointers must
 //     never be X/Z.
+assert property (@(posedge read_clk)
+  read_rst_n |-> !$isunknown(p_read_empty) && !$isunknown(r_read_ptr_bin) && !$isunknown(r_read_ptr_gray)
+);
 
 
 // ## C) Optional “nice-to-have” assertions (strong portfolio bonus)
