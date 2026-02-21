@@ -153,7 +153,7 @@ for (int i = 0; i < SIZE; i++) begin
 
   p_read_en = 1;
   @(posedge read_clk);
-  for (int i = 0; i < exp_q.size(); i++) begin
+  for (int i = 0; i < queue.size(); i++) begin
     @(posedge read_clk);
     assert (p_read_data == queue[i]) else begin
       $error("test_write_clock_faster ERR %0d != p_read_data = %0d", i, queue[i]);

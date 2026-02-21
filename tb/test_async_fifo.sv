@@ -92,8 +92,8 @@ module tb;
     void'($value$plusargs("TEST=%s", testname));
     void'($value$plusargs("SEED=%d", seed));
 
-    write_half_period_ns = 0.314159265359;
-    read_half_period_ns = 0.2718281828;
+    write_half_period_ns = WRITE_HALF_PERIOD_NS;
+    read_half_period_ns = READ_HALF_PERIOD_NS;
 
     $display("=== Testbench starting: TEST=%s SEED=%0d ===", testname, seed);
 
@@ -111,6 +111,20 @@ module tb;
       task_reset();
       test_interleaved(
         error_count,
+        p_write_en,
+        p_read_en,
+        p_write_full,
+        p_read_empty,
+        p_write_data,
+        p_read_data,
+        write_clk,
+        read_clk
+      );
+      task_reset();
+      test_write_clock_faster(
+        error_count,
+        write_half_period_ns,
+        read_half_period_ns,
         p_write_en,
         p_read_en,
         p_write_full,
@@ -146,8 +160,23 @@ module tb;
         write_clk,
         read_clk
       );
+    end else if (testname == "write_clock") begin
+      task_reset();
+      test_write_clock_faster(
+        error_count,
+        write_half_period_ns,
+        read_half_period_ns,
+        p_write_en,
+        p_read_en,
+        p_write_full,
+        p_read_empty,
+        p_write_data,
+        p_read_data,
+        write_clk,
+        read_clk
+      );
     end else begin
-      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved", testname);
+      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved|write_clock", testname);
     end
 
     $display("\n*** TIME %0f ***\n", $realtime);
