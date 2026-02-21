@@ -7,24 +7,27 @@ task automatic test_reset_empty_full_start(
   ref logic read_rst_n,
   ref logic p_read_en,
   ref logic p_write_en,
-  input logic p_write_full,
-  input logic p_read_empty,
-  input logic clk
+  ref logic p_write_full,
+  ref logic p_read_empty,
+  ref logic write_clk,
+  ref logic read_clk
 );
   write_rst_n = 0;
   read_rst_n = 0;
   p_read_en = 0;
   p_write_en = 0;
-  @(posedge clk);
+
+  repeat (2) @(posedge write_clk);
+  repeat (2) @(posedge read_clk);
+
   write_rst_n = 1;
   read_rst_n = 1;
-  @(posedge clk);
 
-  assert (p_write_full == 0) $display("p_write_full OK");
-    else $error("p_write_full ERR");
+  repeat (2) @(posedge write_clk);
+  repeat (2) @(posedge read_clk);
 
-  assert (p_read_empty == 1) $display("p_read_empty OK");
-    else $error("p_read_empty ERR");
+  assert (p_write_full == 0) else $error("p_write_full ERR");
+  assert (p_read_empty == 1) else $error("p_read_empty ERR");
 endtask
 
 

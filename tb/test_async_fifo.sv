@@ -66,7 +66,8 @@ module tb;
       p_write_en,
       p_write_full,
       p_read_empty,
-      clk
+      write_clk,
+      read_clk
     );
     // Start processamento
     $display("=== Start processing ===");
