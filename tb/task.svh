@@ -3,16 +3,16 @@
 // - Pointers start in a consistent state.
 // - No X on flags/outputs.
 task automatic test_reset_empty_full_start(
-  ref int unsigned error_count,
-  ref logic write_rst_n,
-  ref logic read_rst_n,
-  ref logic p_write_en,
-  ref logic p_read_en,
-  ref logic p_write_full,
-  ref logic p_read_empty,
-  ref logic write_clk,
-  ref logic read_clk
-);
+    ref int unsigned error_count,
+    ref logic write_rst_n,
+    ref logic read_rst_n,
+    ref logic p_write_en,
+    ref logic p_read_en,
+    ref logic p_write_full,
+    ref logic p_read_empty,
+    ref logic write_clk,
+    ref logic read_clk
+  );
   write_rst_n = 0;
   read_rst_n = 0;
   p_read_en = 0;
@@ -43,37 +43,37 @@ endtask
 // - Read everything afterward.
 // - Validate ordering and integrity (no loss/duplication).
 task automatic test_smoke_writen_readn(
-  ref int unsigned error_count,
-  ref logic p_write_en,
-  ref logic p_read_en,
-  ref logic [BITS-1:0] p_write_data,
-  ref logic [BITS-1:0] p_read_data,
-  ref logic write_clk,
-  ref logic read_clk
-);
+    ref int unsigned error_count,
+    ref logic p_write_en,
+    ref logic p_read_en,
+    ref logic [BITS-1:0] p_write_data,
+    ref logic [BITS-1:0] p_read_data,
+    ref logic write_clk,
+    ref logic read_clk
+  );
 
-@(posedge write_clk);
-p_write_en = 1;
-for (int i = 0; i < SIZE; i++) begin
-  p_write_data = i;
   @(posedge write_clk);
-end
-
-@(posedge write_clk);
-p_write_en = 0;
-@(posedge read_clk);
-
-p_read_en = 1;
-@(posedge read_clk);
-for (int i = 0; i < SIZE; i++) begin
-  @(posedge read_clk);
-  assert (p_read_data == i) else begin
-    $error("test_smoke_writen_readn ERR %0d != p_read_data = %0d", i, p_read_data);
-    error_count++;
+  p_write_en = 1;
+  for (int i = 0; i < SIZE; i++) begin
+    p_write_data = i;
+    @(posedge write_clk);
   end
-end
 
-p_read_en = 0;
+  @(posedge write_clk);
+  p_write_en = 0;
+  @(posedge read_clk);
+
+  p_read_en = 1;
+  @(posedge read_clk);
+  for (int i = 0; i < SIZE; i++) begin
+    @(posedge read_clk);
+    assert (p_read_data == i) else begin
+      $error("test_smoke_writen_readn ERR %0d != p_read_data = %0d", i, p_read_data);
+      error_count++;
+    end
+  end
+
+  p_read_en = 0;
 endtask
 
 // task 03: Interleaved (ping-pong)
@@ -81,35 +81,35 @@ endtask
 // - Different clocks (e.g., write 100 MHz, read 60 MHz).
 // - Ensure operation does not depend on filling the FIFO.
 task automatic test_interleaved(
-  ref int unsigned error_count,
-  ref logic p_write_en,
-  ref logic p_read_en,
-  ref logic p_write_full,
-  ref logic p_read_empty,
-  ref logic [BITS-1:0] p_write_data,
-  ref logic [BITS-1:0] p_read_data,
-  ref logic write_clk,
-  ref logic read_clk
-);
+    ref int unsigned error_count,
+    ref logic p_write_en,
+    ref logic p_read_en,
+    ref logic p_write_full,
+    ref logic p_read_empty,
+    ref logic [BITS-1:0] p_write_data,
+    ref logic [BITS-1:0] p_read_data,
+    ref logic write_clk,
+    ref logic read_clk
+  );
 
-@(posedge write_clk);
-@(posedge read_clk);
-for (int i = 0; i < SIZE; i++) begin
-  wait (p_read_empty && !p_write_full);
-  p_write_en = 1;
-  p_write_data = i;
   @(posedge write_clk);
-  p_write_en = 0;
-  wait (!p_read_empty);
-  p_read_en = 1;
   @(posedge read_clk);
-  p_read_en = 0;
-  @(posedge read_clk);
-  assert (p_read_data == i) else begin
-    $error("test_interleaved ERR %0d != p_read_data = %0d", i, p_read_data);
-    error_count++;
+  for (int i = 0; i < SIZE; i++) begin
+    wait (p_read_empty && !p_write_full);
+    p_write_en = 1;
+    p_write_data = i;
+    @(posedge write_clk);
+    p_write_en = 0;
+    wait (!p_read_empty);
+    p_read_en = 1;
+    @(posedge read_clk);
+    p_read_en = 0;
+    @(posedge read_clk);
+    assert (p_read_data == i) else begin
+      $error("test_interleaved ERR %0d != p_read_data = %0d", i, p_read_data);
+      error_count++;
+    end
   end
-end
 endtask
 
 // task 04: Write clock much faster than read
@@ -117,65 +117,64 @@ endtask
 // - Hit full multiple times.
 // - No accepted write when full and no corruption.
 task automatic test_write_clock_faster(
-  ref int unsigned error_count,
-  ref realtime write_half_period_ns,
-  ref realtime read_half_period_ns,
-  ref logic p_write_en,
-  ref logic p_read_en,
-  ref logic p_write_full,
-  ref logic p_read_empty,
-  ref logic [BITS-1:0] p_write_data,
-  ref logic [BITS-1:0] p_read_data,
-  ref logic write_clk,
-  ref logic read_clk
-);
+    ref int unsigned error_count,
+    ref realtime write_half_period_ns,
+    ref realtime read_half_period_ns,
+    ref logic p_write_en,
+    ref logic p_read_en,
+    ref logic p_write_full,
+    ref logic p_read_empty,
+    ref logic [BITS-1:0] p_write_data,
+    ref logic [BITS-1:0] p_read_data,
+    ref logic write_clk,
+    ref logic read_clk
+  );
 
-logic [BITS-1:0] queue[$];
-logic [BITS-1:0] queue_data;
+  logic [BITS-1:0] queue[$];
+  logic [BITS-1:0] queue_data;
 
-write_half_period_ns = READ_HALF_PERIOD_NS / 7 + READ_HALF_PERIOD_NS / 13;
-@(posedge write_clk);
+  write_half_period_ns = READ_HALF_PERIOD_NS / 7 + READ_HALF_PERIOD_NS / 13;
+  @(posedge write_clk);
 
-for (int i = 0; i < SIZE; i++) begin
-  for (int i = 0; i < SIZE*3; i++) begin
-    p_write_en = 1;
-    p_write_data = i;
+  for (int i = 0; i < SIZE; i++) begin
+    for (int i = 0; i < SIZE*3; i++) begin
+      p_write_en = 1;
+      p_write_data = i;
+      @(posedge write_clk);
+      p_write_en = 0;
+      if (!p_write_full) begin
+        queue.push_back(i);
+      end
+      @(posedge write_clk);
+    end
+
     @(posedge write_clk);
     p_write_en = 0;
-    if (!p_write_full) begin
-      queue.push_back(i);
-    end
-    @(posedge write_clk);
-  end
-
-  @(posedge write_clk);
-  p_write_en = 0;
-  @(posedge read_clk);
-
-  // $write("queue: ");
-  // for (int k = 0; k < queue.size(); k++) begin
-  //   $write("%0d, ", queue[k]);
-  // end
-  // $display("");
-
-  wait(!p_read_empty);
-  p_read_en = 1;
-  @(posedge read_clk);
-
-  while (queue.size() !=0) begin
     @(posedge read_clk);
-    queue_data = queue.pop_front();
-    assert (p_read_data == queue_data) else begin
-      $error("test_write_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
-      error_count++;
-    end
-  end
-  queue = {};
-  p_read_en = 0;
-end
-write_half_period_ns = WRITE_HALF_PERIOD_NS;
-read_half_period_ns = READ_HALF_PERIOD_NS;
 
+    // $write("queue: ");
+    // for (int k = 0; k < queue.size(); k++) begin
+    //   $write("%0d, ", queue[k]);
+    // end
+    // $display("");
+
+    wait(!p_read_empty);
+    p_read_en = 1;
+    @(posedge read_clk);
+
+    while (queue.size() !=0) begin
+      @(posedge read_clk);
+      queue_data = queue.pop_front();
+      assert (p_read_data == queue_data) else begin
+        $error("test_write_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
+        error_count++;
+      end
+    end
+    queue = {};
+    p_read_en = 0;
+  end
+  write_half_period_ns = WRITE_HALF_PERIOD_NS;
+  read_half_period_ns = READ_HALF_PERIOD_NS;
 endtask
 
 // task 05: Read clock much faster than write
@@ -184,61 +183,61 @@ endtask
 // - No accepted read when empty and no invalid data.
 
 task automatic test_read_clock_faster(
-  ref int unsigned error_count,
-  ref realtime write_half_period_ns,
-  ref realtime read_half_period_ns,
-  ref logic p_write_en,
-  ref logic p_read_en,
-  ref logic p_write_full,
-  ref logic p_read_empty,
-  ref logic [BITS-1:0] p_write_data,
-  ref logic [BITS-1:0] p_read_data,
-  ref logic write_clk,
-  ref logic read_clk
-);
+    ref int unsigned error_count,
+    ref realtime write_half_period_ns,
+    ref realtime read_half_period_ns,
+    ref logic p_write_en,
+    ref logic p_read_en,
+    ref logic p_write_full,
+    ref logic p_read_empty,
+    ref logic [BITS-1:0] p_write_data,
+    ref logic [BITS-1:0] p_read_data,
+    ref logic write_clk,
+    ref logic read_clk
+  );
 
-logic [BITS-1:0] queue[$];
-logic [BITS-1:0] queue_data;
+  logic [BITS-1:0] queue[$];
+  logic [BITS-1:0] queue_data;
 
-read_half_period_ns = WRITE_HALF_PERIOD_NS / 7 + WRITE_HALF_PERIOD_NS / 13;
-@(posedge write_clk);
-
-for (int i = 0; i < SIZE; i++) begin
-  for (int i = 0; i < SIZE-1; i++) begin
-    p_write_en = 1;
-    p_write_data = i;
-    @(posedge write_clk);
-  end
-
+  read_half_period_ns = WRITE_HALF_PERIOD_NS / 7 + WRITE_HALF_PERIOD_NS / 13;
   @(posedge write_clk);
-  p_write_en = 0;
-  @(posedge read_clk);
 
-  // $write("queue: ");
-  // for (int k = 0; k < queue.size(); k++) begin
-  //   $write("%0d, ", queue[k]);
-  // end
-  // $display("");
+  for (int i = 0; i < SIZE; i++) begin
+    for (int i = 0; i < SIZE-1; i++) begin
+      p_write_en = 1;
+      p_write_data = i;
+      @(posedge write_clk);
+    end
 
-  wait(!p_read_empty);
-  @(posedge read_clk);
-
-  for (int i = 0; i < SIZE*3; i++) begin
-    p_read_en = 1;
+    @(posedge write_clk);
+    p_write_en = 0;
     @(posedge read_clk);
-    if (!p_read_empty) begin
-      queue_data = queue.pop_front();
-      assert (p_read_data == queue_data) else begin
-        $error("test_write_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
-        error_count++;
+
+    // $write("queue: ");
+    // for (int k = 0; k < queue.size(); k++) begin
+    //   $write("%0d, ", queue[k]);
+    // end
+    // $display("");
+
+    wait(!p_read_empty);
+    @(posedge read_clk);
+
+    for (int i = 0; i < SIZE*3; i++) begin
+      p_read_en = 1;
+      @(posedge read_clk);
+      if (!p_read_empty) begin
+        queue_data = queue.pop_front();
+        assert (p_read_data == queue_data) else begin
+          $error("test_write_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
+          error_count++;
+        end
       end
     end
+    queue = {};
+    p_read_en = 0;
   end
-  queue = {};
-  p_read_en = 0;
-end
-write_half_period_ns = WRITE_HALF_PERIOD_NS;
-read_half_period_ns = READ_HALF_PERIOD_NS;
+  write_half_period_ns = WRITE_HALF_PERIOD_NS;
+  read_half_period_ns = READ_HALF_PERIOD_NS;
 endtask
 
 // task 06: Near-equal clocks
