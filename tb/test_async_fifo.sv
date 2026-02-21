@@ -29,7 +29,9 @@ module tb;
   logic clk, rstn;
 
   int unsigned error_count = 0;
-
+  // plusargs
+  string testname;
+  int seed;
 
   async_fifo
     #(
@@ -62,37 +64,46 @@ module tb;
     $dumpfile("dump.vcd");
     $dumpvars(0, tb);
 
-    test_reset_empty_full_start(
-      error_count,
-      write_rst_n,
-      read_rst_n,
-      p_write_en,
-      p_read_en,
-      p_write_full,
-      p_read_empty,
-      write_clk,
-      read_clk
-    );
+    // defaults
+    testname = "";
+    seed     = 7;
 
-    test_smoke_writen_readn(
-      error_count,
-      p_write_en,
-      p_read_en,
-      p_write_data,
-      p_read_data,
-      write_clk,
-      read_clk
-    );
+    void'($value$plusargs("TEST=%s", testname));
+    void'($value$plusargs("SEED=%d", seed));
 
-    test_interleaved(
-      error_count,
-      p_write_en,
-      p_read_en,
-      p_write_data,
-      p_read_data,
-      write_clk,
-      read_clk
-    );
+    $display("=== Testbench starting: TEST=%s SEED=%0d ===", testname, seed);
+    if (testname == "reset" || testname == "")
+      test_reset_empty_full_start(
+        error_count,
+        write_rst_n,
+        read_rst_n,
+        p_write_en,
+        p_read_en,
+        p_write_full,
+        p_read_empty,
+        write_clk,
+        read_clk
+      );
+    else if (testname == "smoke" || testname == "")
+      test_smoke_writen_readn(
+        error_count,
+        p_write_en,
+        p_read_en,
+        p_write_data,
+        p_read_data,
+        write_clk,
+        read_clk
+      );
+    else if (testname == "interleaved" || testname == "")
+      test_interleaved(
+        error_count,
+        p_write_en,
+        p_read_en,
+        p_write_data,
+        p_read_data,
+        write_clk,
+        read_clk
+      );
 
     $display("\n*** TIME %0f ***\n", $realtime);
 
