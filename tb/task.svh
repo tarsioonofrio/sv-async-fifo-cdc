@@ -133,7 +133,7 @@ task automatic test_write_clock_faster(
 logic [BITS-1:0] queue[$];
 logic [BITS-1:0] queue_data;
 
-write_half_period_ns = READ_HALF_PERIOD_NS / 7 + 0.1357;
+write_half_period_ns = READ_HALF_PERIOD_NS / 7 + READ_HALF_PERIOD_NS / 13;
 @(posedge write_clk);
 
 for (int i = 0; i < SIZE; i++) begin
