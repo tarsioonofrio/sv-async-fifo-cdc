@@ -28,6 +28,8 @@ module tb;
 
   logic clk, rstn;
 
+  realtime write_half_period_ns, read_half_period_ns;
+
   int unsigned error_count = 0;
   // plusargs
   string testname;
@@ -66,13 +68,14 @@ module tb;
     );
 
 
+
   initial clk = 0;
   always #0.5 clk = ~clk;
 
   initial write_clk = 0;
-  always #0.314159265359 write_clk = ~write_clk;
+  always #write_half_period_ns write_clk = ~write_clk;
   initial read_clk = 0;
-  always #0.2718281828 read_clk = ~read_clk;
+  always #read_half_period_ns read_clk = ~read_clk;
 
 
   initial begin
@@ -85,6 +88,9 @@ module tb;
 
     void'($value$plusargs("TEST=%s", testname));
     void'($value$plusargs("SEED=%d", seed));
+
+    write_half_period_ns = 0.314159265359;
+    read_half_period_ns = 0.2718281828;
 
     $display("=== Testbench starting: TEST=%s SEED=%0d ===", testname, seed);
 
