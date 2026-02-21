@@ -69,6 +69,30 @@ endtask
 // - Write 1, read 1, repeatedly.
 // - Different clocks (e.g., write 100 MHz, read 60 MHz).
 // - Ensure operation does not depend on filling the FIFO.
+task automatic test_interleaved(
+  ref logic p_write_en,
+  ref logic p_read_en,
+  ref logic [BITS-1:0] p_write_data,
+  ref logic [BITS-1:0] p_read_data,
+  ref logic write_clk,
+  ref logic read_clk
+);
+
+@(posedge read_clk);
+for (int i = 0; i < SIZE; i++) begin
+  p_write_en = 1;
+  @(posedge read_clk);
+  p_write_data = i;
+  p_write_en = 0;
+  @(posedge read_clk);
+  p_write_en = 0;
+  p_read_en = 1;
+  @(posedge read_clk);
+  p_read_en = 0;
+  @(posedge read_clk);
+  assert (p_read_data == i) else $error("test_interleaved ERR %0d != p_read_data = %0d", i, p_read_data);
+end
+endtask
 
 // task 04: Write clock much faster than read
 // - Example ratio 4:1 (write >> read).
