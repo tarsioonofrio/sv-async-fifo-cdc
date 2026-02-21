@@ -43,18 +43,24 @@ task automatic test_smoke_writen_readn(
   ref logic write_clk,
   ref logic read_clk
 );
-for (int i = 0; i < SIZE-1; i++) begin
-  @(posedge write_clk);
+
+@(posedge read_clk);
+for (int i = 0; i < SIZE; i++) begin
   p_write_en = 1;
   p_write_data = i;
+  @(posedge write_clk);
 end
-p_write_en = 0;
 
-for (int i = 0; i < SIZE-1; i++) begin
-  @(posedge read_clk);
+@(posedge read_clk);
+p_write_en = 0;
+@(posedge read_clk);
+
+for (int i = 0; i < SIZE; i++) begin
   p_read_en = 1;
-  assert (p_read_data == i) else $error("test_smoke_writen_readn ERR");
+  @(posedge read_clk);
+  assert (p_read_data == i) else $error("test_smoke_writen_readn ERR p_read_data %0d != %0d", p_read_data, i);
 end
+
 p_read_en = 0;
 endtask
 
