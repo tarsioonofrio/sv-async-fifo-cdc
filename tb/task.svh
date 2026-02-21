@@ -1,3 +1,5 @@
+// A) Basic functionality (sanity)
+
 // task 01: Reset + initial Empty/Full
 // - After reset: p_read_empty=1 and p_write_full=0.
 // - Pointers start in a consistent state.
@@ -112,6 +114,9 @@ task automatic test_interleaved(
   end
 endtask
 
+
+// B) Clock stress (real-world CDC)
+
 // task 04: Write clock much faster than read
 // - Example ratio 4:1 (write >> read).
 // - Hit full multiple times.
@@ -181,7 +186,6 @@ endtask
 // - Example ratio 1:4 (read >> write).
 // - Hit empty multiple times.
 // - No accepted read when empty and no invalid data.
-
 task automatic test_read_clock_faster(
     ref int unsigned error_count,
     ref realtime write_half_period_ns,
@@ -213,12 +217,6 @@ task automatic test_read_clock_faster(
     p_write_en = 0;
     @(posedge read_clk);
 
-    // $write("queue: ");
-    // for (int k = 0; k < queue.size(); k++) begin
-    //   $write("%0d, ", queue[k]);
-    // end
-    // $display("");
-
     wait(!p_read_empty);
     @(posedge read_clk);
 
@@ -247,6 +245,9 @@ endtask
 // task 07: Jitter / phase randomness
 // - Apply small period variation (e.g., +/-1% to +/-5%).
 // - Expose edge-alignment corner cases.
+
+
+// C) Traffic stress (bursts and backpressure)
 
 // task 08: Random burst traffic
 // - Random wr_en/rd_en patterns.
@@ -287,6 +288,9 @@ endtask
 // task 15: Width variants
 // - Regress with BITS=8 and BITS=32.
 // - Catch packing and memory-width bugs.
+
+
+// E) Resets (very important in CDC)
 
 // task 16: Simultaneous reset in both domains
 // - Reset write/read together (nominal flow).

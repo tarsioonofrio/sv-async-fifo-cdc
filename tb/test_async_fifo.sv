@@ -134,6 +134,20 @@ module tb;
         write_clk,
         read_clk
       );
+      task_reset();
+      test_read_clock_faster(
+        error_count,
+        write_half_period_ns,
+        read_half_period_ns,
+        p_write_en,
+        p_read_en,
+        p_write_full,
+        p_read_empty,
+        p_write_data,
+        p_read_data,
+        write_clk,
+        read_clk
+      );
     end else if (testname == "reset") begin
       task_reset();
     end else if (testname == "smoke") begin
@@ -175,8 +189,23 @@ module tb;
         write_clk,
         read_clk
       );
+    end else if (testname == "read-clock-faster") begin
+      task_reset();
+      test_read_clock_faster(
+        error_count,
+        write_half_period_ns,
+        read_half_period_ns,
+        p_write_en,
+        p_read_en,
+        p_write_full,
+        p_read_empty,
+        p_write_data,
+        p_read_data,
+        write_clk,
+        read_clk
+      );
     end else begin
-      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved|write-clock-faster", testname);
+      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved|write-clock-faster|read-clock-faster", testname);
     end
 
     $display("\n*** TIME %0f ***\n", $realtime);
