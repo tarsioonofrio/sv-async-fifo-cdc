@@ -2,6 +2,31 @@
 // - After reset: p_read_empty=1 and p_write_full=0.
 // - Pointers start in a consistent state.
 // - No X on flags/outputs.
+task automatic test_reset_empty_full_start(
+  ref logic write_rst_n,
+  ref logic read_rst_n,
+  ref logic p_read_en,
+  ref logic p_write_en,
+  input logic p_write_full,
+  input logic p_read_empty,
+  input logic clk
+);
+  write_rst_n = 0;
+  read_rst_n = 0;
+  p_read_en = 0;
+  p_write_en = 0;
+  @(posedge clk);
+  write_rst_n = 1;
+  read_rst_n = 1;
+  @(posedge clk);
+
+  assert (p_write_full == 0) $display("p_write_full OK");
+    else $error("p_write_full ERR");
+
+  assert (p_read_empty == 1) $display("p_read_empty OK");
+    else $error("p_read_empty ERR");
+endtask
+
 
 // task 02: Smoke write N then read N
 // - Write a known sequence (0,1,2,...).

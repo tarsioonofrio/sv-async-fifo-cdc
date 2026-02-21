@@ -59,15 +59,15 @@ module tb;
     $dumpfile("dump.vcd");
     $dumpvars(0, tb);
 
-    write_rst_n = 0;
-    read_rst_n = 0;
-    @(posedge clk);
-    write_rst_n = 1;
-    read_rst_n = 1;
-    p_read_en <= 0;
-    p_write_en <= 0;
-    @(posedge clk);
-
+    test_reset_empty_full_start(
+      write_rst_n,
+      read_rst_n,
+      p_read_en,
+      p_write_en,
+      p_write_full,
+      p_read_empty,
+      clk
+    );
     // Start processamento
     $display("=== Start processing ===");
 
