@@ -9,7 +9,14 @@ vlog -work work -svinputport=relaxed ../tb/test_async_fifo.sv
 vlog -work work -svinputport=relaxed ../tb/assertions.sv
 # to show FSM
 # vsim -voptargs=+acc -t ps -fsmdebug -coverage -debugDB work.tb
-vsim -voptargs=+acc -t ps work.tb
+set plusargs {}
+if {[info exists env(TEST)] && $env(TEST) ne ""} {
+  lappend plusargs "+TEST=$env(TEST)"
+}
+if {[info exists env(SEED)] && $env(SEED) ne ""} {
+  lappend plusargs "+SEED=$env(SEED)"
+}
+eval vsim -voptargs=+acc -t ps work.tb $plusargs
 set StdArithNoWarnings 1
 set StdVitalGlitchNoWarnings 1
 if {[catch {set is_batch [batch_mode]}]} {
