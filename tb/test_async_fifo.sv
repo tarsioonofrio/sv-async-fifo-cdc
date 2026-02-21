@@ -72,7 +72,7 @@ module tb;
     void'($value$plusargs("SEED=%d", seed));
 
     $display("=== Testbench starting: TEST=%s SEED=%0d ===", testname, seed);
-    if (testname == "reset" || testname == "")
+    if (testname == "") begin
       test_reset_empty_full_start(
         error_count,
         write_rst_n,
@@ -84,7 +84,6 @@ module tb;
         write_clk,
         read_clk
       );
-    else if (testname == "smoke" || testname == "")
       test_smoke_writen_readn(
         error_count,
         p_write_en,
@@ -94,7 +93,6 @@ module tb;
         write_clk,
         read_clk
       );
-    else if (testname == "interleaved" || testname == "")
       test_interleaved(
         error_count,
         p_write_en,
@@ -104,6 +102,41 @@ module tb;
         write_clk,
         read_clk
       );
+    end else if (testname == "reset") begin
+      test_reset_empty_full_start(
+        error_count,
+        write_rst_n,
+        read_rst_n,
+        p_write_en,
+        p_read_en,
+        p_write_full,
+        p_read_empty,
+        write_clk,
+        read_clk
+      );
+    end else if (testname == "smoke") begin
+      test_smoke_writen_readn(
+        error_count,
+        p_write_en,
+        p_read_en,
+        p_write_data,
+        p_read_data,
+        write_clk,
+        read_clk
+      );
+    end else if (testname == "interleaved") begin
+      test_interleaved(
+        error_count,
+        p_write_en,
+        p_read_en,
+        p_write_data,
+        p_read_data,
+        write_clk,
+        read_clk
+      );
+    end else begin
+      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved", testname);
+    end
 
     $display("\n*** TIME %0f ***\n", $realtime);
 
