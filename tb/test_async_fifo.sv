@@ -1,4 +1,3 @@
-`include "task.svh"
 
 module tb;
   timeunit 1ns;
@@ -6,6 +5,8 @@ module tb;
 
   localparam BITS=32; // Width of each FIFO entry.
   localparam SIZE=16; // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
+
+  `include "task.svh"
 
   // Write Domain (write_clk)
   logic write_clk;               // Write clock
@@ -62,33 +63,26 @@ module tb;
     test_reset_empty_full_start(
       write_rst_n,
       read_rst_n,
-      p_read_en,
       p_write_en,
+      p_read_en,
       p_write_full,
       p_read_empty,
       write_clk,
       read_clk
     );
-    // Start processamento
-    $display("=== Start processing ===");
+
+  test_smoke_writen_readn(
+    p_write_en,
+    p_read_en,
+    p_write_data,
+    p_read_data,
+    write_clk,
+    read_clk
+  );
 
 
-    for (int i = 0; i < SIZE*2-1; i++) begin
-      @(posedge write_clk);
-      p_write_en <= 1;
-      p_write_data <= i;
-    end
-    p_write_en <= 0;
-
-    for (int i = 0; i < SIZE*2-1; i++) begin
-      @(posedge read_clk);
-      p_read_en <= 1;
-      $display("Time %0t | Index = %0d | Output = %0d", $time, i, p_read_data);
-    end
-    p_read_en <= 0;
 
     $display("\n*** TIME %0f ***\n", $realtime);
-    $display("=== No errors - End simulation ===");
     $finish;
   end
 
