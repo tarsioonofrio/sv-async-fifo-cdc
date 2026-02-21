@@ -26,4 +26,4 @@ if {!$is_batch} {
   do wave.do
 }
 
-run 100ns
+run 10000ns
