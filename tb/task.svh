@@ -137,11 +137,9 @@ write_half_period_ns = READ_HALF_PERIOD_NS * 7 + 0.1357;
 
 for (int i = 0; i < SIZE; i++) begin
   for (int i = 0; i < SIZE*3; i++) begin
-    if (p_write_full) begin
-      p_write_en = 0;
-    end else begin
-      p_write_en = 1;
-      p_write_data = i;
+    p_write_en = 1;
+    p_write_data = i;
+    if (!p_write_full) begin
       queue.push_back(i);
     end
     @(posedge write_clk);
@@ -151,12 +149,18 @@ for (int i = 0; i < SIZE; i++) begin
   p_write_en = 0;
   @(posedge read_clk);
 
+  $write("queue: ");
+  for (int k = 0; k < queue.size(); k++) begin
+    $write("%0d, ", queue[k]);
+  end
+  $display("");
+
   p_read_en = 1;
   @(posedge read_clk);
   for (int i = 0; i < queue.size(); i++) begin
     @(posedge read_clk);
     assert (p_read_data == queue[i]) else begin
-      $error("test_write_clock_faster ERR %0d != p_read_data = %0d", i, queue[i]);
+      $error("test_write_clock_faster ERR %0d != p_read_data = %0d", queue[i], p_read_data);
       error_count++;
     end
     queue.pop_front();

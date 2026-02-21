@@ -160,7 +160,7 @@ module tb;
         write_clk,
         read_clk
       );
-    end else if (testname == "write_clock") begin
+    end else if (testname == "write-clock") begin
       task_reset();
       test_write_clock_faster(
         error_count,
@@ -176,7 +176,7 @@ module tb;
         read_clk
       );
     end else begin
-      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved|write_clock", testname);
+      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved|write-clock", testname);
     end
 
     $display("\n*** TIME %0f ***\n", $realtime);
