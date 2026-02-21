@@ -178,12 +178,68 @@ read_half_period_ns = READ_HALF_PERIOD_NS;
 
 endtask
 
-
-
 // task 05: Read clock much faster than write
 // - Example ratio 1:4 (read >> write).
 // - Hit empty multiple times.
 // - No accepted read when empty and no invalid data.
+
+task automatic test_read_clock_faster(
+  ref int unsigned error_count,
+  ref realtime write_half_period_ns,
+  ref realtime read_half_period_ns,
+  ref logic p_write_en,
+  ref logic p_read_en,
+  ref logic p_write_full,
+  ref logic p_read_empty,
+  ref logic [BITS-1:0] p_write_data,
+  ref logic [BITS-1:0] p_read_data,
+  ref logic write_clk,
+  ref logic read_clk
+);
+
+logic [BITS-1:0] queue[$];
+logic [BITS-1:0] queue_data;
+
+read_half_period_ns = WRITE_HALF_PERIOD_NS / 7 + WRITE_HALF_PERIOD_NS / 13;
+@(posedge write_clk);
+
+for (int i = 0; i < SIZE; i++) begin
+  for (int i = 0; i < SIZE-1; i++) begin
+    p_write_en = 1;
+    p_write_data = i;
+    @(posedge write_clk);
+  end
+
+  @(posedge write_clk);
+  p_write_en = 0;
+  @(posedge read_clk);
+
+  // $write("queue: ");
+  // for (int k = 0; k < queue.size(); k++) begin
+  //   $write("%0d, ", queue[k]);
+  // end
+  // $display("");
+
+  wait(!p_read_empty);
+  @(posedge read_clk);
+
+  for (int i = 0; i < SIZE*3; i++) begin
+    p_read_en = 1;
+    @(posedge read_clk);
+    if (!p_read_empty) begin
+      queue_data = queue.pop_front();
+      assert (p_read_data == queue_data) else begin
+        $error("test_write_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
+        error_count++;
+      end
+    end
+  end
+  queue = {};
+  p_read_en = 0;
+end
+write_half_period_ns = WRITE_HALF_PERIOD_NS;
+read_half_period_ns = READ_HALF_PERIOD_NS;
+endtask
 
 // task 06: Near-equal clocks
 // - Example 100 MHz vs 99/101 MHz.
