@@ -33,6 +33,21 @@ module tb;
   string testname;
   int seed;
 
+  task automatic task_reset();
+    test_reset_empty_full_start(
+      error_count,
+      write_rst_n,
+      read_rst_n,
+      p_write_en,
+      p_read_en,
+      p_write_full,
+      p_read_empty,
+      write_clk,
+      read_clk
+    );
+  endtask
+
+
   async_fifo
     #(
       .BITS(BITS),
@@ -73,19 +88,8 @@ module tb;
 
     $display("=== Testbench starting: TEST=%s SEED=%0d ===", testname, seed);
 
-    test_reset_empty_full_start(
-      error_count,
-      write_rst_n,
-      read_rst_n,
-      p_write_en,
-      p_read_en,
-      p_write_full,
-      p_read_empty,
-      write_clk,
-      read_clk
-    );
-
     if (testname == "") begin
+      task_reset();
       test_smoke_writen_readn(
         error_count,
         p_write_en,
@@ -95,6 +99,7 @@ module tb;
         write_clk,
         read_clk
       );
+      task_reset();
       test_interleaved(
         error_count,
         p_write_en,
@@ -104,7 +109,10 @@ module tb;
         write_clk,
         read_clk
       );
+    end else if (testname == "reset") begin
+      task_reset();
     end else if (testname == "smoke") begin
+      task_reset();
       test_smoke_writen_readn(
         error_count,
         p_write_en,
@@ -115,6 +123,7 @@ module tb;
         read_clk
       );
     end else if (testname == "interleaved") begin
+      task_reset();
       test_interleaved(
         error_count,
         p_write_en,
