@@ -71,16 +71,23 @@ module tb;
       read_clk
     );
 
-  test_smoke_writen_readn(
-    p_write_en,
-    p_read_en,
-    p_write_data,
-    p_read_data,
-    write_clk,
-    read_clk
-  );
+    test_smoke_writen_readn(
+      p_write_en,
+      p_read_en,
+      p_write_data,
+      p_read_data,
+      write_clk,
+      read_clk
+    );
 
-
+    test_interleaved(
+      p_write_en,
+      p_read_en,
+      p_write_data,
+      p_read_data,
+      write_clk,
+      read_clk
+    );
 
     $display("\n*** TIME %0f ***\n", $realtime);
     $finish;
