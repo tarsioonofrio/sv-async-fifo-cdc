@@ -72,18 +72,20 @@ module tb;
     void'($value$plusargs("SEED=%d", seed));
 
     $display("=== Testbench starting: TEST=%s SEED=%0d ===", testname, seed);
+
+    test_reset_empty_full_start(
+      error_count,
+      write_rst_n,
+      read_rst_n,
+      p_write_en,
+      p_read_en,
+      p_write_full,
+      p_read_empty,
+      write_clk,
+      read_clk
+    );
+
     if (testname == "") begin
-      test_reset_empty_full_start(
-        error_count,
-        write_rst_n,
-        read_rst_n,
-        p_write_en,
-        p_read_en,
-        p_write_full,
-        p_read_empty,
-        write_clk,
-        read_clk
-      );
       test_smoke_writen_readn(
         error_count,
         p_write_en,
@@ -99,18 +101,6 @@ module tb;
         p_read_en,
         p_write_data,
         p_read_data,
-        write_clk,
-        read_clk
-      );
-    end else if (testname == "reset") begin
-      test_reset_empty_full_start(
-        error_count,
-        write_rst_n,
-        read_rst_n,
-        p_write_en,
-        p_read_en,
-        p_write_full,
-        p_read_empty,
         write_clk,
         read_clk
       );
