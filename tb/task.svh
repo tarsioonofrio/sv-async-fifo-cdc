@@ -84,6 +84,8 @@ task automatic test_interleaved(
   ref int unsigned error_count,
   ref logic p_write_en,
   ref logic p_read_en,
+  ref logic p_write_full,
+  ref logic p_read_empty,
   ref logic [BITS-1:0] p_write_data,
   ref logic [BITS-1:0] p_read_data,
   ref logic write_clk,
@@ -93,13 +95,12 @@ task automatic test_interleaved(
 @(posedge write_clk);
 @(posedge read_clk);
 for (int i = 0; i < SIZE; i++) begin
-  @(posedge write_clk);
+  wait (p_read_empty);
   p_write_en = 1;
   p_write_data = i;
   @(posedge write_clk);
   p_write_en = 0;
-  @(posedge write_clk);
-  @(posedge read_clk);
+  wait (!p_read_empty);
   p_read_en = 1;
   @(posedge read_clk);
   p_read_en = 0;
