@@ -226,7 +226,7 @@ task automatic test_read_clock_faster(
       if (!p_read_empty) begin
         queue_data = queue.pop_front();
         assert (p_read_data == queue_data) else begin
-          $error("test_write_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
+          $error("test_read_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
           error_count++;
         end
       end
