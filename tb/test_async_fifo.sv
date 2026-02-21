@@ -6,6 +6,9 @@ module tb;
   localparam BITS=32; // Width of each FIFO entry.
   localparam SIZE=16; // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
 
+  localparam WRITE_HALF_PERIOD_NS = 0.314159265359;
+  localparam READ_HALF_PERIOD_NS = 0.2718281828;
+
   `include "task.svh"
 
   // Write Domain (write_clk)

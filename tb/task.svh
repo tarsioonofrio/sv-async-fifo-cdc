@@ -116,6 +116,57 @@ endtask
 // - Example ratio 4:1 (write >> read).
 // - Hit full multiple times.
 // - No accepted write when full and no corruption.
+task automatic test_write_clock_faster(
+  ref int unsigned error_count,
+  ref realtime write_half_period_ns,
+  ref realtime read_half_period_ns,
+  ref logic p_write_en,
+  ref logic p_read_en,
+  ref logic p_write_full,
+  ref logic p_read_empty,
+  ref logic [BITS-1:0] p_write_data,
+  ref logic [BITS-1:0] p_read_data,
+  ref logic write_clk,
+  ref logic read_clk
+);
+
+logic [BITS-1:0] queue[$];
+
+write_half_period_ns = READ_HALF_PERIOD_NS * 7 + 0.1357;
+@(posedge write_clk);
+
+for (int i = 0; i < SIZE; i++) begin
+  for (int i = 0; i < SIZE*3; i++) begin
+    if (p_write_full) begin
+      p_write_en = 0;
+    end else begin
+      p_write_en = 1;
+      p_write_data = i;
+      queue.push_back(i);
+    end
+    @(posedge write_clk);
+  end
+
+  @(posedge write_clk);
+  p_write_en = 0;
+  @(posedge read_clk);
+
+  p_read_en = 1;
+  @(posedge read_clk);
+  for (int i = 0; i < exp_q.size(); i++) begin
+    @(posedge read_clk);
+    assert (p_read_data == queue[i]) else begin
+      $error("test_write_clock_faster ERR %0d != p_read_data = %0d", i, queue[i]);
+      error_count++;
+    end
+    queue.pop_front();
+  end
+  queue = {};
+  p_read_en = 0;
+end
+endtask
+
+
 
 // task 05: Read clock much faster than write
 // - Example ratio 1:4 (read >> write).
