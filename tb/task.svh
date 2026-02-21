@@ -210,6 +210,7 @@ task automatic test_read_clock_faster(
     for (int i = 0; i < SIZE-1; i++) begin
       p_write_en = 1;
       p_write_data = i;
+      queue.push_back(i);
       @(posedge write_clk);
     end
 
@@ -223,6 +224,8 @@ task automatic test_read_clock_faster(
     for (int i = 0; i < SIZE*3; i++) begin
       p_read_en = 1;
       @(posedge read_clk);
+      p_read_en = 0;
+      @(posedge read_clk);
       if (!p_read_empty) begin
         queue_data = queue.pop_front();
         assert (p_read_data == queue_data) else begin
@@ -230,6 +233,7 @@ task automatic test_read_clock_faster(
           error_count++;
         end
       end
+      @(posedge read_clk);
     end
     queue = {};
     p_read_en = 0;
