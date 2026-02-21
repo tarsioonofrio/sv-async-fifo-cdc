@@ -131,6 +131,7 @@ task automatic test_write_clock_faster(
 );
 
 logic [BITS-1:0] queue[$];
+logic [BITS-1:0] data;
 
 write_half_period_ns = READ_HALF_PERIOD_NS / 7 + 0.1357;
 @(posedge write_clk);
@@ -155,14 +156,15 @@ for (int i = 0; i < SIZE; i++) begin
   // end
   // $display("");
 
-  wait(!p_read_empty)
+  wait(!p_read_empty);
   p_read_en = 1;
   @(posedge read_clk);
 
-  for (int i = 0; i < queue.size() - 1; i++) begin
+  while (queue.size() !=0) begin
     @(posedge read_clk);
-    assert (p_read_data == queue[i]) else begin
-      $error("test_write_clock_faster ERR %0d != p_read_data = %0d", queue[i], p_read_data);
+    data = queue.pop_front();
+    assert (p_read_data == data) else begin
+      $error("test_write_clock_faster ERR %0d != p_read_data = %0d", data, p_read_data);
       error_count++;
     end
   end
