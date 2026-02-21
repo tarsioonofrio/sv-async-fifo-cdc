@@ -52,14 +52,14 @@ task automatic test_smoke_writen_readn(
   ref logic read_clk
 );
 
-@(posedge read_clk);
+@(posedge write_clk);
 p_write_en = 1;
 for (int i = 0; i < SIZE; i++) begin
   p_write_data = i;
   @(posedge write_clk);
 end
 
-@(posedge read_clk);
+@(posedge write_clk);
 p_write_en = 0;
 @(posedge read_clk);
 
@@ -90,14 +90,16 @@ task automatic test_interleaved(
   ref logic read_clk
 );
 
+@(posedge write_clk);
 @(posedge read_clk);
 for (int i = 0; i < SIZE; i++) begin
+  @(posedge write_clk);
   p_write_en = 1;
-  @(posedge read_clk);
   p_write_data = i;
+  @(posedge write_clk);
   p_write_en = 0;
+  @(posedge write_clk);
   @(posedge read_clk);
-  p_write_en = 0;
   p_read_en = 1;
   @(posedge read_clk);
   p_read_en = 0;
