@@ -164,6 +164,8 @@ for (int i = 0; i < SIZE; i++) begin
   queue = {};
   p_read_en = 0;
 end
+write_half_period_ns = WRITE_HALF_PERIOD_NS;
+
 endtask
 
 
