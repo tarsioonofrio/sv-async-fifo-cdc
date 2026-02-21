@@ -95,7 +95,7 @@ task automatic test_interleaved(
 @(posedge write_clk);
 @(posedge read_clk);
 for (int i = 0; i < SIZE; i++) begin
-  wait (p_read_empty);
+  wait (p_read_empty && !p_write_full);
   p_write_en = 1;
   p_write_data = i;
   @(posedge write_clk);
