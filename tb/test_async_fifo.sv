@@ -28,6 +28,8 @@ module tb;
 
   logic clk, rstn;
 
+  int unsigned error_count = 0;
+
 
   async_fifo
     #(
@@ -61,6 +63,7 @@ module tb;
     $dumpvars(0, tb);
 
     test_reset_empty_full_start(
+      error_count,
       write_rst_n,
       read_rst_n,
       p_write_en,
@@ -72,6 +75,7 @@ module tb;
     );
 
     test_smoke_writen_readn(
+      error_count,
       p_write_en,
       p_read_en,
       p_write_data,
@@ -81,6 +85,7 @@ module tb;
     );
 
     test_interleaved(
+      error_count,
       p_write_en,
       p_read_en,
       p_write_data,
@@ -90,7 +95,13 @@ module tb;
     );
 
     $display("\n*** TIME %0f ***\n", $realtime);
-    $finish;
+
+    if (error_count != 0) begin
+      $fatal(1, "TEST FAILED: %0d error(s)", error_count);
+    end else begin
+      $display("TEST PASSED");
+      $finish;
+    end
   end
 
 

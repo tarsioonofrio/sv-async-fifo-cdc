@@ -3,6 +3,7 @@
 // - Pointers start in a consistent state.
 // - No X on flags/outputs.
 task automatic test_reset_empty_full_start(
+  ref int unsigned error_count,
   ref logic write_rst_n,
   ref logic read_rst_n,
   ref logic p_write_en,
@@ -26,8 +27,14 @@ task automatic test_reset_empty_full_start(
   repeat (2) @(posedge write_clk);
   repeat (2) @(posedge read_clk);
 
-  assert (p_write_full == 0) else $error("test_reset_empty_full_start p_write_full ERR");
-  assert (p_read_empty == 1) else $error("test_reset_empty_full_start p_read_empty ERR");
+  assert (p_write_full == 0) else begin
+    $error("test_reset_empty_full_start p_write_full ERR");
+    error_count++;
+  end
+  assert (p_read_empty == 1) else begin
+    $error("test_reset_empty_full_start p_read_empty ERR");
+    error_count++;
+  end
 endtask
 
 
@@ -36,6 +43,7 @@ endtask
 // - Read everything afterward.
 // - Validate ordering and integrity (no loss/duplication).
 task automatic test_smoke_writen_readn(
+  ref int unsigned error_count,
   ref logic p_write_en,
   ref logic p_read_en,
   ref logic [BITS-1:0] p_write_data,
@@ -59,7 +67,10 @@ p_read_en = 1;
 @(posedge read_clk);
 for (int i = 0; i < SIZE; i++) begin
   @(posedge read_clk);
-  assert (p_read_data == i) else $error("test_smoke_writen_readn ERR %0d != p_read_data = %0d", i, p_read_data);
+  assert (p_read_data == i) else begin
+    $error("test_smoke_writen_readn ERR %0d != p_read_data = %0d", i, p_read_data);
+    error_count++;
+  end
 end
 
 p_read_en = 0;
@@ -70,6 +81,7 @@ endtask
 // - Different clocks (e.g., write 100 MHz, read 60 MHz).
 // - Ensure operation does not depend on filling the FIFO.
 task automatic test_interleaved(
+  ref int unsigned error_count,
   ref logic p_write_en,
   ref logic p_read_en,
   ref logic [BITS-1:0] p_write_data,
@@ -90,7 +102,10 @@ for (int i = 0; i < SIZE; i++) begin
   @(posedge read_clk);
   p_read_en = 0;
   @(posedge read_clk);
-  assert (p_read_data == i) else $error("test_interleaved ERR %0d != p_read_data = %0d", i, p_read_data);
+  assert (p_read_data == i) else begin
+    $error("test_interleaved ERR %0d != p_read_data = %0d", i, p_read_data);
+    error_count++;
+  end
 end
 endtask
 
