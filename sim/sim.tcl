@@ -12,6 +12,11 @@ vlog -work work -svinputport=relaxed ../tb/assertions.sv
 vsim -voptargs=+acc -t ps work.tb
 set StdArithNoWarnings 1
 set StdVitalGlitchNoWarnings 1
-do wave.do
+if {[catch {set is_batch [batch_mode]}]} {
+  set is_batch 1
+}
+if {!$is_batch} {
+  do wave.do
+}
 
 run 100ns
