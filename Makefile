@@ -11,7 +11,7 @@ SEED ?=7
 BITS ?=32
 SIZE ?=16
 
-.PHONY: build run test waves clean
+.PHONY: build run test regress waves clean
 
 build:
 	cd $(SIM_DIR) && \
@@ -25,6 +25,9 @@ run:
 	cd $(SIM_DIR) && TEST="$(TEST)" SEED="$(SEED)" BITS="$(BITS)" SIZE="$(SIZE)" vsim -c -do sim.tcl
 
 test: run
+
+regress:
+	$(MAKE) test TEST=
 
 waves: build
 	cd $(SIM_DIR) && vsim -voptargs=+acc -t ps $(TOP) -do "do wave.do; run 100ns; quit -f"

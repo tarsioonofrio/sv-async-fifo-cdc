@@ -127,7 +127,7 @@ Optional:
 │   └── sync_2ff.sv
 ├── tb/
 │   ├── test_async_fifo.sv        # SystemVerilog testbench
-│   └── assertions.sv             # SVA placeholder (currently empty)
+│   └── assertions.sv             # SVA checks
 ├── sim/
 │   ├── Makefile
 │   └── waves/                    # generated
@@ -141,21 +141,34 @@ Optional:
 
 ### What is tested
 
-- Basic push/pop ordering (FIFO correctness)
-- Randomized traffic with backpressure
-- Many clock ratios:
-  - `write_clk` faster than `read_clk`
-  - `read_clk` faster than `write_clk`
-  - close frequencies + phase drift
-- Reset behavior (including mid-traffic resets, if enabled)
-- Corner cases at wrap boundaries
+- Reset sanity and initial flags
+- Smoke sequence (write N then read N)
+- Interleaved traffic (ping-pong write/read)
+- Write clock faster than read clock (stress full-side behavior)
+- Read clock faster than write clock (stress empty-side behavior)
 
-### Suggested SVA (examples)
+### Test Matrix
 
-- No write when full: `p_write_full |-> !accept_write`
-- No read when empty: `p_read_empty |-> !accept_read`
-- Data stability under backpressure (if applicable)
-- Pointer monotonicity within each domain
+| `TEST` generic         | Objective                          | Status |
+| ---------------------- | ---------------------------------- | ------ |
+| `reset`                | Reset sanity (`empty=1`, `full=0`) | Ready  |
+| `smoke`                | Ordered write/read data integrity  | Ready  |
+| `interleaved`          | Ping-pong write/read flow          | Ready  |
+| `write-clock-faster`   | Stress when write dominates read   | Ready  |
+| `read-clock-faster`    | Stress when read dominates write   | Ready  |
+| `""` (empty / regress) | Run all tests above in sequence    | Ready  |
+
+### Assertions (SVA): What Is Checked
+
+- Write domain protocol safety (no illegal pointer advance on full)
+- Read domain protocol safety (no illegal pointer advance on empty)
+- Pointer/Gray encoding consistency checks
+- Gray transition sanity checks
+- Flag consistency checks (`full`/`empty` equations)
+- Unknown/X checks after reset deassertion
+
+Note: ModelSim Intel Edition compiles SVA but reports limited support warnings;
+full SVA feature support is available in Questa.
 
 ---
 
@@ -169,8 +182,24 @@ From project root (uses `Makefile`):
 make build
 make run
 make test
+make regress
 make waves
 make clean
+```
+
+`make test` and `make regress` both execute the regression when `TEST` is empty.
+
+Run a single test:
+
+```bash
+make test TEST=smoke
+make test TEST=write-clock-faster
+```
+
+Run with explicit generics:
+
+```bash
+make test TEST=read-clock-faster SEED=11 BITS=8 SIZE=8
 ```
 
 `Makefile` prepends the ModelSim path via:
@@ -193,6 +222,15 @@ make MODELSIM_BIN=/path/to/modelsim/bin run
 - Connect `p_write_full` to your upstream backpressure logic
 - Connect `p_read_empty` to your downstream request logic
 - Avoid combinational paths between clock domains
+
+---
+
+## Limitations / Assumptions
+
+- `SIZE` is expected to be power-of-two (`async_fifo.sv` enforces this)
+- Testbench currently targets ModelSim/Questa command-line flow
+- SVA execution in ModelSim Intel Edition has feature limitations/warnings
+- Current verification is simulation-based (no formal proof in this repo yet)
 
 ---
 
