@@ -226,9 +226,12 @@ module tb;
     begin
       int unsigned total_errors;
       total_errors = 0;
+      $display("SCORE BOARD:");
       foreach (counters[k]) begin
+        $display("%s = %0d", k, counters[k].error_count);
         total_errors += counters[k].error_count;
       end
+      $display("TOTAL = %0d", total_errors);
 
       if (total_errors != 0) begin
         $fatal(1, "TEST FAILED: %0d error(s)", total_errors);
