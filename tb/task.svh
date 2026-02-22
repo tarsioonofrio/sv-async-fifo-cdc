@@ -14,14 +14,9 @@ endtask
 function automatic bit sb_count_mismatch(
   input int unsigned wr_acc_cnt,
   input int unsigned rd_acc_cnt,
-  input int unsigned exp_queue_size,
-  ref int unsigned error_count
+  input int unsigned exp_queue_size
 );
-  if ((wr_acc_cnt - rd_acc_cnt) != exp_queue_size) begin
-        $error("SB count mismatch wr=%0d rd=%0d size=%0d",
-              wr_acc_cnt, rd_acc_cnt, exp_queue_size);
-        error_count++;
-  end
+  sb_count_mismatch = ((wr_acc_cnt - rd_acc_cnt) != exp_queue_size);
 endfunction
 
 // task 01: Reset + initial Empty/Full
@@ -204,7 +199,11 @@ task automatic test_write_clock_faster(
       end
     end
     p_read_en = 0;
-    sb_count_mismatch(wr_acc_cnt, rd_acc_cnt, exp_queue.size(), counters.error_count);
+    if (sb_count_mismatch(wr_acc_cnt, rd_acc_cnt, exp_queue.size())) begin
+      $error("SB count mismatch wr=%0d rd=%0d size=%0d",
+             wr_acc_cnt, rd_acc_cnt, exp_queue.size());
+      counters.error_count++;
+    end
     exp_queue = {};
     wr_acc_cnt = 0;
     rd_acc_cnt = 0;
@@ -275,7 +274,11 @@ task automatic test_read_clock_faster(
       @(posedge read_clk);
     end
     p_read_en = 0;
-    sb_count_mismatch(wr_acc_cnt, rd_acc_cnt, exp_queue.size(), counters.error_count);
+    if (sb_count_mismatch(wr_acc_cnt, rd_acc_cnt, exp_queue.size())) begin
+      $error("SB count mismatch wr=%0d rd=%0d size=%0d",
+             wr_acc_cnt, rd_acc_cnt, exp_queue.size());
+      counters.error_count++;
+    end
     exp_queue = {};
     wr_acc_cnt = 0;
     rd_acc_cnt = 0;

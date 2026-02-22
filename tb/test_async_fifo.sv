@@ -2,7 +2,9 @@
 module tb
   #(
     parameter int BITS = 32, // Width of each FIFO entry.
-    parameter int SIZE = 16  // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
+    parameter int SIZE = 16, // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
+    parameter string NAME = "",
+    parameter int SEED = 7
   );
   timeunit 1ns;
   timeprecision 1ps;
@@ -39,9 +41,6 @@ module tb
   realtime write_half_period_ns, read_half_period_ns;
 
   tb_counters_t counters[string];
-  // plusargs
-  string testname;
-  int seed;
 
   task automatic task_reset();
     counters["test_reset_empty_full_start"] = '{default: 0};
@@ -91,19 +90,12 @@ module tb
     $dumpfile("dump.vcd");
     $dumpvars(0, tb);
 
-    // defaults
-    testname = "";
-    seed     = 7;
-
-    void'($value$plusargs("TEST=%s", testname));
-    void'($value$plusargs("SEED=%d", seed));
-
     write_half_period_ns = WRITE_HALF_PERIOD_NS;
     read_half_period_ns = READ_HALF_PERIOD_NS;
 
-    $display("=== Testbench starting: TEST=%s SEED=%0d ===", testname, seed);
+    $display("=== Testbench starting: TEST=%s SEED=%0d ===", NAME, SEED);
 
-    if (testname == "") begin
+    if (NAME == "") begin
       task_reset();
       counters["test_smoke_writen_readn"] = '{default: 0};
       test_smoke_writen_readn(
@@ -158,9 +150,9 @@ module tb
         write_clk,
         read_clk
       );
-    end else if (testname == "reset") begin
+    end else if (NAME == "reset") begin
       task_reset();
-    end else if (testname == "smoke") begin
+    end else if (NAME == "smoke") begin
       task_reset();
       counters["test_smoke_writen_readn"] = '{default: 0};
       test_smoke_writen_readn(
@@ -172,7 +164,7 @@ module tb
         write_clk,
         read_clk
       );
-    end else if (testname == "interleaved") begin
+    end else if (NAME == "interleaved") begin
       task_reset();
       counters["test_interleaved"] = '{default: 0};
       test_interleaved(
@@ -186,7 +178,7 @@ module tb
         write_clk,
         read_clk
       );
-    end else if (testname == "write-clock-faster") begin
+    end else if (NAME == "write-clock-faster") begin
       task_reset();
       counters["test_write_clock_faster"] = '{default: 0};
       test_write_clock_faster(
@@ -202,7 +194,7 @@ module tb
         write_clk,
         read_clk
       );
-    end else if (testname == "read-clock-faster") begin
+    end else if (NAME == "read-clock-faster") begin
       task_reset();
       counters["test_read_clock_faster"] = '{default: 0};
       test_read_clock_faster(
@@ -219,20 +211,25 @@ module tb
         read_clk
       );
     end else begin
-      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved|write-clock-faster|read-clock-faster", testname);
+      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved|write-clock-faster|read-clock-faster", NAME);
     end
 
     $display("\n*** TIME %0f ***\n", $realtime);
+    $display("TB PARAMETERS:");
+    $display("  NAME=%s", NAME);
+    $display("  SEED=%0d", SEED);
+    $display("  BITS=%0d", BITS);
+    $display("  SIZE=%0d", SIZE);
 
     begin
       int unsigned total_errors;
       total_errors = 0;
       $display("SCORE BOARD:");
       foreach (counters[k]) begin
-        $display("%s = %0d", k, counters[k].error_count);
+        $display("  %s = %0d", k, counters[k].error_count);
         total_errors += counters[k].error_count;
       end
-      $display("TOTAL = %0d", total_errors);
+      $display("  TOTAL = %0d", total_errors);
 
       if (total_errors != 0) begin
         $fatal(1, "TEST FAILED: %0d error(s)", total_errors);
