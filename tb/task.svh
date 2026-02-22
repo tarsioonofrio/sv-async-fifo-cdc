@@ -203,9 +203,9 @@ task automatic test_write_clock_faster(
         counters.error_count++;
       end
     end
+    p_read_en = 0;
     sb_count_mismatch(wr_acc_cnt, rd_acc_cnt, exp_queue.size(), counters.error_count);
     exp_queue = {};
-    p_read_en = 0;
     wr_acc_cnt = 0;
     rd_acc_cnt = 0;
   end
@@ -274,9 +274,9 @@ task automatic test_read_clock_faster(
       end
       @(posedge read_clk);
     end
+    p_read_en = 0;
     sb_count_mismatch(wr_acc_cnt, rd_acc_cnt, exp_queue.size(), counters.error_count);
     exp_queue = {};
-    p_read_en = 0;
     wr_acc_cnt = 0;
     rd_acc_cnt = 0;
   end
