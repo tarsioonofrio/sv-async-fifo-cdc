@@ -224,7 +224,7 @@ module tb
     begin
       int unsigned total_errors;
       total_errors = 0;
-      $display("SCORE BOARD:");
+      $display("SCORE BOARD (ERRORS):");
       foreach (counters[k]) begin
         $display("  %s = %0d", k, counters[k].error_count);
         total_errors += counters[k].error_count;
