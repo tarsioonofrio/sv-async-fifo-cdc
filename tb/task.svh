@@ -210,7 +210,11 @@ task automatic test_read_clock_faster(
     for (int i = 0; i < SIZE-1; i++) begin
       p_write_en = 1;
       p_write_data = i;
-      queue.push_back(i);
+      @(posedge write_clk);
+      p_write_en = 0;
+      if (!p_write_full) begin
+        queue.push_back(i);
+      end
       @(posedge write_clk);
     end
 
