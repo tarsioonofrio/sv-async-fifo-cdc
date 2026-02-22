@@ -17,6 +17,8 @@ endtask
 // - No X on flags/outputs.
 task automatic test_reset_empty_full_start(
     ref int unsigned error_count,
+    ref int unsigned wr_acc_cnt,
+    ref int unsigned rd_acc_cnt,
     ref logic write_rst_n,
     ref logic read_rst_n,
     ref logic p_write_en,
@@ -57,6 +59,8 @@ endtask
 // - Validate ordering and integrity (no loss/duplication).
 task automatic test_smoke_writen_readn(
     ref int unsigned error_count,
+    ref int unsigned wr_acc_cnt,
+    ref int unsigned rd_acc_cnt,
     ref logic p_write_en,
     ref logic p_read_en,
     ref logic [BITS-1:0] p_write_data,
@@ -95,6 +99,8 @@ endtask
 // - Ensure operation does not depend on filling the FIFO.
 task automatic test_interleaved(
     ref int unsigned error_count,
+    ref int unsigned wr_acc_cnt,
+    ref int unsigned rd_acc_cnt,
     ref logic p_write_en,
     ref logic p_read_en,
     ref logic p_write_full,
@@ -134,6 +140,8 @@ endtask
 // - No accepted write when full and no corruption.
 task automatic test_write_clock_faster(
     ref int unsigned error_count,
+    ref int unsigned wr_acc_cnt,
+    ref int unsigned rd_acc_cnt,
     ref realtime write_half_period_ns,
     ref realtime read_half_period_ns,
     ref logic p_write_en,
@@ -168,7 +176,7 @@ task automatic test_write_clock_faster(
     p_write_en = 0;
     @(posedge read_clk);
 
-    debug_print_queue("test_write_clock_faster", queue);
+    // debug_print_queue("test_write_clock_faster", queue);
 
     wait(!p_read_empty);
     p_read_en = 1;
@@ -195,6 +203,8 @@ endtask
 // - No accepted read when empty and no invalid data.
 task automatic test_read_clock_faster(
     ref int unsigned error_count,
+    ref int unsigned wr_acc_cnt,
+    ref int unsigned rd_acc_cnt,
     ref realtime write_half_period_ns,
     ref realtime read_half_period_ns,
     ref logic p_write_en,

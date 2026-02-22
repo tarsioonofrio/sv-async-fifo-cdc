@@ -34,6 +34,8 @@ module tb;
   realtime write_half_period_ns, read_half_period_ns;
 
   int unsigned error_count = 0;
+  int unsigned wr_acc_cnt = 0;
+  int unsigned rd_acc_cnt = 0;
   // plusargs
   string testname;
   int seed;
@@ -41,6 +43,8 @@ module tb;
   task automatic task_reset();
     test_reset_empty_full_start(
       error_count,
+      wr_acc_cnt,
+      rd_acc_cnt,
       write_rst_n,
       read_rst_n,
       p_write_en,
@@ -101,6 +105,8 @@ module tb;
       task_reset();
       test_smoke_writen_readn(
         error_count,
+        wr_acc_cnt,
+        rd_acc_cnt,
         p_write_en,
         p_read_en,
         p_write_data,
@@ -111,6 +117,8 @@ module tb;
       task_reset();
       test_interleaved(
         error_count,
+        wr_acc_cnt,
+        rd_acc_cnt,
         p_write_en,
         p_read_en,
         p_write_full,
@@ -123,6 +131,8 @@ module tb;
       task_reset();
       test_write_clock_faster(
         error_count,
+        wr_acc_cnt,
+        rd_acc_cnt,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -137,6 +147,8 @@ module tb;
       task_reset();
       test_read_clock_faster(
         error_count,
+        wr_acc_cnt,
+        rd_acc_cnt,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -154,6 +166,8 @@ module tb;
       task_reset();
       test_smoke_writen_readn(
         error_count,
+        wr_acc_cnt,
+        rd_acc_cnt,
         p_write_en,
         p_read_en,
         p_write_data,
@@ -165,6 +179,8 @@ module tb;
       task_reset();
       test_interleaved(
         error_count,
+        wr_acc_cnt,
+        rd_acc_cnt,
         p_write_en,
         p_read_en,
         p_write_full,
@@ -178,6 +194,8 @@ module tb;
       task_reset();
       test_write_clock_faster(
         error_count,
+        wr_acc_cnt,
+        rd_acc_cnt,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -193,6 +211,8 @@ module tb;
       task_reset();
       test_read_clock_faster(
         error_count,
+        wr_acc_cnt,
+        rd_acc_cnt,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
