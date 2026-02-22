@@ -64,6 +64,8 @@ task automatic test_smoke_writen_readn(
     ref logic write_clk,
     ref logic read_clk
   );
+  int unsigned wr_acc_cnt = 0;
+  int unsigned rd_acc_cnt = 0;
 
   @(posedge write_clk);
   p_write_en = 1;
@@ -104,6 +106,8 @@ task automatic test_interleaved(
     ref logic write_clk,
     ref logic read_clk
   );
+  int unsigned wr_acc_cnt = 0;
+  int unsigned rd_acc_cnt = 0;
 
   @(posedge write_clk);
   @(posedge read_clk);
@@ -145,6 +149,8 @@ task automatic test_write_clock_faster(
     ref logic write_clk,
     ref logic read_clk
   );
+  int unsigned wr_acc_cnt = 0;
+  int unsigned rd_acc_cnt = 0;
 
   logic [BITS-1:0] queue[$];
   logic [BITS-1:0] queue_data;
@@ -206,6 +212,8 @@ task automatic test_read_clock_faster(
     ref logic write_clk,
     ref logic read_clk
   );
+  int unsigned wr_acc_cnt = 0;
+  int unsigned rd_acc_cnt = 0;
 
   logic [BITS-1:0] queue[$];
   logic [BITS-1:0] queue_data;

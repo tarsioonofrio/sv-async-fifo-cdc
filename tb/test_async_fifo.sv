@@ -11,8 +11,6 @@ module tb;
 
   typedef struct {
     int unsigned error_count;
-    int unsigned wr_acc_cnt;
-    int unsigned rd_acc_cnt;
   } tb_counters_t;
 
   `include "task.svh"
