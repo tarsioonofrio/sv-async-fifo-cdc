@@ -37,14 +37,15 @@ module tb;
 
   realtime write_half_period_ns, read_half_period_ns;
 
-  tb_counters_t counters = '{default: 0};
+  tb_counters_t counters[string];
   // plusargs
   string testname;
   int seed;
 
   task automatic task_reset();
+    counters["test_reset_empty_full_start"] = '{default: 0};
     test_reset_empty_full_start(
-      counters,
+      counters["test_reset_empty_full_start"],
       write_rst_n,
       read_rst_n,
       p_write_en,
@@ -103,8 +104,9 @@ module tb;
 
     if (testname == "") begin
       task_reset();
+      counters["test_smoke_writen_readn"] = '{default: 0};
       test_smoke_writen_readn(
-        counters,
+        counters["test_smoke_writen_readn"],
         p_write_en,
         p_read_en,
         p_write_data,
@@ -113,8 +115,9 @@ module tb;
         read_clk
       );
       task_reset();
+      counters["test_interleaved"] = '{default: 0};
       test_interleaved(
-        counters,
+        counters["test_interleaved"],
         p_write_en,
         p_read_en,
         p_write_full,
@@ -125,8 +128,9 @@ module tb;
         read_clk
       );
       task_reset();
+      counters["test_write_clock_faster"] = '{default: 0};
       test_write_clock_faster(
-        counters,
+        counters["test_write_clock_faster"],
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -139,8 +143,9 @@ module tb;
         read_clk
       );
       task_reset();
+      counters["test_read_clock_faster"] = '{default: 0};
       test_read_clock_faster(
-        counters,
+        counters["test_read_clock_faster"],
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -156,8 +161,9 @@ module tb;
       task_reset();
     end else if (testname == "smoke") begin
       task_reset();
+      counters["test_smoke_writen_readn"] = '{default: 0};
       test_smoke_writen_readn(
-        counters,
+        counters["test_smoke_writen_readn"],
         p_write_en,
         p_read_en,
         p_write_data,
@@ -167,8 +173,9 @@ module tb;
       );
     end else if (testname == "interleaved") begin
       task_reset();
+      counters["test_interleaved"] = '{default: 0};
       test_interleaved(
-        counters,
+        counters["test_interleaved"],
         p_write_en,
         p_read_en,
         p_write_full,
@@ -180,8 +187,9 @@ module tb;
       );
     end else if (testname == "write-clock-faster") begin
       task_reset();
+      counters["test_write_clock_faster"] = '{default: 0};
       test_write_clock_faster(
-        counters,
+        counters["test_write_clock_faster"],
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -195,8 +203,9 @@ module tb;
       );
     end else if (testname == "read-clock-faster") begin
       task_reset();
+      counters["test_read_clock_faster"] = '{default: 0};
       test_read_clock_faster(
-        counters,
+        counters["test_read_clock_faster"],
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -214,11 +223,19 @@ module tb;
 
     $display("\n*** TIME %0f ***\n", $realtime);
 
-    if (counters.error_count != 0) begin
-      $fatal(1, "TEST FAILED: %0d error(s)", counters.error_count);
-    end else begin
-      $display("TEST PASSED");
-      $finish;
+    begin
+      int unsigned total_errors;
+      total_errors = 0;
+      foreach (counters[k]) begin
+        total_errors += counters[k].error_count;
+      end
+
+      if (total_errors != 0) begin
+        $fatal(1, "TEST FAILED: %0d error(s)", total_errors);
+      end else begin
+        $display("TEST PASSED");
+        $finish;
+      end
     end
   end
 
