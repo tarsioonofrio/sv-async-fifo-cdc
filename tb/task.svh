@@ -16,9 +16,7 @@ endtask
 // - Pointers start in a consistent state.
 // - No X on flags/outputs.
 task automatic test_reset_empty_full_start(
-    ref int unsigned error_count,
-    ref int unsigned wr_acc_cnt,
-    ref int unsigned rd_acc_cnt,
+    ref tb_counters_t counters,
     ref logic write_rst_n,
     ref logic read_rst_n,
     ref logic p_write_en,
@@ -44,11 +42,11 @@ task automatic test_reset_empty_full_start(
 
   assert (p_write_full == 0) else begin
     $error("test_reset_empty_full_start p_write_full ERR");
-    error_count++;
+    counters.error_count++;
   end
   assert (p_read_empty == 1) else begin
     $error("test_reset_empty_full_start p_read_empty ERR");
-    error_count++;
+    counters.error_count++;
   end
 endtask
 
@@ -58,9 +56,7 @@ endtask
 // - Read everything afterward.
 // - Validate ordering and integrity (no loss/duplication).
 task automatic test_smoke_writen_readn(
-    ref int unsigned error_count,
-    ref int unsigned wr_acc_cnt,
-    ref int unsigned rd_acc_cnt,
+    ref tb_counters_t counters,
     ref logic p_write_en,
     ref logic p_read_en,
     ref logic [BITS-1:0] p_write_data,
@@ -86,7 +82,7 @@ task automatic test_smoke_writen_readn(
     @(posedge read_clk);
     assert (p_read_data == i) else begin
       $error("test_smoke_writen_readn ERR %0d != p_read_data = %0d", i, p_read_data);
-      error_count++;
+      counters.error_count++;
     end
   end
 
@@ -98,9 +94,7 @@ endtask
 // - Different clocks (e.g., write 100 MHz, read 60 MHz).
 // - Ensure operation does not depend on filling the FIFO.
 task automatic test_interleaved(
-    ref int unsigned error_count,
-    ref int unsigned wr_acc_cnt,
-    ref int unsigned rd_acc_cnt,
+    ref tb_counters_t counters,
     ref logic p_write_en,
     ref logic p_read_en,
     ref logic p_write_full,
@@ -126,7 +120,7 @@ task automatic test_interleaved(
     @(posedge read_clk);
     assert (p_read_data == i) else begin
       $error("test_interleaved ERR %0d != p_read_data = %0d", i, p_read_data);
-      error_count++;
+      counters.error_count++;
     end
   end
 endtask
@@ -139,9 +133,7 @@ endtask
 // - Hit full multiple times.
 // - No accepted write when full and no corruption.
 task automatic test_write_clock_faster(
-    ref int unsigned error_count,
-    ref int unsigned wr_acc_cnt,
-    ref int unsigned rd_acc_cnt,
+    ref tb_counters_t counters,
     ref realtime write_half_period_ns,
     ref realtime read_half_period_ns,
     ref logic p_write_en,
@@ -187,7 +179,7 @@ task automatic test_write_clock_faster(
       queue_data = queue.pop_front();
       assert (p_read_data == queue_data) else begin
         $error("test_write_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
-        error_count++;
+        counters.error_count++;
       end
     end
     queue = {};
@@ -202,9 +194,7 @@ endtask
 // - Hit empty multiple times.
 // - No accepted read when empty and no invalid data.
 task automatic test_read_clock_faster(
-    ref int unsigned error_count,
-    ref int unsigned wr_acc_cnt,
-    ref int unsigned rd_acc_cnt,
+    ref tb_counters_t counters,
     ref realtime write_half_period_ns,
     ref realtime read_half_period_ns,
     ref logic p_write_en,
@@ -251,7 +241,7 @@ task automatic test_read_clock_faster(
         queue_data = queue.pop_front();
         assert (p_read_data == queue_data) else begin
           $error("test_read_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
-          error_count++;
+          counters.error_count++;
         end
       end
       @(posedge read_clk);

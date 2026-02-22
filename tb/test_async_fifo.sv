@@ -9,6 +9,12 @@ module tb;
   localparam WRITE_HALF_PERIOD_NS = 0.314159265359;
   localparam READ_HALF_PERIOD_NS = 0.2718281828;
 
+  typedef struct {
+    int unsigned error_count;
+    int unsigned wr_acc_cnt;
+    int unsigned rd_acc_cnt;
+  } tb_counters_t;
+
   `include "task.svh"
 
   // Write Domain (write_clk)
@@ -33,18 +39,14 @@ module tb;
 
   realtime write_half_period_ns, read_half_period_ns;
 
-  int unsigned error_count = 0;
-  int unsigned wr_acc_cnt = 0;
-  int unsigned rd_acc_cnt = 0;
+  tb_counters_t counters = '{default: 0};
   // plusargs
   string testname;
   int seed;
 
   task automatic task_reset();
     test_reset_empty_full_start(
-      error_count,
-      wr_acc_cnt,
-      rd_acc_cnt,
+      counters,
       write_rst_n,
       read_rst_n,
       p_write_en,
@@ -104,9 +106,7 @@ module tb;
     if (testname == "") begin
       task_reset();
       test_smoke_writen_readn(
-        error_count,
-        wr_acc_cnt,
-        rd_acc_cnt,
+        counters,
         p_write_en,
         p_read_en,
         p_write_data,
@@ -116,9 +116,7 @@ module tb;
       );
       task_reset();
       test_interleaved(
-        error_count,
-        wr_acc_cnt,
-        rd_acc_cnt,
+        counters,
         p_write_en,
         p_read_en,
         p_write_full,
@@ -130,9 +128,7 @@ module tb;
       );
       task_reset();
       test_write_clock_faster(
-        error_count,
-        wr_acc_cnt,
-        rd_acc_cnt,
+        counters,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -146,9 +142,7 @@ module tb;
       );
       task_reset();
       test_read_clock_faster(
-        error_count,
-        wr_acc_cnt,
-        rd_acc_cnt,
+        counters,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -165,9 +159,7 @@ module tb;
     end else if (testname == "smoke") begin
       task_reset();
       test_smoke_writen_readn(
-        error_count,
-        wr_acc_cnt,
-        rd_acc_cnt,
+        counters,
         p_write_en,
         p_read_en,
         p_write_data,
@@ -178,9 +170,7 @@ module tb;
     end else if (testname == "interleaved") begin
       task_reset();
       test_interleaved(
-        error_count,
-        wr_acc_cnt,
-        rd_acc_cnt,
+        counters,
         p_write_en,
         p_read_en,
         p_write_full,
@@ -193,9 +183,7 @@ module tb;
     end else if (testname == "write-clock-faster") begin
       task_reset();
       test_write_clock_faster(
-        error_count,
-        wr_acc_cnt,
-        rd_acc_cnt,
+        counters,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -210,9 +198,7 @@ module tb;
     end else if (testname == "read-clock-faster") begin
       task_reset();
       test_read_clock_faster(
-        error_count,
-        wr_acc_cnt,
-        rd_acc_cnt,
+        counters,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -230,8 +216,8 @@ module tb;
 
     $display("\n*** TIME %0f ***\n", $realtime);
 
-    if (error_count != 0) begin
-      $fatal(1, "TEST FAILED: %0d error(s)", error_count);
+    if (counters.error_count != 0) begin
+      $fatal(1, "TEST FAILED: %0d error(s)", counters.error_count);
     end else begin
       $display("TEST PASSED");
       $finish;
