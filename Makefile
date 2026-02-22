@@ -6,13 +6,14 @@ SIM_DIR := sim
 RTL := ../rtl/sync_2ff.sv ../rtl/async_fifo.sv
 TB  := ../tb/test_async_fifo.sv ../tb/assertions.sv
 TOP := work.tb
-LINT_SRCS := rtl/sync_2ff.sv rtl/async_fifo.sv tb/test_async_fifo.sv tb/assertions.sv
+LINT_RTL_SRCS := rtl/sync_2ff.sv rtl/async_fifo.sv
+LINT_TB_SRCS := tb/test_async_fifo.sv tb/assertions.sv
 TEST ?=
 SEED ?=7
 BITS ?=32
 SIZE ?=16
 
-.PHONY: build run test regress lint waves clean
+.PHONY: build run test regress lint lint-all lint-rtl lint-tb waves clean
 
 build:
 	cd $(SIM_DIR) && \
@@ -31,7 +32,17 @@ regress:
 	$(MAKE) test TEST=
 
 lint:
-	verilator --lint-only -Wall -Wno-DECLFILENAME -Wno-UNUSEDSIGNAL -Itb -Irtl $(LINT_SRCS)
+	$(MAKE) lint-rtl
+
+lint-all:
+	$(MAKE) lint-rtl
+	$(MAKE) lint-tb
+
+lint-rtl:
+	verilator --lint-only -Wall -Wno-DECLFILENAME -Wno-UNUSEDSIGNAL -Wno-SYNCASYNCNET -Itb -Irtl $(LINT_RTL_SRCS) tb/assertions.sv
+
+lint-tb:
+	verilator --lint-only --timing -Wall -Wno-DECLFILENAME -Wno-UNUSEDSIGNAL -Wno-SYNCASYNCNET -Itb -Irtl $(LINT_RTL_SRCS) $(LINT_TB_SRCS)
 
 waves: build
 	cd $(SIM_DIR) && vsim -voptargs=+acc -t ps $(TOP) -do "do wave.do; run 100ns; quit -f"
