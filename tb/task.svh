@@ -11,6 +11,19 @@ task automatic debug_print_queue(
   $display("");
 endtask
 
+function automatic bit sb_count_mismatch(
+  input int unsigned wr_acc_cnt,
+  input int unsigned rd_acc_cnt,
+  input int unsigned exp_queue_size,
+  ref int unsigned error_count
+);
+  if ((wr_acc_cnt - rd_acc_cnt) != exp_queue_size) begin
+        $error("SB count mismatch wr=%0d rd=%0d size=%0d",
+              wr_acc_cnt, rd_acc_cnt, exp_queue_size);
+        error_count++;
+  end
+endfunction
+
 // task 01: Reset + initial Empty/Full
 // - After reset: p_read_empty=1 and p_write_full=0.
 // - Pointers start in a consistent state.
@@ -190,11 +203,7 @@ task automatic test_write_clock_faster(
         counters.error_count++;
       end
     end
-    if ((wr_acc_cnt - rd_acc_cnt) != exp_queue.size()) begin
-          $error("SB count mismatch wr=%0d rd=%0d size=%0d",
-                 wr_acc_cnt, rd_acc_cnt, exp_queue.size());
-          counters.error_count++;
-    end
+    sb_count_mismatch(wr_acc_cnt, rd_acc_cnt, exp_queue.size(), counters.error_count);
     exp_queue = {};
     p_read_en = 0;
     wr_acc_cnt = 0;
@@ -265,11 +274,7 @@ task automatic test_read_clock_faster(
       end
       @(posedge read_clk);
     end
-    if ((wr_acc_cnt - rd_acc_cnt) != exp_queue.size()) begin
-          $error("SB count mismatch wr=%0d rd=%0d size=%0d",
-                 wr_acc_cnt, rd_acc_cnt, exp_queue.size());
-          counters.error_count++;
-    end
+    sb_count_mismatch(wr_acc_cnt, rd_acc_cnt, exp_queue.size(), counters.error_count);
     exp_queue = {};
     p_read_en = 0;
     wr_acc_cnt = 0;
