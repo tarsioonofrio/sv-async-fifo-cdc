@@ -2,11 +2,11 @@
 
 task automatic debug_print_queue(
   input string tag,
-  input logic [BITS-1:0] queue[$]
+  input logic [BITS-1:0] exp_queue[$]
 );
-  $write("%s queue(size=%0d): ", tag, queue.size());
-  for (int k = 0; k < queue.size(); k++) begin
-    $write("%0d, ", queue[k]);
+  $write("%s exp_queue(size=%0d): ", tag, exp_queue.size());
+  for (int k = 0; k < exp_queue.size(); k++) begin
+    $write("%0d, ", exp_queue[k]);
   end
   $display("");
 endtask
@@ -41,11 +41,11 @@ task automatic test_reset_empty_full_start(
   repeat (2) @(posedge read_clk);
 
   assert (p_write_full == 0) else begin
-    $error("test_reset_empty_full_start p_write_full ERR");
+    $error("ERR p_write_full");
     counters.error_count++;
   end
   assert (p_read_empty == 1) else begin
-    $error("test_reset_empty_full_start p_read_empty ERR");
+    $error("ERR p_read_empty");
     counters.error_count++;
   end
 endtask
@@ -83,7 +83,7 @@ task automatic test_smoke_writen_readn(
   for (int i = 0; i < SIZE; i++) begin
     @(posedge read_clk);
     assert (p_read_data == i) else begin
-      $error("test_smoke_writen_readn ERR %0d != p_read_data = %0d", i, p_read_data);
+      $error("ERR %0d != p_read_data = %0d", i, p_read_data);
       counters.error_count++;
     end
   end
@@ -123,7 +123,7 @@ task automatic test_interleaved(
     p_read_en = 0;
     @(posedge read_clk);
     assert (p_read_data == i) else begin
-      $error("test_interleaved ERR %0d != p_read_data = %0d", i, p_read_data);
+      $error("ERR %0d != p_read_data = %0d", i, p_read_data);
       counters.error_count++;
     end
   end
@@ -152,7 +152,7 @@ task automatic test_write_clock_faster(
   int unsigned wr_acc_cnt = 0;
   int unsigned rd_acc_cnt = 0;
 
-  logic [BITS-1:0] queue[$];
+  logic [BITS-1:0] exp_queue[$];
   logic [BITS-1:0] queue_data;
 
   write_half_period_ns = READ_HALF_PERIOD_NS / 7 + READ_HALF_PERIOD_NS / 13;
@@ -165,7 +165,8 @@ task automatic test_write_clock_faster(
       @(posedge write_clk);
       p_write_en = 0;
       if (!p_write_full) begin
-        queue.push_back(i);
+        exp_queue.push_back(i);
+        wr_acc_cnt = wr_acc_cnt + 1;
       end
       @(posedge write_clk);
     end
@@ -174,22 +175,30 @@ task automatic test_write_clock_faster(
     p_write_en = 0;
     @(posedge read_clk);
 
-    // debug_print_queue("test_write_clock_faster", queue);
+    // debug_print_queue("test_write_clock_faster", exp_queue);
 
     wait(!p_read_empty);
     p_read_en = 1;
     @(posedge read_clk);
 
-    while (queue.size() !=0) begin
+    while (exp_queue.size() !=0) begin
       @(posedge read_clk);
-      queue_data = queue.pop_front();
+      queue_data = exp_queue.pop_front();
+      rd_acc_cnt = rd_acc_cnt + 1;
       assert (p_read_data == queue_data) else begin
-        $error("test_write_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
+        $error("ERR %0d != p_read_data = %0d", queue_data, p_read_data);
         counters.error_count++;
       end
     end
-    queue = {};
+    if ((wr_acc_cnt - rd_acc_cnt) != exp_queue.size()) begin
+          $error("SB count mismatch wr=%0d rd=%0d size=%0d",
+                 wr_acc_cnt, rd_acc_cnt, exp_queue.size());
+          counters.error_count++;
+    end
+    exp_queue = {};
     p_read_en = 0;
+    wr_acc_cnt = 0;
+    rd_acc_cnt = 0;
   end
   write_half_period_ns = WRITE_HALF_PERIOD_NS;
   read_half_period_ns = READ_HALF_PERIOD_NS;
@@ -215,7 +224,7 @@ task automatic test_read_clock_faster(
   int unsigned wr_acc_cnt = 0;
   int unsigned rd_acc_cnt = 0;
 
-  logic [BITS-1:0] queue[$];
+  logic [BITS-1:0] exp_queue[$];
   logic [BITS-1:0] queue_data;
 
   read_half_period_ns = WRITE_HALF_PERIOD_NS / 7 + WRITE_HALF_PERIOD_NS / 13;
@@ -228,7 +237,8 @@ task automatic test_read_clock_faster(
       @(posedge write_clk);
       p_write_en = 0;
       if (!p_write_full) begin
-        queue.push_back(i);
+        exp_queue.push_back(i);
+        wr_acc_cnt = wr_acc_cnt + 1;
       end
       @(posedge write_clk);
     end
@@ -246,7 +256,8 @@ task automatic test_read_clock_faster(
       p_read_en = 0;
       @(posedge read_clk);
       if (!p_read_empty) begin
-        queue_data = queue.pop_front();
+        queue_data = exp_queue.pop_front();
+        rd_acc_cnt = rd_acc_cnt + 1;
         assert (p_read_data == queue_data) else begin
           $error("test_read_clock_faster ERR %0d != p_read_data = %0d", queue_data, p_read_data);
           counters.error_count++;
@@ -254,8 +265,15 @@ task automatic test_read_clock_faster(
       end
       @(posedge read_clk);
     end
-    queue = {};
+    if ((wr_acc_cnt - rd_acc_cnt) != exp_queue.size()) begin
+          $error("SB count mismatch wr=%0d rd=%0d size=%0d",
+                 wr_acc_cnt, rd_acc_cnt, exp_queue.size());
+          counters.error_count++;
+    end
+    exp_queue = {};
     p_read_en = 0;
+    wr_acc_cnt = 0;
+    rd_acc_cnt = 0;
   end
   write_half_period_ns = WRITE_HALF_PERIOD_NS;
   read_half_period_ns = READ_HALF_PERIOD_NS;
