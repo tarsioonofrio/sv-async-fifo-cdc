@@ -1,5 +1,16 @@
 // A) Basic functionality (sanity)
 
+task automatic debug_print_queue(
+  input string tag,
+  input logic [BITS-1:0] queue[$]
+);
+  $write("%s queue(size=%0d): ", tag, queue.size());
+  for (int k = 0; k < queue.size(); k++) begin
+    $write("%0d, ", queue[k]);
+  end
+  $display("");
+endtask
+
 // task 01: Reset + initial Empty/Full
 // - After reset: p_read_empty=1 and p_write_full=0.
 // - Pointers start in a consistent state.
@@ -157,11 +168,7 @@ task automatic test_write_clock_faster(
     p_write_en = 0;
     @(posedge read_clk);
 
-    // $write("queue: ");
-    // for (int k = 0; k < queue.size(); k++) begin
-    //   $write("%0d, ", queue[k]);
-    // end
-    // $display("");
+    debug_print_queue("test_write_clock_faster", queue);
 
     wait(!p_read_empty);
     p_read_en = 1;
