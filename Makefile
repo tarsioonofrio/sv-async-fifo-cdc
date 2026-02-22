@@ -6,12 +6,13 @@ SIM_DIR := sim
 RTL := ../rtl/sync_2ff.sv ../rtl/async_fifo.sv
 TB  := ../tb/test_async_fifo.sv ../tb/assertions.sv
 TOP := work.tb
+LINT_SRCS := rtl/sync_2ff.sv rtl/async_fifo.sv tb/test_async_fifo.sv tb/assertions.sv
 TEST ?=
 SEED ?=7
 BITS ?=32
 SIZE ?=16
 
-.PHONY: build run test regress waves clean
+.PHONY: build run test regress lint waves clean
 
 build:
 	cd $(SIM_DIR) && \
@@ -28,6 +29,9 @@ test: run
 
 regress:
 	$(MAKE) test TEST=
+
+lint:
+	verilator --lint-only -Wall -Wno-DECLFILENAME -Wno-UNUSEDSIGNAL -Itb -Irtl $(LINT_SRCS)
 
 waves: build
 	cd $(SIM_DIR) && vsim -voptargs=+acc -t ps $(TOP) -do "do wave.do; run 100ns; quit -f"
