@@ -234,9 +234,27 @@ make MODELSIM_BIN=/path/to/modelsim/bin run
 
 ---
 
-## Roadmap (if you want to grow the IP)
+## TODO
 
-- [ ] Add formal properties (optional)
+### SVA (pending)
+
+- [ ] Complete assertions 5 and 11 (full/empty flag equivalence with Gray-domain next-state conditions)
+- [ ] Implement assertions 6 and 12 (no X/Z after reset deassertion for flags and pointers)
+- [ ] Add optional assertions 13 and 14 (synced Gray one-bit change, no flag glitching between edges)
+- [ ] Review and fix antecedents in existing properties to match accepted transactions (`p_write_en && !p_write_full`, `p_read_en && !p_read_empty`)
+- [ ] Run SVA-enabled simulation and capture a clean pass report
+
+### Regression tests (pending)
+
+- [ ] Add `make regress` matrix with multiple `BITS`/`SIZE` combinations
+- [ ] Add deterministic multi-test runs by `NAME` and fixed `SEED` set
+- [ ] Add wrap-around focused regression case (>= 10x depth transactions)
+- [ ] Add overflow/underflow stress regression with scoreboard checks
+- [ ] Publish regression summary (tests, seeds, params, pass/fail) in CI/log output
+
+### Optional IP growth
+
+- [ ] Add formal properties
 - [ ] Add programmable thresholds (`almost_full/empty`)
 - [ ] Add dual-port RAM inference templates for FPGA/ASIC
 - [ ] Add optional fall-through (FWFT) read mode
