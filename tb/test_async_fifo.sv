@@ -41,11 +41,16 @@ module tb
   realtime write_half_period_ns, read_half_period_ns;
 
   tb_counters_t counters[string];
+  tb_counters_t c_reset;
+  tb_counters_t c_smoke;
+  tb_counters_t c_interleaved;
+  tb_counters_t c_write_clock_faster;
+  tb_counters_t c_read_clock_faster;
 
   task automatic task_reset();
-    counters["test_reset_empty_full_start"] = '{default: 0};
+    c_reset = '{default: 0};
     test_reset_empty_full_start(
-      counters["test_reset_empty_full_start"],
+      c_reset,
       write_rst_n,
       read_rst_n,
       p_write_en,
@@ -55,6 +60,7 @@ module tb
       write_clk,
       read_clk
     );
+    counters["test_reset_empty_full_start"] = c_reset;
   endtask
 
 
@@ -97,9 +103,9 @@ module tb
 
     if (NAME == "") begin
       task_reset();
-      counters["test_smoke_writen_readn"] = '{default: 0};
+      c_smoke = '{default: 0};
       test_smoke_writen_readn(
-        counters["test_smoke_writen_readn"],
+        c_smoke,
         p_write_en,
         p_read_en,
         p_write_data,
@@ -107,10 +113,11 @@ module tb
         write_clk,
         read_clk
       );
+      counters["test_smoke_writen_readn"] = c_smoke;
       task_reset();
-      counters["test_interleaved"] = '{default: 0};
+      c_interleaved = '{default: 0};
       test_interleaved(
-        counters["test_interleaved"],
+        c_interleaved,
         p_write_en,
         p_read_en,
         p_write_full,
@@ -120,10 +127,11 @@ module tb
         write_clk,
         read_clk
       );
+      counters["test_interleaved"] = c_interleaved;
       task_reset();
-      counters["test_write_clock_faster"] = '{default: 0};
+      c_write_clock_faster = '{default: 0};
       test_write_clock_faster(
-        counters["test_write_clock_faster"],
+        c_write_clock_faster,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -135,10 +143,11 @@ module tb
         write_clk,
         read_clk
       );
+      counters["test_write_clock_faster"] = c_write_clock_faster;
       task_reset();
-      counters["test_read_clock_faster"] = '{default: 0};
+      c_read_clock_faster = '{default: 0};
       test_read_clock_faster(
-        counters["test_read_clock_faster"],
+        c_read_clock_faster,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -150,13 +159,14 @@ module tb
         write_clk,
         read_clk
       );
+      counters["test_read_clock_faster"] = c_read_clock_faster;
     end else if (NAME == "reset") begin
       task_reset();
     end else if (NAME == "smoke") begin
       task_reset();
-      counters["test_smoke_writen_readn"] = '{default: 0};
+      c_smoke = '{default: 0};
       test_smoke_writen_readn(
-        counters["test_smoke_writen_readn"],
+        c_smoke,
         p_write_en,
         p_read_en,
         p_write_data,
@@ -164,11 +174,12 @@ module tb
         write_clk,
         read_clk
       );
+      counters["test_smoke_writen_readn"] = c_smoke;
     end else if (NAME == "interleaved") begin
       task_reset();
-      counters["test_interleaved"] = '{default: 0};
+      c_interleaved = '{default: 0};
       test_interleaved(
-        counters["test_interleaved"],
+        c_interleaved,
         p_write_en,
         p_read_en,
         p_write_full,
@@ -178,11 +189,12 @@ module tb
         write_clk,
         read_clk
       );
+      counters["test_interleaved"] = c_interleaved;
     end else if (NAME == "write-clock-faster") begin
       task_reset();
-      counters["test_write_clock_faster"] = '{default: 0};
+      c_write_clock_faster = '{default: 0};
       test_write_clock_faster(
-        counters["test_write_clock_faster"],
+        c_write_clock_faster,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -194,11 +206,12 @@ module tb
         write_clk,
         read_clk
       );
+      counters["test_write_clock_faster"] = c_write_clock_faster;
     end else if (NAME == "read-clock-faster") begin
       task_reset();
-      counters["test_read_clock_faster"] = '{default: 0};
+      c_read_clock_faster = '{default: 0};
       test_read_clock_faster(
-        counters["test_read_clock_faster"],
+        c_read_clock_faster,
         write_half_period_ns,
         read_half_period_ns,
         p_write_en,
@@ -210,6 +223,7 @@ module tb
         write_clk,
         read_clk
       );
+      counters["test_read_clock_faster"] = c_read_clock_faster;
     end else begin
       $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved|write-clock-faster|read-clock-faster", NAME);
     end
