@@ -12,6 +12,9 @@ module sync_2ff
   (* ASYNC_REG = "TRUE" *) logic [WIDTH-1:0] r_ff1;
   (* ASYNC_REG = "TRUE" *) logic [WIDTH-1:0] r_ff2;
 
+  timeunit 1ns;
+  timeprecision 1ps;
+
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       r_ff1 <= '0;

@@ -22,6 +22,9 @@ module async_fifo
     // output logic p_read_level,                // (Optional) Approximate fill level (read domain view)
   );
 
+  timeunit 1ns;
+  timeprecision 1ps;
+
   localparam bit SIZE_IS_POW2 = (SIZE > 1) && ((SIZE & (SIZE - 1)) == 0);
 
   generate

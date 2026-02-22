@@ -15,6 +15,9 @@ module async_fifo_sva #(
   input logic [SIZE_LOG2:0] r_write_ptr_gray_sync2 // into read domain
 );
 
+timeunit 1ns;
+timeprecision 1ps;
+
 function automatic logic [SIZE_LOG2:0] bin2gray(input logic [SIZE_LOG2:0] b);
   return (b >> 1) ^ b;
 endfunction

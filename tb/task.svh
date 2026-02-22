@@ -167,13 +167,13 @@ task automatic test_write_clock_faster(
   @(posedge write_clk);
 
   for (int i = 0; i < SIZE; i++) begin
-    for (int i = 0; i < SIZE*3; i++) begin
+    for (int j = 0; j < SIZE*3; j++) begin
       p_write_en = 1;
-      p_write_data = i;
+      p_write_data = j;
       @(posedge write_clk);
       p_write_en = 0;
       if (!p_write_full) begin
-        exp_queue.push_back(i);
+        exp_queue.push_back(j);
         wr_acc_cnt = wr_acc_cnt + 1;
       end
       @(posedge write_clk);
@@ -239,13 +239,13 @@ task automatic test_read_clock_faster(
   @(posedge write_clk);
 
   for (int i = 0; i < SIZE; i++) begin
-    for (int i = 0; i < SIZE-1; i++) begin
+    for (int j = 0; j < SIZE-1; j++) begin
       p_write_en = 1;
-      p_write_data = i;
+      p_write_data = j;
       @(posedge write_clk);
       p_write_en = 0;
       if (!p_write_full) begin
-        exp_queue.push_back(i);
+        exp_queue.push_back(j);
         wr_acc_cnt = wr_acc_cnt + 1;
       end
       @(posedge write_clk);
@@ -258,7 +258,7 @@ task automatic test_read_clock_faster(
     wait(!p_read_empty);
     @(posedge read_clk);
 
-    for (int i = 0; i < SIZE*3; i++) begin
+    for (int j = 0; j < SIZE*3; j++) begin
       p_read_en = 1;
       @(posedge read_clk);
       p_read_en = 0;
