@@ -1,10 +1,11 @@
 
-module tb;
+module tb
+  #(
+    parameter int BITS = 32, // Width of each FIFO entry.
+    parameter int SIZE = 16  // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
+  );
   timeunit 1ns;
   timeprecision 1ps;
-
-  localparam BITS=32; // Width of each FIFO entry.
-  localparam SIZE=16; // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
 
   localparam WRITE_HALF_PERIOD_NS = 0.314159265359;
   localparam READ_HALF_PERIOD_NS = 0.2718281828;

@@ -8,6 +8,8 @@ TB  := ../tb/test_async_fifo.sv ../tb/assertions.sv
 TOP := work.tb
 TEST ?=
 SEED ?=7
+BITS ?=32
+SIZE ?=16
 
 .PHONY: build run test waves clean
 
@@ -20,7 +22,7 @@ build:
 	vlog -work work -svinputport=relaxed $(TB)
 
 run:
-	cd $(SIM_DIR) && TEST="$(TEST)" SEED="$(SEED)" vsim -c -do sim.tcl
+	cd $(SIM_DIR) && TEST="$(TEST)" SEED="$(SEED)" BITS="$(BITS)" SIZE="$(SIZE)" vsim -c -do sim.tcl
 
 test: run
 
