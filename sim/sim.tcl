@@ -9,18 +9,18 @@ vlog -work work -svinputport=relaxed ../tb/test_async_fifo.sv
 vlog -work work -svinputport=relaxed ../tb/assertions.sv
 # to show FSM
 # vsim -voptargs=+acc -t ps -fsmdebug -coverage -debugDB work.tb
-set generic_args {}
+quietly set generic_args {}
 if {[info exists env(BITS)] && $env(BITS) ne ""} {
-  lappend generic_args "-gBITS=$env(BITS)"
+  quietly lappend generic_args "-gBITS=$env(BITS)"
 }
 if {[info exists env(SIZE)] && $env(SIZE) ne ""} {
-  lappend generic_args "-gSIZE=$env(SIZE)"
+  quietly lappend generic_args "-gSIZE=$env(SIZE)"
 }
 if {[info exists env(TEST)] && $env(TEST) ne ""} {
-  lappend generic_args "-gNAME=$env(TEST)"
+  quietly lappend generic_args "-gNAME=$env(TEST)"
 }
 if {[info exists env(SEED)] && $env(SEED) ne ""} {
-  lappend generic_args "-gSEED=$env(SEED)"
+  quietly lappend generic_args "-gSEED=$env(SEED)"
 }
 eval vsim -voptargs=+acc -t ps work.tb $generic_args
 set StdArithNoWarnings 1
