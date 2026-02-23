@@ -1,5 +1,5 @@
 xrun(64): 23.03-s003: (c) Copyright 1995-2023 Cadence Design Systems, Inc.
-TOOL:	xrun(64)	23.03-s003: Started on Feb 23, 2026 at 01:10:33 -03
+TOOL:	xrun(64)	23.03-s003: Started on Feb 23, 2026 at 01:24:26 -03
 xrun
 	-f args.txt
 		-smartorder
@@ -2445,8 +2445,8 @@ xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (pose
 			streams:   0, words:     0
 		work.async_fifo:v <0x7cbc5761>
 			streams:   1, words:  1346
-		work.tb:sv <0x1c7bf3bd>
-			streams:  26, words: 130908
+		work.tb:sv <0x58a4d533>
+			streams:  26, words: 131274
 	Building instance specific data structures.
 	Loading native compiled code:     .................... Done
 	Design hierarchy summary:
@@ -2765,10 +2765,10 @@ SCORE BOARD (ERRORS):
   test_reset_empty_full_start = 0
   test_smoke_writen_readn = 15
   TOTAL = 15
-xmsim: *F,FATSEV (/sim/tarsio/repos/sv-async-fifo-cdc/tb/test_async_fifo.sv,269): (time 23936 PS).
+xmsim: *F,FATSEV (/sim/tarsio/repos/sv-async-fifo-cdc/tb/test_async_fifo.sv,274): (time 23936 PS).
 tb.unmblk1
 TEST FAILED: 15 error(s)
 Simulation terminated via $fatal(1) at time 23936 PS + 0
-/sim/tarsio/repos/sv-async-fifo-cdc/tb/test_async_fifo.sv:269         $fatal(1, "TEST FAILED: %0d error(s)", total_errors);
+/sim/tarsio/repos/sv-async-fifo-cdc/tb/test_async_fifo.sv:274         $fatal(1, "TEST FAILED: %0d error(s)", total_errors);
 xcelium> exit
-TOOL:	xrun(64)	23.03-s003: Exiting on Feb 23, 2026 at 01:10:38 -03  (total: 00:00:05)
+TOOL:	xrun(64)	23.03-s003: Exiting on Feb 23, 2026 at 01:24:37 -03  (total: 00:00:11)
