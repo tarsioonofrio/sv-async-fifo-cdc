@@ -274,6 +274,31 @@ Recommended usage:
 - Use `*-run-env` on clean shells, shared servers, and CI.
 - Use `*-run` only when modules were loaded manually beforehand.
 
+---
+
+## Report Generation
+
+To generate consolidated synthesis tables (area + power):
+
+```bash
+python3 scripts/report.py
+```
+
+The script reads:
+
+- `syntesis/logical/results/BITS*_SIZE*/reports/async_fifo_area.rpt`
+- `syntesis/power/results/BITS*_SIZE*/power_evaluation.txt`
+
+Generated outputs:
+
+- `syntesis/reports/area_table.csv`
+- `syntesis/reports/power_table.csv`
+- `syntesis/reports/summary.md`
+
+The consolidated data summary is in:
+
+- `syntesis/reports/summary.md`
+
 ### Output organization
 
 - Configuration archive (kept per run):
