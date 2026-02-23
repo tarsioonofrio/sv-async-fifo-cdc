@@ -237,6 +237,19 @@ Run with explicit generics:
 make test TEST=read-clock-faster SEED=11 BITS=8 SIZE=8
 ```
 
+Generate coverage (Questa required):
+
+```bash
+make coverage
+make coverage-html
+```
+
+Coverage outputs:
+
+- UCDB database: `sim/coverage.ucdb`
+- HTML report: `sim/coverage_html/index.html`
+- Aggregate summary source used in this repo: `sim/coverage_html/files/overalldu.js`
+
 `Makefile` prepends the ModelSim path via:
 
 ```make
