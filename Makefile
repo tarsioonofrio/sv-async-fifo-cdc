@@ -16,13 +16,14 @@ TEST ?=
 SEED ?=7
 BITS ?=32
 SIZE ?=16
+COVERAGE ?=0
 
 .PHONY: build run test regress lint lint-all lint-rtl lint-tb \
 	waves clean logical sim-netlist power synthesis \
 	logical-env logical-run logical-run-env \
 	sim-netlist-env sim-netlist-run sim-netlist-run-env \
 	power-env power-run power-run-env \
-	synthesis-env synthesis-run synthesis-run-env
+	synthesis-env synthesis-run synthesis-run-env coverage coverage-html
 
 build:
 	cd $(SIM_DIR)
@@ -34,12 +35,19 @@ build:
 
 run:
 	cd $(SIM_DIR)
-	TEST="$(TEST)" SEED="$(SEED)" BITS="$(BITS)" SIZE="$(SIZE)" vsim -c -do sim.tcl
+	TEST="$(TEST)" SEED="$(SEED)" BITS="$(BITS)" SIZE="$(SIZE)" COVERAGE="$(COVERAGE)" vsim -c -do sim.tcl
 
 test: run
 
 regress:
 	$(MAKE) test TEST=
+
+coverage:
+	$(MAKE) run COVERAGE=1
+
+coverage-html: coverage
+	cd $(SIM_DIR)
+	vcover report -html -output coverage_html coverage.ucdb
 
 logical-env:
 	cd "syntesis/logical"
