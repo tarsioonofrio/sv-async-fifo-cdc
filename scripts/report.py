@@ -19,7 +19,6 @@ import re
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
-
 CFG_RE = re.compile(r"^BITS(?P<bits>\d+)_SIZE(?P<size>\d+)$")
 
 
@@ -116,7 +115,9 @@ def collect_power_rows(repo_root: Path) -> List[Dict[str, object]]:
     return rows
 
 
-def write_csv(path: Path, rows: List[Dict[str, object]], columns: Iterable[str]) -> None:
+def write_csv(
+    path: Path, rows: List[Dict[str, object]], columns: Iterable[str]
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=list(columns))
@@ -131,7 +132,9 @@ def fmt_num(v: object, ndigits: int = 3) -> str:
     return str(v)
 
 
-def to_markdown_table(rows: List[Dict[str, object]], columns: List[str], ndigits: int = 3) -> str:
+def to_markdown_table(
+    rows: List[Dict[str, object]], columns: List[str], ndigits: int = 3
+) -> str:
     if not rows:
         return "_No data found._\n"
 
@@ -140,14 +143,38 @@ def to_markdown_table(rows: List[Dict[str, object]], columns: List[str], ndigits
     md.append("| " + " | ".join(headers) + " |")
     md.append("| " + " | ".join(["---"] * len(headers)) + " |")
     for row in rows:
-        md.append("| " + " | ".join(fmt_num(row.get(c, ""), ndigits) for c in headers) + " |")
+        md.append(
+            "| "
+            + " | ".join(fmt_num(row.get(c, ""), ndigits) for c in headers)
+            + " |"
+        )
     md.append("")
     return "\n".join(md)
 
 
-def write_summary_md(path: Path, area_rows: List[Dict[str, object]], power_rows: List[Dict[str, object]]) -> None:
-    area_cols = ["cfg", "bits", "size", "cell_count", "cell_area_um2", "net_area_um2", "total_area_um2"]
-    power_cols = ["cfg", "bits", "size", "leakage_mw", "internal_mw", "switching_mw", "total_mw"]
+def write_summary_md(
+    path: Path,
+    area_rows: List[Dict[str, object]],
+    power_rows: List[Dict[str, object]],
+) -> None:
+    area_cols = [
+        "cfg",
+        "bits",
+        "size",
+        "cell_count",
+        "cell_area_um2",
+        "net_area_um2",
+        "total_area_um2",
+    ]
+    power_cols = [
+        "cfg",
+        "bits",
+        "size",
+        "leakage_mw",
+        "internal_mw",
+        "switching_mw",
+        "total_mw",
+    ]
 
     text = []
     text.append("# Synthesis Summary")
@@ -164,7 +191,9 @@ def write_summary_md(path: Path, area_rows: List[Dict[str, object]], power_rows:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate area and power tables from synthesis outputs.")
+    parser = argparse.ArgumentParser(
+        description="Generate area and power tables from synthesis outputs."
+    )
     parser.add_argument(
         "--repo-root",
         type=Path,
@@ -180,13 +209,33 @@ def main() -> int:
     args = parser.parse_args()
 
     repo_root = args.repo_root.resolve()
-    out_dir = args.out_dir.resolve() if args.out_dir else (repo_root / "syntesis" / "reports")
+    out_dir = (
+        args.out_dir.resolve()
+        if args.out_dir
+        else (repo_root / "syntesis" / "reports")
+    )
 
     area_rows = collect_area_rows(repo_root)
     power_rows = collect_power_rows(repo_root)
 
-    area_cols = ["cfg", "bits", "size", "cell_count", "cell_area_um2", "net_area_um2", "total_area_um2"]
-    power_cols = ["cfg", "bits", "size", "leakage_mw", "internal_mw", "switching_mw", "total_mw"]
+    area_cols = [
+        "cfg",
+        "bits",
+        "size",
+        "cell_count",
+        "cell_area_um2",
+        "net_area_um2",
+        "total_area_um2",
+    ]
+    power_cols = [
+        "cfg",
+        "bits",
+        "size",
+        "leakage_mw",
+        "internal_mw",
+        "switching_mw",
+        "total_mw",
+    ]
 
     write_csv(out_dir / "area_table.csv", area_rows, area_cols)
     write_csv(out_dir / "power_table.csv", power_rows, power_cols)
