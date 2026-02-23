@@ -64,11 +64,15 @@ module tb
   endtask
 
 
+`ifdef GATE_LEVEL
+  async_fifo dut (
+`else
   async_fifo
     #(
       .BITS(BITS),
       .SIZE(SIZE)
     ) dut (
+`endif
       .write_clk(write_clk),
       .write_rst_n(write_rst_n),
       .p_write_en(p_write_en),

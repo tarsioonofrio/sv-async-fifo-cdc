@@ -72,6 +72,7 @@ sim-netlist-run:
 	rm -rf dut.shm
 	rm -rf xcelium.d
 	xrun -f args.txt ../../tb/test_async_fifo.sv \
+		../../tb/assertions.sv \
 		../logical/results/gate_level/async_fifo_logic_mapped.v \
 		-define GATE_LEVEL -define XRUN -run -exit
 
@@ -82,6 +83,7 @@ sim-netlist-run-env:
 	rm -rf dut.shm
 	rm -rf xcelium.d
 	xrun -f args.txt ../../tb/test_async_fifo.sv \
+		../../tb/assertions.sv \
 		../logical/results/gate_level/async_fifo_logic_mapped.v \
 		-define GATE_LEVEL -define XRUN -run -exit
 
