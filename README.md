@@ -26,6 +26,11 @@ This repository targets an "industry-style" IP deliverable: clean RTL, clear int
 - GNU Make
 - Python 3 (for `scripts/report.py`)
 
+### Lint
+
+- Verilator (required by `make lint`, `make lint-rtl`, `make lint-tb`, `make lint-all`)
+- Bash-compatible shell (used by `Makefile` recipe shell flags)
+
 ### RTL Simulation
 
 - Questa `2025.3` (recommended)
