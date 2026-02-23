@@ -1,5 +1,5 @@
 xrun(64): 23.03-s003: (c) Copyright 1995-2023 Cadence Design Systems, Inc.
-TOOL:	xrun(64)	23.03-s003: Started on Feb 22, 2026 at 23:34:42 -03
+TOOL:	xrun(64)	23.03-s003: Started on Feb 23, 2026 at 01:10:33 -03
 xrun
 	-f args.txt
 		-smartorder
@@ -12,11 +12,21 @@ xrun
 		-incdir ../../tb
 		/pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v
 	../../tb/test_async_fifo.sv
+	../../tb/assertions.sv
 	../logical/results/gate_level/async_fifo_logic_mapped.v
 	-define GATE_LEVEL
 	-define XRUN
+	+NAME=smoke
+	+SEED=7
+	+TIMEOUT_NS=200000
 	-run
 	-exit
+
+   User defined plus("+") options:
+	+NAME=smoke
+	+SEED=7
+	+TIMEOUT_NS=200000
+
 file: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v
 	module work.AN2D0BWP30P140:v
 		errors: 0, warnings: 0
@@ -2225,6 +2235,9 @@ file: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital
 file: ../../tb/test_async_fifo.sv
 	module work.tb:sv
 		errors: 0, warnings: 0
+file: ../../tb/assertions.sv
+	module work.async_fifo_sva:sv
+		errors: 0, warnings: 0
 file: ../logical/results/gate_level/async_fifo_logic_mapped.v
 	module work.RC_CG_MOD:v
 		errors: 0, warnings: 0
@@ -2268,11 +2281,494 @@ file: ../logical/results/gate_level/async_fifo_logic_mapped.v
 		errors: 0, warnings: 0
 	Elaborating the design hierarchy:
 		Caching library 'work' ....... Done
-      .BITS(BITS),
-               |
-xmelab: *E,CUTMIP (/sim/tarsio/repos/sv-async-fifo-cdc/tb/test_async_fifo.sv,69|15): Too many module instance parameter assignments (definition in file ../logical/results/gate_level/async_fifo_logic_mapped.v, line 220).
-  async_fifo_sva u_async_fifo_sva(.write_clk (write_clk), .write_rst_n
-                                |
-xmelab: *E,CUVMUR (../logical/results/gate_level/async_fifo_logic_mapped.v,358|32): instance 'tb.dut@async_fifo<module>.u_async_fifo_sva' of design unit 'async_fifo_sva' is unresolved in 'work.async_fifo:v'.
-xrun: *E,ELBERR: Error (*E) or soft error (*SE) occurred during elaboration (status 1), exiting.
-TOOL:	xrun(64)	23.03-s003: Exiting on Feb 22, 2026 at 23:34:45 -03  (total: 00:00:03)
+	Top level design units:
+		tb
+	Reading SDF file from location "../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf"
+xmelab: *W,FLFNOF: No SDF file specified, but annotation parameters were present, in SDF annotation command file sdf_cmd.cmd, line 6.
+       .r_write_ptr_bin (r_write_ptr_bin), .r_write_ptr_gray
+                                       |
+xmelab: *W,CUVMPW (../logical/results/gate_level/async_fifo_logic_mapped.v,362|39): port sizes differ in port connection(5/6) for the instance(tb.dut) .
+       (r_write_ptr_gray), .r_read_ptr_bin (r_read_ptr_bin),
+                       |
+xmelab: *W,CUVMPW (../logical/results/gate_level/async_fifo_logic_mapped.v,363|23): port sizes differ in port connection(5/6) for the instance(tb.dut) .
+       (r_write_ptr_gray), .r_read_ptr_bin (r_read_ptr_bin),
+                                                         |
+xmelab: *W,CUVMPW (../logical/results/gate_level/async_fifo_logic_mapped.v,363|57): port sizes differ in port connection(5/6) for the instance(tb.dut) .
+       .r_read_ptr_gray (r_read_ptr_gray), .w_write_ptr_gray_next
+                                       |
+xmelab: *W,CUVMPW (../logical/results/gate_level/async_fifo_logic_mapped.v,364|39): port sizes differ in port connection(5/6) for the instance(tb.dut) .
+       (w_write_ptr_gray_next), .w_read_ptr_gray_next
+                            |
+xmelab: *W,CUVMPW (../logical/results/gate_level/async_fifo_logic_mapped.v,365|28): port sizes differ in port connection(5/6) for the instance(tb.dut) .
+       (w_read_ptr_gray_next), .r_read_ptr_gray_sync2
+                           |
+xmelab: *W,CUVMPW (../logical/results/gate_level/async_fifo_logic_mapped.v,366|27): port sizes differ in port connection(5/6) for the instance(tb.dut) .
+       (r_read_ptr_gray_sync2), .r_write_ptr_gray_sync2
+                            |
+xmelab: *W,CUVMPW (../logical/results/gate_level/async_fifo_logic_mapped.v,367|28): port sizes differ in port connection(5/6) for the instance(tb.dut) .
+       (r_write_ptr_gray_sync2));
+                             |
+xmelab: *W,CUVMPW (../logical/results/gate_level/async_fifo_logic_mapped.v,368|29): port sizes differ in port connection(5/6) for the instance(tb.dut) .
+	Annotating SDF timing data:
+		Compiled SDF file:     async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf.X
+		Log file:              ./sdf_log.log
+		Backannotation scope:  tb.dut
+		Configuration file:    
+		MTM control:           
+		Scale factors:         
+		Scale type:            
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.sync_read_to_write.\r_ff2_reg[1]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 352>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.sync_read_to_write.\r_ff1_reg[0]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 373>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.sync_read_to_write.\r_ff1_reg[3]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 394>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.sync_read_to_write.\r_ff1_reg[4]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 415>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.sync_read_to_write.\r_ff1_reg[2]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 436>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.sync_read_to_write.\r_ff1_reg[1]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 457>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.sync_read_to_write.\r_ff2_reg[0]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 478>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.sync_read_to_write.\r_ff2_reg[4]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 499>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.sync_read_to_write.\r_ff2_reg[2]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 520>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.sync_read_to_write.\r_ff2_reg[3]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 541>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.sync_write_to_read.\r_ff2_reg[0]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 562>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.sync_write_to_read.\r_ff2_reg[4]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 583>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.sync_write_to_read.\r_ff2_reg[1]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 604>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.sync_write_to_read.\r_ff2_reg[2]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 625>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.sync_write_to_read.\r_ff2_reg[3]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 646>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.sync_write_to_read.\r_ff1_reg[2]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 667>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.sync_write_to_read.\r_ff1_reg[3]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 688>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.sync_write_to_read.\r_ff1_reg[4]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 709>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.sync_write_to_read.\r_ff1_reg[0]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 730>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.sync_write_to_read.\r_ff1_reg[1]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 751>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.\r_write_ptr_gray_reg[2]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1182>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.\r_write_ptr_gray_reg[1]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1203>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.\r_write_ptr_gray_reg[0]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1224>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.\r_write_ptr_gray_reg[3]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1245>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.\r_write_ptr_gray_reg[4]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1266>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[0]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1880>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[1]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1901>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[2]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1922>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[3]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1943>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[4]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1964>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[5]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 1985>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[6]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2006>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[7]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2027>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[8]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2048>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[9]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2069>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[10]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2090>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[11]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2111>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[12]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2132>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[13]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2153>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[14]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2174>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[15]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2195>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[16]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2216>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[17]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2237>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[18]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2258>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[19]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2279>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[20]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2300>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[21]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2321>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[22]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2342>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[23]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2363>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[24]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2384>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[25]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2405>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[26]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2426>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[27]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2447>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[28]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2468>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[29]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2489>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[30]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2510>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\p_read_data_reg[31]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 2531>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\r_read_ptr_gray_reg[0]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 10255>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\r_read_ptr_gray_reg[1]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 10276>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\r_read_ptr_gray_reg[2]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 10297>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\r_read_ptr_gray_reg[3]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 10318>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\r_read_ptr_gray_reg[4]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 10339>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.\r_write_ptr_bin_reg[0]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 18378>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.\r_write_ptr_bin_reg[2]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 18399>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.\r_write_ptr_bin_reg[3]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 18420>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.\r_write_ptr_bin_reg[4]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 18441>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-22) (41)) of instance tb.dut.\r_write_ptr_bin_reg[1]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 18462>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\r_read_ptr_bin_reg[0]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 18483>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\r_read_ptr_bin_reg[2]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 18504>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\r_read_ptr_bin_reg[3]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 18525>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\r_read_ptr_bin_reg[4]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 18546>.
+xmelab: *W,SDFNET: Unable to annotate to non-existent timing check (RECREM (posedge CDN) (COND D_SDFCHK (posedge CP)) (-24) (39)) of instance tb.dut.\r_read_ptr_bin_reg[1]  of module DFCNQD1BWP30P140 <../logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf, line 18567>.
+	Annotation completed with 0 Errors and 72 Warnings
+	SDF statistics: 
+		 No. of Pathdelays = 5113    	 No. of Disabled Pathdelays = 0        Annotated = 100.00% (5113/5113) 
+		 No. of Tchecks    = 4123    	 No. of Disabled Tchecks    = 0        Annotated = 29.15% (1202/4123) 
+				        Total(T) 	   Disabled(D) 	    Annotated(A)	  Percentage(A/(T-D))
+		 Path Delays	          5113	             0	              5113	                100.00
+		       $hold	            72	             0	                 0	                  0.00
+		      $width	          2743	             0	                 0	                  0.00
+		   $recovery	            72	             0	                 0	                  0.00
+		  $setuphold	          1236	             0	              1202	                 97.25
+	Building instance overlay tables: .................... Done
+	Generating native compiled code:
+		work.AO22D0BWP30P140:v <0x60b5be0c>
+			streams:   0, words:     0
+		work.AOI22D1BWP30P140:v <0x217bc933>
+			streams:   0, words:     0
+		work.IOA21D1BWP30P140:v <0x11205b13>
+			streams:   0, words:     0
+		work.AOI221D1BWP30P140:v <0x0f263231>
+			streams:   0, words:     0
+		work.OAI211D1BWP30P140:v <0x17c47f5e>
+			streams:   0, words:     0
+		work.AO211D1BWP30P140:v <0x4a358be8>
+			streams:   0, words:     0
+		work.DFQD1BWP30P140:v <0x2df5d436>
+			streams:   0, words:     0
+		work.DFD1BWP30P140:v <0x4346ccb6>
+			streams:   0, words:     0
+		work.DFCNQD1BWP30P140:v <0x34c15a82>
+			streams:   0, words:     0
+		work.XOR4D1BWP30P140:v <0x53c63f5a>
+			streams:   0, words:     0
+		work.XNR4D1BWP30P140:v <0x06ddbe40>
+			streams:   0, words:     0
+		work.HA1D1BWP30P140:v <0x0d112386>
+			streams:   0, words:     0
+		work.XOR2UD1BWP30P140:v <0x667fe57a>
+			streams:   0, words:     0
+		work.XNR2UD1BWP30P140:v <0x664f363a>
+			streams:   0, words:     0
+		work.XOR2UD1BWP30P140:v <0x61f3f91b>
+			streams:   0, words:     0
+		work.OAI31D1BWP30P140:v <0x1ec5ec8e>
+			streams:   0, words:     0
+		work.XOR3UD1BWP30P140:v <0x27870304>
+			streams:   0, words:     0
+		work.async_fifo_sva:sv <0x04f16a7c>
+			streams:  47, words: 34122
+		work.DFCNQD1BWP30P140:v <0x657b65a7>
+			streams:   0, words:     0
+		work.DFCNQD1BWP30P140:v <0x0d147a72>
+			streams:   0, words:     0
+		work.CKLNQD1BWP30P140:v <0x52a190a4>
+			streams:   0, words:     0
+		work.async_fifo:v <0x7cbc5761>
+			streams:   1, words:  1346
+		work.tb:sv <0x1c7bf3bd>
+			streams:  26, words: 130908
+	Building instance specific data structures.
+	Loading native compiled code:     .................... Done
+	Design hierarchy summary:
+		                    Instances  Unique
+		Modules:                 1044      55
+		UDPs:                    3505       3
+		Primitives:              5546       6
+		Timing outputs:          1053      22
+		Registers:                723     128
+		Scalar wires:            1776       -
+		Expanded wires:            64       2
+		Always blocks:             37      37
+		Initial blocks:            17      17
+		Pseudo assignments:        11       -
+		Timing checks:           5359     741
+		Interconnect:            2814       -
+		Delayed tcheck signals:  1202     121
+		Assertions:                18      18
+		Simulation timescale:     1ps
+	Writing initial simulation snapshot: work.tb:sv
+Loading snapshot work.tb:sv .................... Done
+xcelium> source /soft64/cadence/ferramentas/XCELIUM2303/tools/xcelium/files/xmsimrc
+xcelium> run
+=== Testbench starting: TEST=smoke SEED=7 ===
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 1632 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,132): (time 1632 PS) Assertion tb.dut.u_async_fifo_sva.__assert_11 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 1884 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,91): (time 1884 PS) Assertion tb.dut.u_async_fifo_sva.__assert_6 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 2176 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,139): (time 2176 PS) Assertion tb.dut.u_async_fifo_sva.__assert_12 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 2512 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 2720 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 3140 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 3264 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 3768 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 3808 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 4352 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 4396 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 4896 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 5024 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 4396 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 5024 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:5035 PS, negedge D:5024 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[1][0] 
+            Time: 5037 PS
+
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 5440 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 5652 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 5024 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 5652 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 5984 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 6280 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 5652 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 6280 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:6291 PS, negedge D:6280 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[3][0] 
+            Time: 6293 PS
+
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:6291 PS, negedge D:6280 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[3][1] 
+            Time: 6293 PS
+
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 6528 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 6908 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 6280 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 6908 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 7072 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 7536 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 6908 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 7536 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:7547 PS, negedge D:7536 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[5][0] 
+            Time: 7549 PS
+
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 7616 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 8160 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 8164 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 7536 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 8164 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 8704 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 8792 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 8164 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 8792 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:8803 PS, negedge D:8792 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[7][0] 
+            Time: 8805 PS
+
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:8803 PS, negedge D:8792 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[7][1] 
+            Time: 8805 PS
+
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:8803 PS, negedge D:8792 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[7][2] 
+            Time: 8805 PS
+
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 9248 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 9420 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 8792 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 9420 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 9792 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 10048 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 9420 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 10048 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:10059 PS, negedge D:10048 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[9][0] 
+            Time: 10061 PS
+
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 10336 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 10676 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 10048 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 10676 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 10880 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 11304 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 10676 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 11304 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:11315 PS, negedge D:11304 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[11][0] 
+            Time: 11317 PS
+
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:11315 PS, negedge D:11304 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[11][1] 
+            Time: 11317 PS
+
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 11424 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 11932 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 11304 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 11932 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 11968 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 12512 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 12560 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 11932 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 12560 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+
+Warning!  Timing violation
+           $setuphold<hold>( posedge CP &&& D_DEFCHK:12571 PS, negedge D:12560 PS,  0.017 : 17 PS,  -0.004 : -4 PS );
+            File: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v, line = 11317
+           Scope: tb.dut.\r_fifo_reg[13][0] 
+            Time: 12573 PS
+
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 13056 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 13188 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 12560 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 13188 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 13600 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 13816 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 13188 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 13816 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 14144 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
+                                                      |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,40): (time 14444 PS) Assertion tb.dut.u_async_fifo_sva.__assert_2 has failed (2 cycles, starting 13816 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 14444 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,80): (time 14444 PS) Assertion tb.dut.u_async_fifo_sva.__assert_5 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 14688 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 15072 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 15232 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 15700 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 15776 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 0 != p_read_data = 1
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 15776 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 15232 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 15776 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 16320 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 1 != p_read_data = X
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 16320 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 15776 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 16320 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 16328 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 16864 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 2 != p_read_data = 3
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 16864 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 16320 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 16864 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 16956 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 17408 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 3 != p_read_data = X
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 17408 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 16864 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 17408 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 17584 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 17952 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 4 != p_read_data = 5
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 17952 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 17408 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 17952 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 18212 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 18496 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 5 != p_read_data = X
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 18496 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 17952 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 18496 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 18840 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 19040 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 6 != p_read_data = 7
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 19040 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 18496 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 19040 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 19468 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 19584 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 7 != p_read_data = X
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 19584 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 19040 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 19584 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 20096 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 20128 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 8 != p_read_data = 9
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 20128 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 19584 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 20128 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 20672 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 9 != p_read_data = X
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 20672 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 20128 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 20672 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 20724 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 21216 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 10 != p_read_data = 11
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 21216 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 20672 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 21216 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 21352 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 21760 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 11 != p_read_data = X
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 21760 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 21216 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 21760 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 21980 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 22304 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 12 != p_read_data = 13
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 22304 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 21760 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 22304 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 22608 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 22848 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 13 != p_read_data = X
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 22848 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 22304 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 22848 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 23236 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/task.svh,94): (time 23392 PS) Assertion tb.test_smoke_writen_readn.unmblk2.__assert_3 has failed
+ERR 14 != p_read_data = 15
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
+                                                    |
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,109): (time 23392 PS) Assertion tb.dut.u_async_fifo_sva.__assert_8 has failed (2 cycles, starting 22848 PS)
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,116): (time 23392 PS) Assertion tb.dut.u_async_fifo_sva.__assert_9 has failed 
+xmsim: *E,ASRTST (/sim/tarsio/repos/sv-async-fifo-cdc/tb/assertions.sv,47): (time 23864 PS) Assertion tb.dut.u_async_fifo_sva.__assert_3 has failed 
+
+*** TIME 23.936000 ***
+
+TB PARAMETERS:
+  NAME=smoke
+  SEED=7
+  BITS=32
+  SIZE=16
+  TIMEOUT_NS=200000
+SCORE BOARD (ERRORS):
+  test_reset_empty_full_start = 0
+  test_smoke_writen_readn = 15
+  TOTAL = 15
+xmsim: *F,FATSEV (/sim/tarsio/repos/sv-async-fifo-cdc/tb/test_async_fifo.sv,269): (time 23936 PS).
+tb.unmblk1
+TEST FAILED: 15 error(s)
+Simulation terminated via $fatal(1) at time 23936 PS + 0
+/sim/tarsio/repos/sv-async-fifo-cdc/tb/test_async_fifo.sv:269         $fatal(1, "TEST FAILED: %0d error(s)", total_errors);
+xcelium> exit
+TOOL:	xrun(64)	23.03-s003: Exiting on Feb 23, 2026 at 01:10:38 -03  (total: 00:00:05)
