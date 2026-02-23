@@ -47,6 +47,9 @@ module tb
   tb_counters_t c_interleaved;
   tb_counters_t c_write_clock_faster;
   tb_counters_t c_read_clock_faster;
+  string run_name;
+  int run_seed;
+  int run_timeout_ns;
 
   task automatic task_reset();
     c_reset = '{default: 0};
@@ -97,8 +100,10 @@ module tb
   always #read_half_period_ns read_clk = ~read_clk;
 
   initial begin
-    #(TIMEOUT_NS * 1ns);
-    $fatal(1, "TB timeout after %0d ns (NAME=%s)", TIMEOUT_NS, NAME);
+    run_timeout_ns = TIMEOUT_NS;
+    void'($value$plusargs("TIMEOUT_NS=%d", run_timeout_ns));
+    #(run_timeout_ns * 1ns);
+    $fatal(1, "TB timeout after %0d ns (NAME=%s)", run_timeout_ns, run_name);
   end
 
   initial begin
@@ -108,9 +113,14 @@ module tb
     write_half_period_ns = WRITE_HALF_PERIOD_NS;
     read_half_period_ns = READ_HALF_PERIOD_NS;
 
-    $display("=== Testbench starting: TEST=%s SEED=%0d ===", NAME, SEED);
+    run_name = NAME;
+    run_seed = SEED;
+    void'($value$plusargs("NAME=%s", run_name));
+    void'($value$plusargs("SEED=%d", run_seed));
 
-    if (NAME == "") begin
+    $display("=== Testbench starting: TEST=%s SEED=%0d ===", run_name, run_seed);
+
+    if (run_name == "") begin
       task_reset();
       c_smoke = '{default: 0};
       test_smoke_writen_readn(
@@ -169,9 +179,9 @@ module tb
         read_clk
       );
       counters["test_read_clock_faster"] = c_read_clock_faster;
-    end else if (NAME == "reset") begin
+    end else if (run_name == "reset") begin
       task_reset();
-    end else if (NAME == "smoke") begin
+    end else if (run_name == "smoke") begin
       task_reset();
       c_smoke = '{default: 0};
       test_smoke_writen_readn(
@@ -184,7 +194,7 @@ module tb
         read_clk
       );
       counters["test_smoke_writen_readn"] = c_smoke;
-    end else if (NAME == "interleaved") begin
+    end else if (run_name == "interleaved") begin
       task_reset();
       c_interleaved = '{default: 0};
       test_interleaved(
@@ -199,7 +209,7 @@ module tb
         read_clk
       );
       counters["test_interleaved"] = c_interleaved;
-    end else if (NAME == "write-clock-faster") begin
+    end else if (run_name == "write-clock-faster") begin
       task_reset();
       c_write_clock_faster = '{default: 0};
       test_write_clock_faster(
@@ -216,7 +226,7 @@ module tb
         read_clk
       );
       counters["test_write_clock_faster"] = c_write_clock_faster;
-    end else if (NAME == "read-clock-faster") begin
+    end else if (run_name == "read-clock-faster") begin
       task_reset();
       c_read_clock_faster = '{default: 0};
       test_read_clock_faster(
@@ -234,15 +244,16 @@ module tb
       );
       counters["test_read_clock_faster"] = c_read_clock_faster;
     end else begin
-      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved|write-clock-faster|read-clock-faster", NAME);
+      $fatal(1, "Unknown TEST=%s. Valid: reset|smoke|interleaved|write-clock-faster|read-clock-faster", run_name);
     end
 
     $display("\n*** TIME %0f ***\n", $realtime);
     $display("TB PARAMETERS:");
-    $display("  NAME=%s", NAME);
-    $display("  SEED=%0d", SEED);
+    $display("  NAME=%s", run_name);
+    $display("  SEED=%0d", run_seed);
     $display("  BITS=%0d", BITS);
     $display("  SIZE=%0d", SIZE);
+    $display("  TIMEOUT_NS=%0d", run_timeout_ns);
 
     begin
       int unsigned total_errors;

@@ -85,7 +85,7 @@ sim-netlist-run:
 		../../tb/assertions.sv \
 		../logical/results/gate_level/async_fifo_logic_mapped.v \
 		-define GATE_LEVEL -define XRUN \
-		-gNAME=\"$(NETLIST_TEST)\" -gSEED=$(SEED) -gBITS=$(BITS) -gSIZE=$(SIZE) -gTIMEOUT_NS=$(TIMEOUT_NS) \
+		+NAME=$(NETLIST_TEST) +SEED=$(SEED) +TIMEOUT_NS=$(TIMEOUT_NS) \
 		-run -exit
 
 sim-netlist-run-env:
@@ -98,7 +98,7 @@ sim-netlist-run-env:
 		../../tb/assertions.sv \
 		../logical/results/gate_level/async_fifo_logic_mapped.v \
 		-define GATE_LEVEL -define XRUN \
-		-gNAME=\"$(NETLIST_TEST)\" -gSEED=$(SEED) -gBITS=$(BITS) -gSIZE=$(SIZE) -gTIMEOUT_NS=$(TIMEOUT_NS) \
+		+NAME=$(NETLIST_TEST) +SEED=$(SEED) +TIMEOUT_NS=$(TIMEOUT_NS) \
 		-run -exit
 
 sim-netlist: sim-netlist-run-env
