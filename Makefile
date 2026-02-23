@@ -42,18 +42,18 @@ regress:
 	$(MAKE) test TEST=
 
 logical-env:
-	cd "syntesis /logical"
+	cd "syntesis/logical"
 	module purge
 	module load genus > /dev/null 2>&1
 
 logical-run:
-	cd "syntesis /logical"
+	cd "syntesis/logical"
 	rm -rf genus.cmd*
 	rm -rf genus.log*
 	genus -f logical_synthesis.tcl
 
 logical-run-env:
-	cd "syntesis /logical"
+	cd "syntesis/logical"
 	module purge
 	module load genus > /dev/null 2>&1
 	rm -rf genus.cmd*
@@ -63,12 +63,12 @@ logical-run-env:
 logical: logical-run-env
 
 sim-netlist-env:
-	cd "syntesis /sim"
+	cd "syntesis/sim"
 	module purge
 	module load xcelium > /dev/null 2>&1
 
 sim-netlist-run:
-	cd "syntesis /sim"
+	cd "syntesis/sim"
 	rm -rf dut.shm
 	rm -rf xcelium.d
 	xrun -f args.txt ../../tb/test_async_fifo.sv \
@@ -76,7 +76,7 @@ sim-netlist-run:
 		-define GATE_LEVEL -define XRUN -run -exit
 
 sim-netlist-run-env:
-	cd "syntesis /sim"
+	cd "syntesis/sim"
 	module purge
 	module load xcelium > /dev/null 2>&1
 	rm -rf dut.shm
@@ -88,18 +88,18 @@ sim-netlist-run-env:
 sim-netlist: sim-netlist-run-env
 
 power-env:
-	cd "syntesis /power"
+	cd "syntesis/power"
 	module purge > /dev/null 2>&1
 	module load ddi
 
 power-run:
-	cd "syntesis /power"
+	cd "syntesis/power"
 	rm -rf genus.cmd*
 	rm -rf genus.log*
 	genus -f power.tcl
 
 power-run-env:
-	cd "syntesis /power"
+	cd "syntesis/power"
 	module purge > /dev/null 2>&1
 	module load ddi
 	rm -rf genus.cmd*
