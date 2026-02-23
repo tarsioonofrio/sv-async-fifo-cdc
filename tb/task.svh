@@ -92,13 +92,12 @@ task automatic test_smoke_writen_readn(
   p_read_en = 1;
   for (int i = 0; i < SIZE; i++) begin
     @(posedge read_clk);
-    #1ps;
     rd_acc_cnt++;
+    @(negedge read_clk);
     assert (p_read_data == i) else begin
       $error("ERR %0d != p_read_data = %0d", i, p_read_data);
       counters.error_count++;
     end
-    @(negedge read_clk);
   end
 
   p_read_en = 0;
