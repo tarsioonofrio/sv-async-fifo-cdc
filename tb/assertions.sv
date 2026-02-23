@@ -18,6 +18,8 @@ module async_fifo_sva #(
 timeunit 1ns;
 timeprecision 1ps;
 
+localparam int PTR_W = SIZE_LOG2 + 1;
+
 function automatic logic [SIZE_LOG2:0] bin2gray(input logic [SIZE_LOG2:0] b);
   return (b >> 1) ^ b;
 endfunction
@@ -36,7 +38,7 @@ assert property (@(posedge write_clk) disable iff (!write_rst_n)
 //    When `p_write_en` is high and `p_write_full` is low (write accepted), the
 //    write binary pointer must increase by exactly 1 on the next cycle.
 assert property (@(posedge write_clk) disable iff (!write_rst_n)
-  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == $past(r_write_ptr_bin) + 1)
+  (!p_write_full && p_write_en) |=> (r_write_ptr_bin == ($past(r_write_ptr_bin) + PTR_W'(1)))
 );
 
 // 3. Gray pointer must match binary pointer encoding
@@ -77,9 +79,9 @@ assert property (@(posedge write_clk) disable iff (!write_rst_n)
 //    +----------------------+----------------------+----------------------+--------------------------+----------------------+-------------------+-----------------------+
 assert property (@(posedge write_clk) disable iff (!write_rst_n)
   p_write_full == (
-    (w_write_ptr_gray_next[SIZE_LOG2:SIZE_LOG2-1] == ~r_read_ptr_gray_sync2[SIZE_LOG2:SIZE_LOG2-1])
+    (r_write_ptr_gray[SIZE_LOG2:SIZE_LOG2-1] == ~r_read_ptr_gray_sync2[SIZE_LOG2:SIZE_LOG2-1])
     &&
-    (w_write_ptr_gray_next[SIZE_LOG2-2:0] == r_read_ptr_gray_sync2[SIZE_LOG2-2:0])
+    (r_write_ptr_gray[SIZE_LOG2-2:0] == r_read_ptr_gray_sync2[SIZE_LOG2-2:0])
   )
 );
 
@@ -105,7 +107,7 @@ assert property (@(posedge read_clk) disable iff (!read_rst_n)
 //    When `p_read_en` is high and `p_read_empty` is low (read accepted), the
 //    read binary pointer must increase by exactly 1 on the next cycle.
 assert property (@(posedge read_clk) disable iff (!read_rst_n)
-  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == $past(r_read_ptr_bin) + 1)
+  (!p_read_empty && p_read_en) |=> (r_read_ptr_bin == ($past(r_read_ptr_bin) + PTR_W'(1)))
 );
 
 // 9. Gray pointer must match binary pointer encoding
@@ -128,7 +130,7 @@ assert property (@(posedge read_clk) disable iff (!read_rst_n)
 //     computed from the next read Gray pointer compared against the
 //     synchronized write Gray pointer (Gray-domain empty detection).
 assert property (@(posedge read_clk) disable iff (!read_rst_n)
-  p_read_empty == (w_read_ptr_gray_next == r_write_ptr_gray_sync2)
+  p_read_empty == (r_read_ptr_gray == r_write_ptr_gray_sync2)
 );
 
 // 12. No unknowns after reset
