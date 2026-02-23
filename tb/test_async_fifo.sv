@@ -10,8 +10,8 @@ module tb
   timeunit 1ns;
   timeprecision 1ps;
 
-  localparam WRITE_HALF_PERIOD_NS = 0.314159265359;
-  localparam READ_HALF_PERIOD_NS = 0.2718281828;
+  localparam WRITE_HALF_PERIOD_NS = 3.14159265359;
+  localparam READ_HALF_PERIOD_NS = 2.718281828;
 
   typedef struct {
     int unsigned error_count;
@@ -92,7 +92,7 @@ module tb
 
 
   initial clk = 0;
-  always #0.5 clk = ~clk;
+  always #5 clk = ~clk;
 
   initial write_clk = 0;
   always #write_half_period_ns write_clk = ~write_clk;
