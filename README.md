@@ -241,6 +241,24 @@ Or run all steps:
 make synthesis-run-env BITS=32 SIZE=16
 ```
 
+### `run` vs `run-env`
+
+For each synthesis step there are two target variants:
+
+- `*-run`: executes only the tool command (`genus`, `xrun`, etc.), assuming your shell environment is already configured.
+- `*-run-env`: first executes `module purge` + `module load ...`, then runs the same step command.
+
+Examples:
+
+- `logical-run` vs `logical-run-env`
+- `sim-netlist-run` vs `sim-netlist-run-env`
+- `power-run` vs `power-run-env`
+
+Recommended usage:
+
+- Use `*-run-env` on clean shells, shared servers, and CI.
+- Use `*-run` only when modules were loaded manually beforehand.
+
 ### Output organization
 
 - Configuration archive (kept per run):
