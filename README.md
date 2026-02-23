@@ -217,6 +217,50 @@ make MODELSIM_BIN=/path/to/modelsim/bin run
 
 ---
 
+## How Synthesis Works
+
+Synthesis is executed in three explicit steps (no automatic loop):
+
+1. `logical`: run Genus logic synthesis
+2. `sim-netlist`: run gate-level simulation with Xcelium (generates `dut.shm`)
+3. `power`: run Genus power analysis using netlist DB + `dut.shm`
+
+### Commands
+
+Run step by step for one configuration:
+
+```bash
+make logical-run-env BITS=32 SIZE=16
+make sim-netlist-run-env BITS=32 SIZE=16
+make power-run-env BITS=32 SIZE=16
+```
+
+Or run all steps:
+
+```bash
+make synthesis-run-env BITS=32 SIZE=16
+```
+
+### Output organization
+
+- Configuration archive (kept per run):
+  - `syntesis/logical/results/BITS32_SIZE16/...`
+- Canonical simulation/power input paths (always overwritten by latest `logical` run):
+  - `syntesis/logical/results/gate_level/async_fifo_logic_mapped.v`
+  - `syntesis/logical/results/gate_level/async_fifo_logic_mapped.db`
+  - `syntesis/logical/results/gate_level/async_fifo_analysis_view_0p90v_25c_captyp_nominal.sdf`
+- Gate-level switching activity (fixed path from `xrun`):
+  - `syntesis/sim/dut.shm`
+- Power report (kept per configuration):
+  - `syntesis/power/results/BITS32_SIZE16/power_evaluation.txt`
+
+### Important behavior
+
+- `sim-netlist` and `power` always read the canonical netlist/DB/SDF paths.
+- Therefore, run `logical` first for the same `BITS`/`SIZE` before `sim-netlist` and `power`.
+
+---
+
 ## Integration Notes (practical)
 
 - Connect `p_write_full` to your upstream backpressure logic
