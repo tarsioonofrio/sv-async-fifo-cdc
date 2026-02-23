@@ -5,3 +5,4 @@ dump.vcd
 *.wlf*
 wlf*
 .zed/settings.json
+logs/
