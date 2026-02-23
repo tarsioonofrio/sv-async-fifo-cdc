@@ -119,6 +119,7 @@ module async_fifo
   assign w_write_full = (r_write_ptr_bin[SIZE_LOG2] != w_read_ptr_bin_sync[SIZE_LOG2]) && (r_write_ptr_bin[SIZE_LOG2-1:0] == w_read_ptr_bin_sync[SIZE_LOG2-1:0]);
   assign p_write_full = w_write_full;
 
+`ifndef SYNTHESIS
   async_fifo_sva #(
     .SIZE_LOG2(SIZE_LOG2)
   ) u_async_fifo_sva (
@@ -139,5 +140,6 @@ module async_fifo
     .r_read_ptr_gray_sync2(r_read_ptr_gray_sync2),
     .r_write_ptr_gray_sync2(r_write_ptr_gray_sync2)
   );
+`endif
 
 endmodule

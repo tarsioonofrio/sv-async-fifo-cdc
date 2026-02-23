@@ -67,6 +67,7 @@ task automatic test_smoke_writen_readn(
     ref tb_counters_t counters,
     ref logic p_write_en,
     ref logic p_read_en,
+    ref logic p_read_empty,
     ref logic [BITS-1:0] p_write_data,
     ref logic [BITS-1:0] p_read_data,
     ref logic write_clk,
@@ -75,25 +76,29 @@ task automatic test_smoke_writen_readn(
   int unsigned wr_acc_cnt = 0;
   int unsigned rd_acc_cnt = 0;
 
-  @(posedge write_clk);
+  @(negedge write_clk);
   p_write_en = 1;
   for (int i = 0; i < SIZE; i++) begin
     p_write_data = i;
     @(posedge write_clk);
+    wr_acc_cnt++;
+    @(negedge write_clk);
   end
 
-  @(posedge write_clk);
   p_write_en = 0;
-  @(posedge read_clk);
+  @(negedge read_clk);
+  while (p_read_empty) @(negedge read_clk);
 
   p_read_en = 1;
-  @(posedge read_clk);
   for (int i = 0; i < SIZE; i++) begin
     @(posedge read_clk);
+    #1ps;
+    rd_acc_cnt++;
     assert (p_read_data == i) else begin
       $error("ERR %0d != p_read_data = %0d", i, p_read_data);
       counters.error_count++;
     end
+    @(negedge read_clk);
   end
 
   p_read_en = 0;

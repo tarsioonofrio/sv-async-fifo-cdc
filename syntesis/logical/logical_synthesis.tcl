@@ -21,7 +21,7 @@ set CFG_TAG "BITS${BITS}_SIZE${SIZE}"
 set OUT_FILES "[pwd]/results/${CFG_TAG}"
 set STD_OUT  "[pwd]/results"
 
-set DEFINE_FLAGS ""
+set DEFINE_FLAGS "SYNTHESIS"
 
 set HDL_FILES "${PROJECT_ROOT}/rtl/sync_2ff.sv ${PROJECT_ROOT}/rtl/async_fifo.sv"
 
