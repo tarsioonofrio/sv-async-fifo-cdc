@@ -11,6 +11,8 @@ set PROJECT_ROOT [file normalize [file join $SCRIPT_DIR "../.."]]
 
 # Read file_list.txt and concatenate its contents into a variable
 
+set DEFINE_FLAGS ""
+
 set HDL_FILES "${PROJECT_ROOT}/rtl/sync_2ff.sv ${PROJECT_ROOT}/rtl/async_fifo.sv"
 
 ###############################################################################
