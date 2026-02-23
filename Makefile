@@ -16,6 +16,7 @@ TEST ?=
 SEED ?=7
 BITS ?=32
 SIZE ?=16
+CFG_TAG = BITS$(BITS)_SIZE$(SIZE)
 COVERAGE ?=0
 NETLIST_TEST ?=smoke
 TIMEOUT_NS ?=200000
@@ -60,7 +61,7 @@ logical-run:
 	cd "syntesis/logical"
 	rm -rf genus.cmd*
 	rm -rf genus.log*
-	genus -f logical_synthesis.tcl
+	BITS="$(BITS)" SIZE="$(SIZE)" genus -f logical_synthesis.tcl
 
 logical-run-env:
 	cd "syntesis/logical"
@@ -68,7 +69,7 @@ logical-run-env:
 	module load genus > /dev/null 2>&1
 	rm -rf genus.cmd*
 	rm -rf genus.log*
-	genus -f logical_synthesis.tcl
+	BITS="$(BITS)" SIZE="$(SIZE)" genus -f logical_synthesis.tcl
 
 logical: logical-run-env
 
@@ -112,7 +113,7 @@ power-run:
 	cd "syntesis/power"
 	rm -rf genus.cmd*
 	rm -rf genus.log*
-	genus -f power.tcl
+	BITS="$(BITS)" SIZE="$(SIZE)" genus -f power.tcl
 
 power-run-env:
 	cd "syntesis/power"
@@ -120,7 +121,7 @@ power-run-env:
 	module load ddi
 	rm -rf genus.cmd*
 	rm -rf genus.log*
-	genus -f power.tcl
+	BITS="$(BITS)" SIZE="$(SIZE)" genus -f power.tcl
 
 power: power-run-env
 

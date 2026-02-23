@@ -2,7 +2,6 @@ if {[file isdirectory work]} { vdel -all -lib work }
 vlib work
 vmap work work
 
-
 vlog -work work -svinputport=relaxed /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v
 vlog -work work -svinputport=relaxed ../logical/results/gate_level/async_fifo_logic_mapped.v
 vlog -work work -svinputport=relaxed ../../tb/test_async_fifo.sv

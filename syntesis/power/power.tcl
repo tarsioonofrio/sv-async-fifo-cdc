@@ -1,3 +1,16 @@
+set BITS 32
+if {[info exists env(BITS)] && $env(BITS) ne ""} {
+  set BITS $env(BITS)
+}
+
+set SIZE 16
+if {[info exists env(SIZE)] && $env(SIZE) ne ""} {
+  set SIZE $env(SIZE)
+}
+
+set CFG_TAG "BITS${BITS}_SIZE${SIZE}"
+set OUT_DIR [file normalize [file join [pwd] "results/${CFG_TAG}"]]
+
 set DB_FILE [file normalize [file join [pwd] "../logical/results/gate_level/async_fifo_logic_mapped.db"]]
 set SHM [file normalize [file join [pwd] "../sim/dut.shm"]]
 
@@ -55,6 +68,7 @@ if {[file exists $SHM]} {
 }
 
 # compute_power -mode average
-report_power -header -unit mW >  power_evaluation.txt
+file mkdir ${OUT_DIR}
+report_power -header -unit mW > ${OUT_DIR}/power_evaluation.txt
 
 exit

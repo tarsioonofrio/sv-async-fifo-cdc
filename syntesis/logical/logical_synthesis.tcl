@@ -4,12 +4,22 @@
 
 set TOP_MODULE async_fifo
 
-set OUT_FILES "[pwd]/results"
-
 set SCRIPT_DIR [file dirname [info script]]
 set PROJECT_ROOT [file normalize [file join $SCRIPT_DIR "../.."]]
 
-# Read file_list.txt and concatenate its contents into a variable
+set BITS 32
+if {[info exists env(BITS)] && $env(BITS) ne ""} {
+  set BITS $env(BITS)
+}
+
+set SIZE 16
+if {[info exists env(SIZE)] && $env(SIZE) ne ""} {
+  set SIZE $env(SIZE)
+}
+
+set CFG_TAG "BITS${BITS}_SIZE${SIZE}"
+set OUT_FILES "[pwd]/results/${CFG_TAG}"
+set STD_OUT  "[pwd]/results"
 
 set DEFINE_FLAGS ""
 
@@ -50,7 +60,7 @@ puts "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 	#set_db information_level 9
 
 	### Avoid proceeding with latche inference
-	set_db hdl_error_on_latch true
+		set_db hdl_error_on_latch true
 
 
 puts "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
@@ -64,15 +74,19 @@ puts "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 puts "Load hdl files"
 puts "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
-#	read_hdl -sv "../data.sv ../rtl/pack_conv.sv ../rtl/csa_lib.sv ../rtl/mult_matrices.sv ../rtl/fast_conv.sv"
-    read_hdl -define ${DEFINE_FLAGS} -sv ${HDL_FILES}
+	#	read_hdl -sv "../data.sv ../rtl/pack_conv.sv ../rtl/csa_lib.sv ../rtl/mult_matrices.sv ../rtl/fast_conv.sv"
+	    read_hdl -define ${DEFINE_FLAGS} -sv ${HDL_FILES}
 
 
 puts "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 puts "Elaboration"
 puts "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
-	elaborate ${TOP_MODULE}
+		exec mkdir -p ${OUT_FILES}/reports
+		exec mkdir -p ${OUT_FILES}/gate_level
+		exec mkdir -p ${OUT_FILES}/physical_synthesis/work
+
+		elaborate ${TOP_MODULE} -parameters "BITS=${BITS},SIZE=${SIZE}"
 
 	# Applying the constraints
 	init_design
@@ -167,6 +181,13 @@ puts "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 
     ### será usado para power analysis
 	set CURRENT_VIEW analysis_view_0p90v_25c_captyp_nominal
-	write_db ${OUT_FILES}/gate_level/${TOP_MODULE}_logic_mapped.db
+		write_db ${OUT_FILES}/gate_level/${TOP_MODULE}_logic_mapped.db
+
+		# Publish current configuration to canonical paths used by simulation/power.
+		exec mkdir -p ${STD_OUT}/gate_level
+		exec mkdir -p ${STD_OUT}/reports
+		exec cp -f ${OUT_FILES}/gate_level/${TOP_MODULE}_logic_mapped.v ${STD_OUT}/gate_level/${TOP_MODULE}_logic_mapped.v
+		exec cp -f ${OUT_FILES}/gate_level/${TOP_MODULE}_logic_mapped.db ${STD_OUT}/gate_level/${TOP_MODULE}_logic_mapped.db
+		exec cp -f ${OUT_FILES}/gate_level/${TOP_MODULE}_analysis_view_0p90v_25c_captyp_nominal.sdf ${STD_OUT}/gate_level/${TOP_MODULE}_analysis_view_0p90v_25c_captyp_nominal.sdf
 
 	exit
