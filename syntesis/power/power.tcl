@@ -46,8 +46,15 @@ read_db ${DB_FILE}
 
 set_db interconnect_mode ple
 
-read_stimulus $SHM -dut_instance tb.dut -start ${START_TIME}
-#compute_power -mode average
+if {[file exists $SHM]} {
+  puts "INFO: Using switching activity from $SHM"
+  read_stimulus $SHM -dut_instance tb.dut -start ${START_TIME}
+} else {
+  puts "WARNING: Stimulus file not found: $SHM"
+  puts "WARNING: Running vectorless power estimation."
+}
+
+# compute_power -mode average
 report_power -header -unit mW >  power_evaluation.txt
 
 exit

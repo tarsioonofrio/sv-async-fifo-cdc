@@ -107,6 +107,11 @@ module tb
   end
 
   initial begin
+`ifdef XRUN
+    $shm_open("dut.shm");
+    $shm_probe(tb.dut, "ASM");
+`endif
+
     $dumpfile("dump.vcd");
     $dumpvars(0, tb);
 
