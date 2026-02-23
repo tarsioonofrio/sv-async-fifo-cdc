@@ -2,15 +2,16 @@
 # TOP
 ###############################################################################
 
-set TOP_MODULE conv
+set TOP_MODULE async_fifo
 
 set OUT_FILES "[pwd]/results"
 
-set GIT_ROOT [exec git rev-parse --show-toplevel]
+set SCRIPT_DIR [file dirname [info script]]
+set PROJECT_ROOT [file normalize [file join $SCRIPT_DIR "../.."]]
 
 # Read file_list.txt and concatenate its contents into a variable
 
-set HDL_FILES "${GIT_ROOT}/rtl/conv-mux/conv.sv"
+set HDL_FILES "${PROJECT_ROOT}/rtl/sync_2ff.sv ${PROJECT_ROOT}/rtl/async_fifo.sv"
 
 ###############################################################################
 # TOP
