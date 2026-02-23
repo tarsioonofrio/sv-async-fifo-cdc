@@ -1,5 +1,5 @@
 xrun(64): 23.03-s003: (c) Copyright 1995-2023 Cadence Design Systems, Inc.
-TOOL:	xrun(64)	23.03-s003: Started on Feb 22, 2026 at 23:31:51 -03
+TOOL:	xrun(64)	23.03-s003: Started on Feb 22, 2026 at 23:34:42 -03
 xrun
 	-f args.txt
 		-smartorder
@@ -9,6 +9,7 @@ xrun
 		-maxdelays
 		-sdf_cmd_file sdf_cmd.cmd
 		-timescale 1ns/1ps
+		-incdir ../../tb
 		/pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital/Front_End/verilog/tcbn28hpcplusbwp30p140_110a/tcbn28hpcplusbwp30p140.v
 	../../tb/test_async_fifo.sv
 	../logical/results/gate_level/async_fifo_logic_mapped.v
@@ -2222,11 +2223,8 @@ file: /pdk/tsmc/PDK28/PDK_TSMC28_bv/tcbn28hpcplusbwp30p140_190a/TSMCHOME/digital
 	primitive work.tsmc_xbuf:v
 		errors: 0, warnings: 0
 file: ../../tb/test_async_fifo.sv
-  `include "task.svh"
-                    |
-xmvlog: *E,COFILX (../../tb/test_async_fifo.sv,19|20): cannot open include file 'task.svh'.
 	module work.tb:sv
-		errors: 1, warnings: 0
+		errors: 0, warnings: 0
 file: ../logical/results/gate_level/async_fifo_logic_mapped.v
 	module work.RC_CG_MOD:v
 		errors: 0, warnings: 0
@@ -2268,5 +2266,13 @@ file: ../logical/results/gate_level/async_fifo_logic_mapped.v
 		errors: 0, warnings: 0
 	module work.async_fifo:v
 		errors: 0, warnings: 0
-xrun: *E,VLGERR: An error occurred during parsing.  Review the log file for errors with the code *E and fix those identified problems to proceed.  Exiting with code (status 1).
-TOOL:	xrun(64)	23.03-s003: Exiting on Feb 22, 2026 at 23:31:53 -03  (total: 00:00:02)
+	Elaborating the design hierarchy:
+		Caching library 'work' ....... Done
+      .BITS(BITS),
+               |
+xmelab: *E,CUTMIP (/sim/tarsio/repos/sv-async-fifo-cdc/tb/test_async_fifo.sv,69|15): Too many module instance parameter assignments (definition in file ../logical/results/gate_level/async_fifo_logic_mapped.v, line 220).
+  async_fifo_sva u_async_fifo_sva(.write_clk (write_clk), .write_rst_n
+                                |
+xmelab: *E,CUVMUR (../logical/results/gate_level/async_fifo_logic_mapped.v,358|32): instance 'tb.dut@async_fifo<module>.u_async_fifo_sva' of design unit 'async_fifo_sva' is unresolved in 'work.async_fifo:v'.
+xrun: *E,ELBERR: Error (*E) or soft error (*SE) occurred during elaboration (status 1), exiting.
+TOOL:	xrun(64)	23.03-s003: Exiting on Feb 22, 2026 at 23:34:45 -03  (total: 00:00:03)
