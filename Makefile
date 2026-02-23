@@ -19,7 +19,10 @@ SIZE ?=16
 
 .PHONY: build run test regress lint lint-all lint-rtl lint-tb \
 	waves clean logical sim-netlist power synthesis \
-	logical-env sim-netlist-env power-env synthesis-env
+	logical-env logical-run logical-run-env \
+	sim-netlist-env sim-netlist-run sim-netlist-run-env \
+	power-env power-run power-run-env \
+	synthesis-env synthesis-run synthesis-run-env
 
 build:
 	cd $(SIM_DIR)
@@ -43,18 +46,28 @@ logical-env:
 	module purge
 	module load genus > /dev/null 2>&1
 
-logical: logical-env
+logical-run:
 	cd "syntesis /logical"
 	rm -rf genus.cmd*
 	rm -rf genus.log*
 	genus -f logical_synthesis.tcl
+
+logical-run-env:
+	cd "syntesis /logical"
+	module purge
+	module load genus > /dev/null 2>&1
+	rm -rf genus.cmd*
+	rm -rf genus.log*
+	genus -f logical_synthesis.tcl
+
+logical: logical-run-env
 
 sim-netlist-env:
 	cd "syntesis /sim"
 	module purge
 	module load xcelium > /dev/null 2>&1
 
-sim-netlist: sim-netlist-env
+sim-netlist-run:
 	cd "syntesis /sim"
 	rm -rf dut.shm
 	rm -rf xcelium.d
@@ -62,18 +75,44 @@ sim-netlist: sim-netlist-env
 		../logical/results/gate_level/async_fifo_logic_mapped.v \
 		-define GATE_LEVEL -define XRUN -run -exit
 
+sim-netlist-run-env:
+	cd "syntesis /sim"
+	module purge
+	module load xcelium > /dev/null 2>&1
+	rm -rf dut.shm
+	rm -rf xcelium.d
+	xrun -f args.txt ../../tb/test_async_fifo.sv \
+		../logical/results/gate_level/async_fifo_logic_mapped.v \
+		-define GATE_LEVEL -define XRUN -run -exit
+
+sim-netlist: sim-netlist-run-env
+
 power-env:
 	cd "syntesis /power"
 	module purge > /dev/null 2>&1
 	module load ddi
 
-power: power-env
+power-run:
 	cd "syntesis /power"
 	rm -rf genus.cmd*
 	rm -rf genus.log*
 	genus -f power.tcl
 
-synthesis: logical sim-netlist power
+power-run-env:
+	cd "syntesis /power"
+	module purge > /dev/null 2>&1
+	module load ddi
+	rm -rf genus.cmd*
+	rm -rf genus.log*
+	genus -f power.tcl
+
+power: power-run-env
+
+synthesis-run: logical-run sim-netlist-run power-run
+
+synthesis-run-env: logical-run-env sim-netlist-run-env power-run-env
+
+synthesis: synthesis-run-env
 
 synthesis-env: logical-env sim-netlist-env power-env
 
