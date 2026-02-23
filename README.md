@@ -225,6 +225,21 @@ Synthesis is executed in three explicit steps (no automatic loop):
 2. `sim-netlist`: run gate-level simulation with Xcelium (generates `dut.shm`)
 3. `power`: run Genus power analysis using netlist DB + `dut.shm`
 
+### Power Estimation Flow
+
+Area is measured after logical synthesis in **Cadence Genus** using the
+**TSMC 28nm** technology setup.
+
+Power uses an **activity-annotated** flow:
+
+1. Synthesize RTL in Genus (logical step).
+2. Simulate the synthesized netlist in **Cadence Xcelium** to capture switching
+   activity (`dut.shm`).
+3. Back-annotate this activity in Genus and run `report_power`.
+
+This flow provides more representative power numbers than pure vectorless
+estimation, because switching comes from real simulation stimulus.
+
 ### Commands
 
 Run step by step for one configuration:
