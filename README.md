@@ -18,6 +18,36 @@ This repository targets an "industry-style" IP deliverable: clean RTL, clear int
 
 ---
 
+## Requirements
+
+### Core
+
+- Linux shell environment
+- GNU Make
+- Python 3 (for `scripts/report.py`)
+
+### RTL Simulation
+
+- Questa `2025.3` (recommended)
+- Intel ModelSim path is still supported by default in `Makefile`:
+  `/opt/intelFPGA/20.1/modelsim_ase/bin`
+
+### Netlist + Power Flow
+
+- Cadence Xcelium `23.03` (`xrun`) for gate-level activity capture (`dut.shm`)
+- Cadence Genus `21.1` for logical synthesis and power estimation
+- Cadence DDI `23.1` (Digital Design and Implementation) for power-flow environment
+- Access to configured TSMC 28nm library/PDK paths used by synthesis scripts
+
+### Environment modules (for `*-run-env` targets)
+
+- `module load questa/2025.3` (if your environment provides this module)
+- `module load genus` (compatible with Genus `21.1`)
+- `module load xcelium` (compatible with Xcelium `23.03`)
+- `module load ddi` (compatible with DDI `23.1`)
+
+---
+
 ## Signal Naming Convention
 
 - `p_`: module ports (inputs/outputs), except clock/reset.
