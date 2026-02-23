@@ -1,3 +1,7 @@
+SHELL := /bin/bash
+.SHELLFLAGS := -eu -o pipefail -c
+.ONESHELL:
+
 MODELSIM_BIN ?= /opt/intelFPGA/20.1/modelsim_ase/bin
 PATH := $(MODELSIM_BIN):$(PATH)
 export PATH
@@ -18,15 +22,16 @@ SIZE ?=16
 	logical-env sim-netlist-env power-env synthesis-env
 
 build:
-	cd $(SIM_DIR) && \
-	if [ -d work ]; then vdel -all -lib work; fi && \
-	vlib work && \
-	vmap work work && \
-	vlog -work work -svinputport=relaxed $(RTL) && \
+	cd $(SIM_DIR)
+	if [ -d work ]; then vdel -all -lib work; fi
+	vlib work
+	vmap work work
+	vlog -work work -svinputport=relaxed $(RTL)
 	vlog -work work -svinputport=relaxed $(TB)
 
 run:
-	cd $(SIM_DIR) && TEST="$(TEST)" SEED="$(SEED)" BITS="$(BITS)" SIZE="$(SIZE)" vsim -c -do sim.tcl
+	cd $(SIM_DIR)
+	TEST="$(TEST)" SEED="$(SEED)" BITS="$(BITS)" SIZE="$(SIZE)" vsim -c -do sim.tcl
 
 test: run
 
@@ -34,38 +39,38 @@ regress:
 	$(MAKE) test TEST=
 
 logical-env:
-	cd "syntesis /logical" && \
-	module purge && \
+	cd "syntesis /logical"
+	module purge
 	module load genus > /dev/null 2>&1
 
 logical: logical-env
-	cd "syntesis /logical" && \
-	rm -rf genus.cmd* && \
-	rm -rf genus.log* && \
+	cd "syntesis /logical"
+	rm -rf genus.cmd*
+	rm -rf genus.log*
 	genus -f logical_synthesis.tcl
 
 sim-netlist-env:
-	cd "syntesis /sim" && \
-	module purge && \
+	cd "syntesis /sim"
+	module purge
 	module load xcelium > /dev/null 2>&1
 
 sim-netlist: sim-netlist-env
-	cd "syntesis /sim" && \
-	rm -rf dut.shm && \
-	rm -rf xcelium.d && \
+	cd "syntesis /sim"
+	rm -rf dut.shm
+	rm -rf xcelium.d
 	xrun -f args.txt ../../tb/test_async_fifo.sv \
-	  ../logical/results/gate_level/async_fifo_logic_mapped.v \
-	  -define GATE_LEVEL -define XRUN -run -exit
+		../logical/results/gate_level/async_fifo_logic_mapped.v \
+		-define GATE_LEVEL -define XRUN -run -exit
 
 power-env:
-	cd "syntesis /power" && \
-	module purge > /dev/null 2>&1 && \
+	cd "syntesis /power"
+	module purge > /dev/null 2>&1
 	module load ddi
 
 power: power-env
-	cd "syntesis /power" && \
-	rm -rf genus.cmd* && \
-	rm -rf genus.log* && \
+	cd "syntesis /power"
+	rm -rf genus.cmd*
+	rm -rf genus.log*
 	genus -f power.tcl
 
 synthesis: logical sim-netlist power
@@ -86,7 +91,10 @@ lint-tb:
 	verilator --lint-only --timing -Wall -Wno-DECLFILENAME -Wno-UNUSEDSIGNAL -Wno-SYNCASYNCNET -Itb -Irtl $(LINT_RTL_SRCS) $(LINT_TB_SRCS)
 
 waves: build
-	cd $(SIM_DIR) && vsim -voptargs=+acc -t ps $(TOP) -do "do wave.do; run 100ns; quit -f"
+	cd $(SIM_DIR)
+	vsim -voptargs=+acc -t ps $(TOP) -do "do wave.do; run 100ns; quit -f"
 
 clean:
-	cd $(SIM_DIR) && rm -rf work && rm -f transcript vsim.wlf dump.vcd wlft*
+	cd $(SIM_DIR)
+	rm -rf work
+	rm -f transcript vsim.wlf dump.vcd wlft*
