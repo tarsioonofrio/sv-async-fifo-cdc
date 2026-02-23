@@ -4,7 +4,8 @@ module tb
     parameter int BITS = 32, // Width of each FIFO entry.
     parameter int SIZE = 16, // Number of entries. **Recommended: power-of-two** for simpler pointer logic.
     parameter string NAME = "",
-    parameter int SEED = 7
+    parameter int SEED = 7,
+    parameter int TIMEOUT_NS = 200000
   );
   timeunit 1ns;
   timeprecision 1ps;
@@ -95,6 +96,10 @@ module tb
   initial read_clk = 0;
   always #read_half_period_ns read_clk = ~read_clk;
 
+  initial begin
+    #(TIMEOUT_NS * 1ns);
+    $fatal(1, "TB timeout after %0d ns (NAME=%s)", TIMEOUT_NS, NAME);
+  end
 
   initial begin
     $dumpfile("dump.vcd");

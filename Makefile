@@ -17,6 +17,8 @@ SEED ?=7
 BITS ?=32
 SIZE ?=16
 COVERAGE ?=0
+NETLIST_TEST ?=smoke
+TIMEOUT_NS ?=200000
 
 .PHONY: build run test regress lint lint-all lint-rtl lint-tb \
 	waves clean logical sim-netlist power synthesis \
@@ -82,7 +84,9 @@ sim-netlist-run:
 	xrun -f args.txt ../../tb/test_async_fifo.sv \
 		../../tb/assertions.sv \
 		../logical/results/gate_level/async_fifo_logic_mapped.v \
-		-define GATE_LEVEL -define XRUN -run -exit
+		-define GATE_LEVEL -define XRUN \
+		-gNAME=\"$(NETLIST_TEST)\" -gSEED=$(SEED) -gBITS=$(BITS) -gSIZE=$(SIZE) -gTIMEOUT_NS=$(TIMEOUT_NS) \
+		-run -exit
 
 sim-netlist-run-env:
 	cd "syntesis/sim"
@@ -93,7 +97,9 @@ sim-netlist-run-env:
 	xrun -f args.txt ../../tb/test_async_fifo.sv \
 		../../tb/assertions.sv \
 		../logical/results/gate_level/async_fifo_logic_mapped.v \
-		-define GATE_LEVEL -define XRUN -run -exit
+		-define GATE_LEVEL -define XRUN \
+		-gNAME=\"$(NETLIST_TEST)\" -gSEED=$(SEED) -gBITS=$(BITS) -gSIZE=$(SIZE) -gTIMEOUT_NS=$(TIMEOUT_NS) \
+		-run -exit
 
 sim-netlist: sim-netlist-run-env
 
