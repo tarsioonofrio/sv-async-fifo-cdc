@@ -86,7 +86,8 @@ puts "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 		exec mkdir -p ${OUT_FILES}/gate_level
 		exec mkdir -p ${OUT_FILES}/physical_synthesis/work
 
-		elaborate ${TOP_MODULE} -parameters "BITS=${BITS},SIZE=${SIZE}"
+		set ELAB_PARAMS ".BITS(${BITS}),.SIZE(${SIZE})"
+		elaborate ${TOP_MODULE} -parameters ${ELAB_PARAMS}
 
 	# Applying the constraints
 	init_design
