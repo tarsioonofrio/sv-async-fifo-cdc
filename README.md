@@ -383,6 +383,7 @@ The consolidated data summary is in:
 
 ### Regression tests (pending)
 
+- [ ] Reach 100% verification coverage (current total coverage: 78.55% from `sim/coverage_html/files/overalldu.js`, field `ds.tc`)
 - [ ] Add `make regress` matrix with multiple `BITS`/`SIZE` combinations
 - [ ] Add deterministic multi-test runs by `NAME` and fixed `SEED` set
 - [ ] Add wrap-around focused regression case (>= 10x depth transactions)
