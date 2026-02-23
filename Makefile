@@ -13,7 +13,8 @@ SEED ?=7
 BITS ?=32
 SIZE ?=16
 
-.PHONY: build run test regress lint lint-all lint-rtl lint-tb waves clean
+.PHONY: build run test regress lint lint-all lint-rtl lint-tb \
+	waves clean logical sim-netlist power synthesis
 
 build:
 	cd $(SIM_DIR) && \
@@ -30,6 +31,34 @@ test: run
 
 regress:
 	$(MAKE) test TEST=
+
+logical:
+	cd "syntesis /logical" && \
+	rm -rf genus.cmd* && \
+	rm -rf genus.log* && \
+	module purge && \
+	module load genus > /dev/null 2>&1 && \
+	genus -f logical_synthesis.tcl
+
+sim-netlist:
+	cd "syntesis /sim" && \
+	rm -rf dut.shm && \
+	rm -rf xcelium.d && \
+	module purge && \
+	module load xcelium > /dev/null 2>&1 && \
+	xrun -f args.txt ../../tb/test_async_fifo.sv \
+	  ../logical/results/gate_level/async_fifo_logic_mapped.v \
+	  -define GATE_LEVEL -define XRUN -run -exit
+
+power:
+	cd "syntesis /power" && \
+	rm -rf genus.cmd* && \
+	rm -rf genus.log* && \
+	module purge > /dev/null 2>&1 && \
+	module load ddi && \
+	genus -f power.tcl
+
+synthesis: logical sim-netlist power
 
 lint:
 	$(MAKE) lint-rtl
