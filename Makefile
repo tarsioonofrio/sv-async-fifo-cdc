@@ -14,7 +14,8 @@ BITS ?=32
 SIZE ?=16
 
 .PHONY: build run test regress lint lint-all lint-rtl lint-tb \
-	waves clean logical sim-netlist power synthesis
+	waves clean logical sim-netlist power synthesis \
+	logical-env sim-netlist-env power-env synthesis-env
 
 build:
 	cd $(SIM_DIR) && \
@@ -32,33 +33,44 @@ test: run
 regress:
 	$(MAKE) test TEST=
 
-logical:
+logical-env:
+	cd "syntesis /logical" && \
+	module purge && \
+	module load genus > /dev/null 2>&1
+
+logical: logical-env
 	cd "syntesis /logical" && \
 	rm -rf genus.cmd* && \
 	rm -rf genus.log* && \
-	module purge && \
-	module load genus > /dev/null 2>&1 && \
 	genus -f logical_synthesis.tcl
 
-sim-netlist:
+sim-netlist-env:
+	cd "syntesis /sim" && \
+	module purge && \
+	module load xcelium > /dev/null 2>&1
+
+sim-netlist: sim-netlist-env
 	cd "syntesis /sim" && \
 	rm -rf dut.shm && \
 	rm -rf xcelium.d && \
-	module purge && \
-	module load xcelium > /dev/null 2>&1 && \
 	xrun -f args.txt ../../tb/test_async_fifo.sv \
 	  ../logical/results/gate_level/async_fifo_logic_mapped.v \
 	  -define GATE_LEVEL -define XRUN -run -exit
 
-power:
+power-env:
+	cd "syntesis /power" && \
+	module purge > /dev/null 2>&1 && \
+	module load ddi
+
+power: power-env
 	cd "syntesis /power" && \
 	rm -rf genus.cmd* && \
 	rm -rf genus.log* && \
-	module purge > /dev/null 2>&1 && \
-	module load ddi && \
 	genus -f power.tcl
 
 synthesis: logical sim-netlist power
+
+synthesis-env: logical-env sim-netlist-env power-env
 
 lint:
 	$(MAKE) lint-rtl
