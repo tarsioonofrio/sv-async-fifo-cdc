@@ -33,9 +33,9 @@ This repository targets an "industry-style" IP deliverable: clean RTL, clear int
 
 ### RTL Simulation
 
-- Questa `2025.3` (recommended)
-- Intel ModelSim path is still supported by default in `Makefile`:
-  `/opt/intelFPGA/20.1/modelsim_ase/bin`
+- ModelSim Intel FPGA Starter Edition `2020.1` was used for baseline simulation
+  (`/opt/intelFPGA/20.1/modelsim_ase/bin` in this project setup).
+- Questa `2025.3` is required for full assertion support and coverage flow.
 
 ### Netlist + Power Flow
 
