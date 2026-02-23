@@ -21,6 +21,6 @@ do wave.do
 # run 7000ns
 # run -all
 
-run 10000ns
+run 100000ns
 
 # coverage report -output report.txt -srcfile=* -assert -directive -cvg -codeAll
